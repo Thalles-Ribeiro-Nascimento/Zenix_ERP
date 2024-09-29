@@ -4,7 +4,8 @@ import mysql.connector
 class Dao:
     def __init__(self, login, key):
         self.conecta = c.Conexao().Conecta(login, key)
-        # self.usuario = usuario
+        self.erroDeleteFunc = None
+        self.erroinsercao = None
 
         if isinstance(self.conecta, str):
             self.erro = self.conecta
@@ -45,7 +46,7 @@ class Dao:
 
         return rows
     
-    def especialidadeAll(self):
+    def especialidadeView(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
@@ -55,7 +56,7 @@ class Dao:
 
         return rows
     
-    def especialidade(self):
+    def especialidadeAll(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
@@ -72,33 +73,32 @@ class Dao:
             sql = f"INSERT INTO funcionarios (nome_funcionario, idEspecialidade, cpf, data_nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil) VALUES ('{nome}', {especialidade}, '{cpf}', STR_TO_DATE('{nascimento}', '%d/%m/%Y'), '{telefone}', '{celular}', '{rua}', '{bairro}', '{uf}', '{numero}' , '{complemento}', '{email}', '{percentil}')"
             self.cursor.execute(sql)
             self.conecta.commit()
-
-            print("Funcionário inserido")
-        except mysql.connector.Error as e:
-            print(e)
-
-            error = str(e)
-            if "1064 (42000)" in error:
-                return 'Erro de sintaxe!'
-            else:
-                return error
-
-    def deleteDadoFuncionario(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-
-        sql = f'UPDATE funcionarios SET status = 0 WHERE id_funcionario = {id}'
-        self.cursor.execute(sql)
-        self.conecta.commit()
-
-    def atualizaStatusFuncionario(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
+            return
         
-        sql = f'UPDATE funcionarios SET status = 0 WHERE id_funcionario = {id}'
-        self.cursor.execute(sql)
-        self.conecta.commit()
+        except mysql.connector.Error as e:
+            print('Erro: ', e)
+            
+            self.erroinsercao = str(e)
+            # if "Duplicate entry" in self.erroinsercao:
 
+            return self.erroinsercao
+
+    def deleteLogicoFuncionario(self, id):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+
+        try:
+            sql = f'UPDATE funcionarios SET status = 0 WHERE id_funcionario = {id}'
+            self.cursor.execute(sql)
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print("Erro: ", e)
+
+            self.erroDeleteFunc = str(e)
+
+            return self.erroDeleteFunc
 
     def insertEspecialidade(self, especialidade):
         if self.erro:
@@ -107,8 +107,10 @@ class Dao:
             sql = f"INSERT INTO especialidade (nomeEspecialidade) VALUES ('{especialidade}')"
             self.cursor.execute(sql)
             self.conecta.commit()
+            return
+        
         except mysql.connector.Error as e:
-            print
+            print("Especialidade inserida!")
 
 
     def atualizaNomeFuncionario(self, id, nome):
