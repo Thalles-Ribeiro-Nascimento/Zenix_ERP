@@ -11,6 +11,7 @@ class App:
         # self.modalNovoFuncionario()
         self.tela_login()
         # # self.telaRoot()
+        
         self.root_login.mainloop()
 
     def tela_login(self):
@@ -20,6 +21,7 @@ class App:
         self.root_login.configure(background='#D3D3D3')
         self.root_login.resizable(False,False)
         self.root_login.colormapwindows(self.root_login)
+        self.item_id = ""
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
@@ -267,16 +269,7 @@ class App:
         self.buscarFunc.place(relx=0.02, rely=0.7 ,relheight=0.2)
 
         self.atualizarFunc = tk.Button(self.framefuncionarios, text='ATUALIZAR' , command=self.atualizarModal, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        self.atualizarFunc.place(relx=0.45, rely=0.7 ,relheight=0.2)
-
-        if self.campo_nome.get() == "":
-            self.atualizarFunc.config(state=DISABLED, disabledforeground='gray')
-            print('Desabilitado')
-        
-        elif self.pegaId != None:
-            self.atualizarFunc.config(state='active')
-            print('Ativado')
-               
+        self.atualizarFunc.place(relx=0.45, rely=0.7 ,relheight=0.2)               
 
         novoFunc = tk.Button(self.framefuncionarios, text='NOVO' , command=self.modalNovoFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         novoFunc.place(relx=0.91, rely=0.7 ,relheight=0.2)
@@ -322,44 +315,70 @@ class App:
         for row in self.rows:
             self.treeviewFunc.insert("", END, values=row)
 
+        # listFuncionario = self.treeviewFunc.item(self.item_id, 'values')
+        # status = listFuncionario[1]
+
+        # if status == 0:
+        #     style.configure("self.treeviewFunc", rowheight=30, background="white", foreground="red", fieldbackground="lightgray", bordercolor="black")
+        
+
         self.treeviewFunc.bind('<<TreeviewSelect>>', self.pegaId)
                 
         self.funcionarios.mainloop()
 
     def atualizarModal(self):
-        self.perguntaAtualizar = tk.Tk()
-        self.perguntaAtualizar.title('Atualizar')
-        self.perguntaAtualizar.geometry('450x250')
-        self.perguntaAtualizar.configure(background='#D3D3D3')
-        self.perguntaAtualizar.resizable(False,False)
-        self.perguntaAtualizar.colormapwindows(self.perguntaAtualizar)
+    
+        if self.item_id == "":
+            print('Nenhum item selecionado')
+            telaErro = tk.Tk()
+            telaErro.title('Erro')
+            telaErro.configure(background='#A9A9A9')
 
-        pergunta = tk.Label(self.perguntaAtualizar, text='Qual campo você quer atualizar?', font='bold')
-        pergunta.configure(background='#D3D3D3', fg='black')
-        pergunta.place(relx= 0.23, rely=0.2)
+            txt2 = tk.Label(telaErro, text=f'Selecione um funcionário para ser atualizado!')
+            txt2.pack(padx=25, pady=10)
+            txt2.configure(background='#A9A9A9', fg='black')
 
-        self.tipoVar = StringVar(self.perguntaAtualizar)
-        self.tipoVar.set('Escolha uma Opção')
-        listAtualizar = ['Nome', 'Data de Nascimento', 'Especialidade', 'Telefone', 'Celular', 'CPF', 'Rua', 'Bairro', 'Nº', 'Estado', 'Porcentagem', 'Email', 'Complemento',]
-        self.dropPergunta = tk.OptionMenu(self.perguntaAtualizar, self.tipoVar, *listAtualizar)
-        self.dropPergunta.configure(background='white', fg='black', activebackground='gray')
-        self.dropPergunta.place(relx= 0.30, rely=0.4)
+            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
+            buttonOk.pack(padx=25, pady=10)
 
-        button = tk.Button(self.perguntaAtualizar, text='IR', command=self.modalAtualizaFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        button.place(relx=0.25, rely=0.65)
+            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
+            telaErro.mainloop()
 
-        buttonCancelar = tk.Button(self.perguntaAtualizar, text='CANCELAR', command=self.perguntaAtualizar.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        buttonCancelar.place(relx=0.55, rely=0.65)
-        
-        self.perguntaAtualizar.mainloop() 
+        else:
+            print(f'Item selecionado: {self.item_id}')
+            self.perguntaAtualizar = tk.Tk()
+            self.perguntaAtualizar.title('Atualizar')
+            self.perguntaAtualizar.geometry('450x250')
+            self.perguntaAtualizar.configure(background='#D3D3D3')
+            self.perguntaAtualizar.resizable(False,False)
+            self.perguntaAtualizar.colormapwindows(self.perguntaAtualizar)
+
+            pergunta = tk.Label(self.perguntaAtualizar, text='Qual campo você quer atualizar?', font='bold')
+            pergunta.configure(background='#D3D3D3', fg='black')
+            pergunta.place(relx= 0.23, rely=0.2)
+
+            self.tipoVar = StringVar(self.perguntaAtualizar)
+            self.tipoVar.set('Escolha uma Opção')
+            listAtualizar = ['Nome', 'Data de Nascimento', 'Especialidade', 'Telefone', 'Celular', 'CPF', 'Rua', 'Bairro', 'Nº', 'Estado', 'Porcentagem', 'Email', 'Complemento',]
+            self.dropPergunta = tk.OptionMenu(self.perguntaAtualizar, self.tipoVar, *listAtualizar)
+            self.dropPergunta.configure(background='white', fg='black', activebackground='gray')
+            self.dropPergunta.place(relx= 0.30, rely=0.4)
+
+            button = tk.Button(self.perguntaAtualizar, text='IR', command=self.modalAtualizaFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button.place(relx=0.25, rely=0.65)
+
+            buttonCancelar = tk.Button(self.perguntaAtualizar, text='CANCELAR', command=self.perguntaAtualizar.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            buttonCancelar.place(relx=0.55, rely=0.65)
+            
+            self.perguntaAtualizar.mainloop() 
 
     def pegaId(self, event):
         try:
-            item_id = self.treeviewFunc.selection()[0]
-            idValue = self.treeviewFunc.item(item_id, 'values')
+            self.item_id = self.treeviewFunc.selection()[0]
+            idValue = self.treeviewFunc.item(self.item_id, 'values')
             self.funcId = idValue[0]
-            
-            nomeValue = self.treeviewFunc.item(item_id, 'values')
+
+            nomeValue = self.treeviewFunc.item(self.item_id, 'values')
             self.nomeFuncionario = nomeValue[1]
             self.campo_nome.delete(0, END)
             self.campo_nome.insert(0,self.nomeFuncionario)
@@ -400,10 +419,8 @@ class App:
         rows = self.dao.funcionarioNome(nome)
 
         for row in rows:
-            self.treeviewFunc.insert("", tk.END, values=row)
-        self.limpaEntry()
-
-    def limpaEntry(self):
+            self.treeviewFunc.insert("", 'end', values=row)
+            print(row)
         self.campo_nome.delete(0, END)
         
     def modalNovoFuncionario(self):
@@ -873,3 +890,4 @@ class App:
     
 
 App()
+
