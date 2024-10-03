@@ -7,7 +7,7 @@ import tkcalendar
 
 class App:
     def __init__(self):
-        self.root_login = tk.Tk()
+        self.root_login = tk.Tk(sync=True)
         # self.modalNovoFuncionario()
         self.tela_login()
         # # self.telaRoot()
@@ -15,7 +15,6 @@ class App:
         self.root_login.mainloop()
 
     def tela_login(self):
-
         self.root_login.title('Zenix')
         self.root_login.geometry('550x350')
         self.root_login.configure(background='#D3D3D3')
@@ -27,10 +26,15 @@ class App:
         txt.place(relx= 0.2, rely=0.35)
         txt.configure(background='#D3D3D3', fg='black')
 
+        with open("zenix.txt", "r") as arquivo:
+            self.usuario = arquivo.read().split(":")[1]
+
+    
         self.login = tk.Entry(self.root_login,width=25)
+        self.login.insert(0,self.usuario)
         self.login.configure(background='white', fg='black')
         self.login.place(relx= 0.36, rely=0.34)
-
+        
         txt2 = tk.Label(self.root_login, text='SENHA:', font='bold')
         txt2.place(relx= 0.2, rely=0.45)
         txt2.configure(background='#D3D3D3', fg='black')
@@ -94,15 +98,37 @@ class App:
         pass
 
     def conectar(self):
-        self.dao = Dao(self.login.get(), self.senha.get())
-        resultado = self.dao.erro
+        if self.login.get() == "":
+            telaErro = tk.Tk()
+            telaErro.title('Erro')
+            telaErro.resizable(False,False)
+            telaErro.configure(background='#A9A9A9')
 
-        if isinstance(resultado, str):
-            self.exibir_erro(resultado)
+            txt2 = tk.Label(telaErro, text=f'Insira um usuário')
+            txt2.pack(padx=25, pady=10)
+            txt2.configure(background='#A9A9A9', fg='black')
 
+            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
+            buttonOk.pack(padx=25, pady=10)
+
+            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
+            telaErro.mainloop()
         else:
-            self.root_login.destroy()
-            self.telaRoot()
+            self.dao = Dao(self.login.get(), self.senha.get())
+            resultado = self.dao.erro
+
+            if isinstance(resultado, str):
+                self.exibir_erro(resultado)
+
+            else:
+                with open("zenix.txt", "w") as arquivo:
+                    arquivo.write("[LOGIN]\n")
+                    arquivo.write("usuario:")
+                    arquivo.write(self.login.get())
+
+                self.root_login.destroy()
+                
+                self.telaRoot()
             
     def telaRoot(self):
         # Criando a janela principal
@@ -262,8 +288,6 @@ class App:
 
         self.campo_nome = tk.Entry(self.framefuncionarios, width=25, bg='white', fg='black')
         self.campo_nome.place(relx=0.02, rely=0.5)
-        print(self.campo_nome.get())
-
 
         self.buscarFunc = tk.Button(self.framefuncionarios, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buscarFunc.place(relx=0.02, rely=0.7 ,relheight=0.2)
@@ -329,9 +353,9 @@ class App:
     def atualizarModal(self):
     
         if self.item_id == "":
-            print('Nenhum item selecionado')
             telaErro = tk.Tk()
-            telaErro.title('Erro')
+            telaErro.title('Aviso!')
+            telaErro.resizable(False,False)
             telaErro.configure(background='#A9A9A9')
 
             txt2 = tk.Label(telaErro, text=f'Selecione um funcionário para ser atualizado!')
@@ -345,7 +369,6 @@ class App:
             telaErro.mainloop()
 
         else:
-            print(f'Item selecionado: {self.item_id}')
             self.perguntaAtualizar = tk.Tk()
             self.perguntaAtualizar.title('Atualizar')
             self.perguntaAtualizar.geometry('450x250')
@@ -410,6 +433,10 @@ class App:
 
     def insertEspecialidade(self):
         self.dao.insertEspecialidade(self.entryEspecialidade.get())
+        self.rows = self.dao.especialidadeAll()
+        self.rowsList = [item[1] for item in self.rows]
+        self.rowId = [item[0] for item in self.rows]
+        self.especialidadeMap.pop(self.rowsList, self.rowId)
         print('Especialidade inserida!')
         
     def buscarFuncionarioNome(self):
@@ -451,14 +478,15 @@ class App:
         buttonEspecialidade.place(relx=0.58, rely=0.2, relwidth=0.035, relheight=0.04)
         buttonEspecialidade.configure(background='white', fg='black', activebackground='blue', activeforeground='black')
 
-        rows = self.dao.especialidadeAll()
-        rowsList = [item[1] for item in rows]
-        rowId = [item[0] for item in rows]
-        self.especialidadeMap = dict(zip(rowsList, rowId))
-
+        self.rows = self.dao.especialidadeAll()
+        self.rowsList = [item[1] for item in self.rows]
+        self.rowId = [item[0] for item in self.rows]
+        self.especialidadeMap = dict(zip(self.rowsList, self.rowId))
+        
+        
         self.opcoes = StringVar(self.modalNovoFunc)
         self.opcoes.set('Especialidade')
-        self.dropdown = tk.OptionMenu(self.modalNovoFunc, self.opcoes, *rowsList)
+        self.dropdown = tk.OptionMenu(self.modalNovoFunc, self.opcoes, *self.rowsList)
         self.dropdown.configure(background='white', fg='black', activebackground='gray')
         self.dropdown.place(relx= 0.37, rely=0.245, relheight=0.05, relwidth=0.286)
 
@@ -575,13 +603,6 @@ class App:
 
     def modalAtualizaFuncionario(self):
         opcao = self.tipoVar.get().upper()
-
-        # if self.campo_nome.get() == " ":
-        #     self.atualizarFunc.config(state=DISABLED, disabledforeground='gray')
-        #     return
-        # else:
-
-
         self.perguntaAtualizar.destroy()
 
         if opcao == 'NOME':
@@ -636,6 +657,7 @@ class App:
     def erroInsercaoFuncionario(self, mensagem):
         telaErro = tk.Tk()
         telaErro.title('Erro')
+        telaErro.resizable(False,False)
         telaErro.configure(background='#A9A9A9')
 
         txt2 = tk.Label(telaErro, text=f'Erro ao inserir o Funcionário. Tente novamente')
@@ -702,6 +724,7 @@ class App:
     def mensagemExclusão(self, mensagem):
         telaErro = tk.Tk()
         telaErro.title('Erro')
+        telaErro.resizable(False,False)
         telaErro.configure(background='#A9A9A9')
 
         txt2 = tk.Label(telaErro, text=f'Erro ao desativar o Funcionário.\nTente novamente!')
@@ -847,6 +870,7 @@ class App:
         else:
             telaSucesso = tk.Tk()
             telaSucesso.title('Sucesso')
+            telaSucesso.resizable(False,False)
             telaSucesso.configure(background='#A9A9A9')
             
             txt2 = tk.Label(telaSucesso, text=f'Funcionário Desativado')
@@ -872,6 +896,7 @@ class App:
 
         telaErro = tk.Tk()
         telaErro.title('Erro')
+        telaErro.resizable(False,False)
         telaErro.configure(background='#A9A9A9')
 
         txt2 = tk.Label(telaErro, text=f'Usuário ou Senha inválidos')
