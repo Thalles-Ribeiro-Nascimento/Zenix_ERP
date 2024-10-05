@@ -4,8 +4,8 @@ import mysql.connector
 class Dao:
     def __init__(self, login, key):
         self.conecta = c.Conexao().Conecta(login, key)
-        self.erroDeleteFunc = None
-        self.erroinsercao = None
+        self.erroDeleteFunc = ""
+        self.erroinsercao = ""
 
         if isinstance(self.conecta, str):
             self.erro = self.conecta
@@ -120,6 +120,15 @@ class Dao:
         sql = f"UPDATE funcionarios SET nome_funcionario = '{nome}' WHERE id_funcionario = {id}"
         self.cursor.execute(sql)
         self.conecta.commit()
+        
+    def atualizaDataFuncionario(self, id, dataNascimento):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"UPDATE funcionarios SET data_nascimento = '{dataNascimento}' WHERE id_funcionario = {id}"
+        self.cursor.execute(sql)
+        self.conecta.commit()
+    
 
     # def trocaPwd(self, newPdw, user):
     #     if self.erro:
@@ -130,38 +139,3 @@ class Dao:
     #     cr = self.cursor
     #     cr.execute(sql)
     #     bd.commit()
-
-
-
-    #     cr.close()
-        
-
-    # def createEmployee(self, nome, cpf, nascimento, endereco, email, especialidade):
-    #     sql = f'insert into funcionarios(nome_funcionario, cpf, data_nascimento, endereco, email, especialidade) values ("{nome}", "{cpf}", "{nascimento}", "{endereco}","{email}", "{especialidade}, ")'
-    #     bd = self.conecta
-    #     cr = self.cursor
-    #     cr.execute(sql)
-    #     bd.commit()
-    #     msgE = "Funcionário inserido com sucesso!"
-
-    #     cr.close()
-    
-    # def createClient(self, name, cpf, birthday, sex, address, cellphone):
-    #     sql = f'INSERT INTO cliente (nome_cliente, cpf, data_nascimento, sexo, endereco, telefone) VALUES ("{name}", "{cpf}", "{birthday}", "{sex}", "{address}", "{cellphone}")'
-    #     bd = self.conecta
-    #     cr = self.cursor
-    #     cr.execute(sql)
-    #     bd.commit()
-    #     msgC = "Client inserido com sucesso!"
-
-    #     cr.close()
-
-    # def alterPassword(self, user, pw):
-    #     sql = f'alter user "{user}"@"localhost" identified by "{pw}"'
-    #     bd = self.conecta
-    #     cr = self.cursor
-    #     cr.execute(sql)
-    #     bd.commit()
-        
-    #     msgA = "Senha alterada com sucesso"
-    #     cr.close()

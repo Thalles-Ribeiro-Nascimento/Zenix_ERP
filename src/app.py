@@ -397,14 +397,20 @@ class App:
 
     def pegaId(self, event):
         try:
+            # Funcionario ID
             self.item_id = self.treeviewFunc.selection()[0]
             idValue = self.treeviewFunc.item(self.item_id, 'values')
             self.funcId = idValue[0]
 
+            # Funcionario Nome
             nomeValue = self.treeviewFunc.item(self.item_id, 'values')
             self.nomeFuncionario = nomeValue[1]
             self.campo_nome.delete(0, END)
             self.campo_nome.insert(0,self.nomeFuncionario)
+            
+            # Funcionario Data de Nascimento
+            dataValue = self.treeviewFunc.item(self.item_id, 'values')
+            self.dataNascimentoFuncionario = dataValue[5]
             return self.funcId
 
         except IndexError as e:
@@ -447,7 +453,7 @@ class App:
 
         for row in rows:
             self.treeviewFunc.insert("", 'end', values=row)
-            print(row)
+
         self.campo_nome.delete(0, END)
         
     def modalNovoFuncionario(self):
@@ -510,6 +516,7 @@ class App:
         self.data = tk.Entry(self.modalNovoFunc, width=20)
         self.data.configure(background='white', fg='black')
         self.data.place(relx= 0.06, rely=0.37)
+        
        
         self.data.bind('<KeyRelease>', self.formatar_data)
 
@@ -602,57 +609,113 @@ class App:
         self.modalNovoFunc.mainloop()
 
     def modalAtualizaFuncionario(self):
-        opcao = self.tipoVar.get().upper()
+        self.opcao = self.tipoVar.get().upper()
+        print(self.opcao)
         self.perguntaAtualizar.destroy()
 
-        if opcao == 'NOME':
-            self.modalAtualizaFunc = tk.Tk()
-            self.modalAtualizaFunc.title('Funcionario')
-            self.modalAtualizaFunc.geometry('450x250')
-            self.modalAtualizaFunc.configure(background='#D3D3D3')
-            self.modalAtualizaFunc.resizable(False,False)
-            self.modalAtualizaFunc.colormapwindows(self.modalAtualizaFunc)
+        if self.opcao == 'NOME':
+            self.modalAtualizaNomeFunc = tk.Tk()
+            self.modalAtualizaNomeFunc.title('Funcionario')
+            self.modalAtualizaNomeFunc.geometry('450x250')
+            self.modalAtualizaNomeFunc.configure(background='#D3D3D3')
+            self.modalAtualizaNomeFunc.resizable(False,False)
+            self.modalAtualizaNomeFunc.colormapwindows(self.modalAtualizaNomeFunc)
 
-            nome = tk.Label(self.modalAtualizaFunc, text=' ', background='#D3D3D3', fg='black', font='bold')
+            nome = tk.Label(self.modalAtualizaNomeFunc, text=' ', background='#D3D3D3', fg='black', font='bold')
             nome['text'] = self.nomeFuncionario
             nome.place(relx= 0.2, rely=0.1)
 
 
-            funcionarioTxt = tk.Label(self.modalAtualizaFunc, text='NOVO NOME:', font='bold')
+            funcionarioTxt = tk.Label(self.modalAtualizaNomeFunc, text='NOVO NOME:', font='bold')
             funcionarioTxt.configure(background='#D3D3D3', fg='black')
             funcionarioTxt.place(relx= 0.2, rely=0.3)
 
-            self.entryNomeFuncionario = tk.Entry(self.modalAtualizaFunc)
+            self.entryNomeFuncionario = tk.Entry(self.modalAtualizaNomeFunc)
             self.entryNomeFuncionario.configure(background='white', fg='black', width=20)
             self.entryNomeFuncionario.place(relx= 0.45, rely=0.3)
 
-            button = tk.Button(self.modalAtualizaFunc, text='ADICIONAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button = tk.Button(self.modalAtualizaNomeFunc, text='ADICIONAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             button.place(relx=0.2, rely=0.65)
 
-            voltar = tk.Button(self.modalAtualizaFunc, text='VOLTAR', command=self.modalAtualizaFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            voltar = tk.Button(self.modalAtualizaNomeFunc, text='VOLTAR', command=self.modalAtualizaNomeFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             voltar.place(relx=0.6, rely=0.65)
+            
+            self.modalAtualizaNomeFunc.mainloop()
 
-        self.modalAtualizaFunc.mainloop()
+        if self.opcao == 'DATA DE NASCIMENTO':
+            
+            self.modalAtualizaDataFunc = tk.Tk()
+            self.modalAtualizaDataFunc.title('Funcionario')
+            self.modalAtualizaDataFunc.geometry('450x250')
+            self.modalAtualizaDataFunc.configure(background='#D3D3D3')
+            self.modalAtualizaDataFunc.resizable(False,False)
+            
+            dataText = tk.Label(self.modalAtualizaDataFunc, text=' ', background='#D3D3D3', fg='black', font='bold')
+            dataText['text'] = self.dataNascimentoFuncionario
+            dataText.place(relx= 0.4, rely=0.1)
+            
+            texto = tk.Label(self.modalAtualizaDataFunc, text='DATA DE NASCIMENTO', font='bold', background='#D3D3D3', fg='black')
+            texto.place(relx= 0.34, rely=0.3)
+            
+            self.entryDataDeNascimentoFunc = tk.Entry(self.modalAtualizaDataFunc)
+            self.entryDataDeNascimentoFunc.configure(background='white', fg='black', width=20)
+            self.entryDataDeNascimentoFunc.place(relx= 0.34, rely=0.5)
+            self.entryDataDeNascimentoFunc.bind('<KeyRelease>', self.formatar_data_atualizar)
+            
+            buttonData = tk.Button(self.modalAtualizaDataFunc, text='ADICIONAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            buttonData.place(relx=0.2, rely=0.65)
+
+            voltarData = tk.Button(self.modalAtualizaDataFunc, text='VOLTAR', command=self.modalAtualizaDataFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            voltarData.place(relx=0.6, rely=0.65)
+            
+            self.modalAtualizaDataFunc.mainloop()
+            
 
     def alteraFuncionario(self):
-        if self.tipoVar.get().upper() == 'NOME':
+        if self.opcao == 'NOME':
             self.dao.atualizaNomeFuncionario(self.funcId, self.entryNomeFuncionario.get())
             print('Nome alterado')
             
+            
             mensagem = tk.Tk()
-            mensagem.geometry('450x250')
             mensagem.configure(background='#D3D3D3')
+            mensagem.geometry('250x100')
             mensagem.title('Sucesso')
             mensagem.resizable(False,False)
 
             nome = tk.Label(mensagem, text='Nome alterado!', background='#D3D3D3', fg='black', font='bold')
-            nome.place(relx= 0.35, rely=0.3)
+            nome.pack(padx=25, pady=10)
+            self.modalAtualizaNomeFunc.destroy()
 
             button = tk.Button(mensagem, text='OK', command=mensagem.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            button.place(relx=0.45, rely=0.5)
+            button.pack(padx=25, pady=10)
             
+            mensagem.bind('<Return>', lambda event: button.invoke())
 
             mensagem.mainloop()
+            
+        if self.opcao == 'DATA DE NASCIMENTO':
+            print(self.funcId)
+            print(self.entryDataDeNascimentoFunc.get())
+            
+            self.dao.atualizaDataFuncionario(self.funcId, self.entryDataDeNascimentoFunc.get())
+                            
+            dataMensagem = tk.Tk()
+            dataMensagem.configure(background='#D3D3D3')
+            dataMensagem.geometry('250x100')
+            dataMensagem.title('Sucesso')
+            dataMensagem.resizable(False,False)
+
+            nome = tk.Label(dataMensagem, text='Data alterado!', background='#D3D3D3', fg='black', font='bold')
+            nome.pack(padx=25, pady=10)
+            self.modalAtualizaDataFunc.destroy()
+
+            button = tk.Button(dataMensagem, text='OK', command=dataMensagem.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button.pack(padx=25, pady=10)
+            
+            dataMensagem.bind('<Return>', lambda event: button.invoke())
+
+            dataMensagem.mainloop()
 
     def erroInsercaoFuncionario(self, mensagem):
         telaErro = tk.Tk()
@@ -679,6 +742,7 @@ class App:
         self.idSelecao = self.especialidadeMap.get(self.selecao)
         
     def insertFuncionario(self):
+        print(self.data.get())
         
         nome = self.nomeFunc.get()
         especialidade = self.idSelecao
@@ -814,6 +878,20 @@ class App:
         self.data.insert(0, data)
 # Fim Formatação Data
 
+    def formatar_data_atualizar(self, event=None):
+        data = self.entryDataDeNascimentoFunc.get()
+        data = ''.join(filter(str.isdigit, data))
+
+        if len(data) > 2:
+            data = data[:2] + '/' + data[2:]
+        if len(data) > 5:
+            data = data[:5] + '/' + data[5:]
+
+        data = data[:10]
+
+        self.entryDataDeNascimentoFunc.delete(0, END)
+        self.entryDataDeNascimentoFunc.insert(0, data)
+
 # Formatação Telefone
     def formatar_telefone(self, event=None):
 
@@ -915,4 +993,5 @@ class App:
     
 
 App()
+
 

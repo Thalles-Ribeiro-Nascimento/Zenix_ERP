@@ -1,7 +1,8 @@
 import mysql.connector
 
-# Criar um método para fechar as conexões
+
 class Conexao:
+    
     def Conecta(self, login, key):
         try:
             self.conn = mysql.connector.connect(
