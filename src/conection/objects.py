@@ -4,9 +4,12 @@ import mysql.connector
 class Dao:
     def __init__(self, login, key):
         self.conecta = c.Conexao().Conecta(login, key)
+        
+    # Tipos de erro:
         self.erroDeleteFunc = ""
-        self.erroinsercao = ""
-
+        self.erroinsercaoFunc = ""
+        
+    # Erro de conexão 
         if isinstance(self.conecta, str):
             self.erro = self.conecta
             
@@ -30,7 +33,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = 'SELECT * FROM Vw_Funcionarios'
+        sql = 'SELECT * FROM Vw_FuncionariosAtivos'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -40,7 +43,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"SELECT * FROM Vw_Funcionarios WHERE `Nome do Funcionario` LIKE '%{nome}'"
+        sql = f"SELECT * FROM Vw_FuncionariosAtivos WHERE `Nome do Funcionario` LIKE '%{nome}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -78,10 +81,12 @@ class Dao:
         except mysql.connector.Error as e:
             print('Erro: ', e)
             
-            self.erroinsercao = str(e)
-            # if "Duplicate entry" in self.erroinsercao:
-
-            return self.erroinsercao
+            self.erroinsercaoFunc = str(e)
+            
+            # self.erroinsercaoFunc.split(':')[:1]
+            # if "Duplicate entry" in self.erroinsercaoFunc:
+        
+            return self.erroinsercaoFunc
 
     def deleteLogicoFuncionario(self, id):
         if self.erro:
@@ -112,20 +117,11 @@ class Dao:
         except mysql.connector.Error as e:
             print("Especialidade inserida!")
 
-
-    def atualizaNomeFuncionario(self, id, nome):
+    def atualizaFuncionario(self, id, dado, coluna):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"UPDATE funcionarios SET nome_funcionario = '{nome}' WHERE id_funcionario = {id}"
-        self.cursor.execute(sql)
-        self.conecta.commit()
-        
-    def atualizaDataFuncionario(self, id, dataNascimento):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        sql = f"UPDATE funcionarios SET data_nascimento = '{dataNascimento}' WHERE id_funcionario = {id}"
+        sql = f"UPDATE funcionarios SET {coluna} = '{dado}' WHERE id_funcionario = {id}"
         self.cursor.execute(sql)
         self.conecta.commit()
     

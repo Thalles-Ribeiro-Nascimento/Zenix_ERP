@@ -21,6 +21,7 @@ class App:
         self.root_login.resizable(False,False)
         self.root_login.colormapwindows(self.root_login)
         self.item_id = ""
+        self.idSelecao = ""
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
@@ -99,26 +100,14 @@ class App:
 
     def conectar(self):
         if self.login.get() == "":
-            telaErro = tk.Tk()
-            telaErro.title('Erro')
-            telaErro.resizable(False,False)
-            telaErro.configure(background='#A9A9A9')
-
-            txt2 = tk.Label(telaErro, text=f'Insira um usuário')
-            txt2.pack(padx=25, pady=10)
-            txt2.configure(background='#A9A9A9', fg='black')
-
-            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-            buttonOk.pack(padx=25, pady=10)
-
-            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-            telaErro.mainloop()
+            self.avisos("Insira um usuário")
+            
         else:
             self.dao = Dao(self.login.get(), self.senha.get())
-            resultado = self.dao.erro
+            self.resultado = self.dao.erro
 
-            if isinstance(resultado, str):
-                self.exibir_erro(resultado)
+            if isinstance(self.resultado, str):
+                self.exibir_erro(self.resultado)
 
             else:
                 with open("zenix.txt", "w") as arquivo:
@@ -256,6 +245,7 @@ class App:
         self.funcionarios.configure(background='#A9A9A9')
         self.funcionarios.geometry('1540x900')
         self.funcionarios.resizable(False, False)
+        
         # Menu superior
         menu_bar = tk.Menu(self.funcionarios, background='#808080')
         menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -300,8 +290,8 @@ class App:
 
         self.frameTvFunc()
         self.treeviewFunc = ttk.Treeview(self.frameviewFunc, columns=(
-            'Cod.Funcionario', 'Nome do Funcionario', 'Especialidade', 'CPF', 'Telefone/Celular', 
-            'Data de Nascimento', 'Rua', 'Bairro',
+            'Cod.Funcionario', 'Nome do Funcionario', 'Especialidade', 'CPF', 'Telefone', 
+            'Celular' ,'Data de Nascimento', 'Rua', 'Bairro',
             'UF', 'Nº','Comp', 'Email', 'Percentual', 'Status' 
             ), show='headings')
 
@@ -309,7 +299,8 @@ class App:
         self.treeviewFunc.heading('Nome do Funcionario', text='Nome do Funcionário')
         self.treeviewFunc.heading('Especialidade', text='Especialidade')
         self.treeviewFunc.heading('CPF', text='CPF')
-        self.treeviewFunc.heading('Telefone/Celular', text='Tel/Cel')
+        self.treeviewFunc.heading('Telefone', text='Telefone')
+        self.treeviewFunc.heading('Celular', text='Celular')
         self.treeviewFunc.heading('Data de Nascimento', text='Dt Nascimento')
         self.treeviewFunc.heading('Rua', text='Rua')
         self.treeviewFunc.heading('Bairro', text='Bairro')
@@ -353,20 +344,7 @@ class App:
     def atualizarModal(self):
     
         if self.item_id == "":
-            telaErro = tk.Tk()
-            telaErro.title('Aviso!')
-            telaErro.resizable(False,False)
-            telaErro.configure(background='#A9A9A9')
-
-            txt2 = tk.Label(telaErro, text=f'Selecione um funcionário para ser atualizado!')
-            txt2.pack(padx=25, pady=10)
-            txt2.configure(background='#A9A9A9', fg='black')
-
-            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-            buttonOk.pack(padx=25, pady=10)
-
-            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-            telaErro.mainloop()
+            self.exibir_avisos("Selecione um funcionário para ser atualizado!")
 
         else:
             self.perguntaAtualizar = tk.Tk()
@@ -414,7 +392,7 @@ class App:
             return self.funcId
 
         except IndexError as e:
-            print('Nenhum item')
+            print(e)
 
     def modalNovaEspecialidade(self):
         self.modalEspecialidade = tk.Tk()
@@ -439,12 +417,13 @@ class App:
 
     def insertEspecialidade(self):
         self.dao.insertEspecialidade(self.entryEspecialidade.get())
-        self.rows = self.dao.especialidadeAll()
-        self.rowsList = [item[1] for item in self.rows]
-        self.rowId = [item[0] for item in self.rows]
-        self.especialidadeMap.pop(self.rowsList, self.rowId)
-        print('Especialidade inserida!')
-        
+        msn = "Especialidade Inserida!"
+        self.exibir_sucesso(msn)
+        # self.rows = self.dao.especialidadeAll()
+        # self.rowsList = [item[1] for item in self.rows]
+        # self.rowId = [item[0] for item in self.rows]
+        # self.especialidadeMap.pop(self.rowsList, self.rowId)
+            
     def buscarFuncionarioNome(self):
         self.treeviewFunc.delete(*self.treeviewFunc.get_children())
         self.campo_nome.insert(END, '%')
@@ -464,19 +443,19 @@ class App:
         self.modalNovoFunc.resizable(False,False)
         self.modalNovoFunc.colormapwindows(self.modalNovoFunc)
         
-
+        
         titulo = tk.Label(self.modalNovoFunc, text='ADICIONAR NOVO FUNCIONÁRIO', font=('Arial', 18, 'bold'), background='#D3D3D3', fg='black')
         titulo.place(relx= 0.25, rely=0.07)
 
-        txtNome = tk.Label(self.modalNovoFunc, text='NOME:', font='bold')
+        txtNome = tk.Label(self.modalNovoFunc, text='*NOME:', font='bold')
         txtNome.place(relx= 0.06, rely=0.2)
         txtNome.configure(background='#D3D3D3', fg='black')
 
         self.nomeFunc = tk.Entry(self.modalNovoFunc,width=25)
         self.nomeFunc.configure(background='white', fg='black')
         self.nomeFunc.place(relx= 0.06, rely=0.245)
-        
-        txtEspecialidade = tk.Label(self.modalNovoFunc, text='ESPECIALIDADE:', font='bold')
+                
+        txtEspecialidade = tk.Label(self.modalNovoFunc, text='*ESPECIALIDADE:', font='bold')
         txtEspecialidade.place(relx= 0.37, rely=0.2)
         txtEspecialidade.configure(background='#D3D3D3', fg='black')
 
@@ -491,14 +470,14 @@ class App:
         
         
         self.opcoes = StringVar(self.modalNovoFunc)
-        self.opcoes.set('Especialidade')
+        self.opcoes.set("Especialidade")
         self.dropdown = tk.OptionMenu(self.modalNovoFunc, self.opcoes, *self.rowsList)
         self.dropdown.configure(background='white', fg='black', activebackground='gray')
         self.dropdown.place(relx= 0.37, rely=0.245, relheight=0.05, relwidth=0.286)
 
         self.opcoes.trace_add('write', self.setId)
 
-        txtCpf = tk.Label(self.modalNovoFunc, text='CPF:', font='bold')
+        txtCpf = tk.Label(self.modalNovoFunc, text='*CPF:', font='bold')
         txtCpf.place(relx= 0.7, rely=0.2)
         txtCpf.configure(background='#D3D3D3', fg='black')
 
@@ -509,17 +488,14 @@ class App:
         self.cpfFunc.bind('<BackSpace>', lambda e: self.formatar_cpfFunc)
 
 
-        txtData = tk.Label(self.modalNovoFunc, text='DATA DE NASCIMENTO:', font='bold')
+        txtData = tk.Label(self.modalNovoFunc, text='*DATA DE NASCIMENTO:', font='bold')
         txtData.place(relx= 0.06, rely=0.33)
         txtData.configure(background='#D3D3D3', fg='black')
 
         self.data = tk.Entry(self.modalNovoFunc, width=20)
         self.data.configure(background='white', fg='black')
         self.data.place(relx= 0.06, rely=0.37)
-        
-       
         self.data.bind('<KeyRelease>', self.formatar_data)
-
 
         txtTelefone = tk.Label(self.modalNovoFunc, text='TELEFONE:', font='bold')
         txtTelefone.place(relx= 0.4, rely=0.33)
@@ -531,7 +507,7 @@ class App:
         
         self.telefone.bind('<KeyRelease>', self.formatar_telefone)
 
-        txtCelular = tk.Label(self.modalNovoFunc, text='CELULAR:', font='bold')
+        txtCelular = tk.Label(self.modalNovoFunc, text='*CELULAR:', font='bold')
         txtCelular.place(relx= 0.7, rely=0.33)
         txtCelular.configure(background='#D3D3D3', fg='black')
 
@@ -539,7 +515,7 @@ class App:
         self.celular.configure(background='white', fg='black')
         self.celular.place(relx= 0.7, rely=0.37)
 
-        txtEmail = tk.Label(self.modalNovoFunc, text='Email:', font='bold')
+        txtEmail = tk.Label(self.modalNovoFunc, text='*Email:', font='bold')
         txtEmail.place(relx= 0.06, rely=0.45)
         txtEmail.configure(background='#D3D3D3', fg='black')
 
@@ -547,7 +523,7 @@ class App:
         self.EmailFunc.configure(background='white', fg='black')
         self.EmailFunc.place(relx= 0.06, rely=0.495)
 
-        txtPercentil = tk.Label(self.modalNovoFunc, text='Porcentagem:', font='bold')
+        txtPercentil = tk.Label(self.modalNovoFunc, text='*Porcentagem:', font='bold')
         txtPercentil.place(relx= 0.4, rely=0.45)
         txtPercentil.configure(background='#D3D3D3', fg='black')
 
@@ -557,7 +533,7 @@ class App:
         
         self.celular.bind('<KeyRelease>', self.formatar_celular)
 
-        txtRua = tk.Label(self.modalNovoFunc, text='Rua:', font='bold')
+        txtRua = tk.Label(self.modalNovoFunc, text='*Rua:', font='bold')
         txtRua.place(relx= 0.06, rely=0.55)
         txtRua.configure(background='#D3D3D3', fg='black')
 
@@ -565,7 +541,7 @@ class App:
         self.RuaFunc.configure(background='white', fg='black')
         self.RuaFunc.place(relx= 0.06, rely=0.6)
 
-        txtBairro = tk.Label(self.modalNovoFunc, text='Bairro:', font='bold')
+        txtBairro = tk.Label(self.modalNovoFunc, text='*Bairro:', font='bold')
         txtBairro.place(relx= 0.06, rely=0.65)
         txtBairro.configure(background='#D3D3D3', fg='black')
 
@@ -573,7 +549,7 @@ class App:
         self.BairroFunc.configure(background='white', fg='black')
         self.BairroFunc.place(relx= 0.06, rely=0.7)
 
-        txtEstado = tk.Label(self.modalNovoFunc, text='Estado:', font='bold')
+        txtEstado = tk.Label(self.modalNovoFunc, text='*Estado:', font='bold')
         txtEstado.place(relx= 0.65, rely=0.55)
         txtEstado.configure(background='#D3D3D3', fg='black')
 
@@ -611,131 +587,85 @@ class App:
     def modalAtualizaFuncionario(self):
         self.opcao = self.tipoVar.get().upper()
         print(self.opcao)
-        self.perguntaAtualizar.destroy()
-
-        if self.opcao == 'NOME':
-            self.modalAtualizaNomeFunc = tk.Tk()
-            self.modalAtualizaNomeFunc.title('Funcionario')
-            self.modalAtualizaNomeFunc.geometry('450x250')
-            self.modalAtualizaNomeFunc.configure(background='#D3D3D3')
-            self.modalAtualizaNomeFunc.resizable(False,False)
-            self.modalAtualizaNomeFunc.colormapwindows(self.modalAtualizaNomeFunc)
-
-            nome = tk.Label(self.modalAtualizaNomeFunc, text=' ', background='#D3D3D3', fg='black', font='bold')
-            nome['text'] = self.nomeFuncionario
-            nome.place(relx= 0.2, rely=0.1)
-
-
-            funcionarioTxt = tk.Label(self.modalAtualizaNomeFunc, text='NOVO NOME:', font='bold')
-            funcionarioTxt.configure(background='#D3D3D3', fg='black')
-            funcionarioTxt.place(relx= 0.2, rely=0.3)
-
-            self.entryNomeFuncionario = tk.Entry(self.modalAtualizaNomeFunc)
-            self.entryNomeFuncionario.configure(background='white', fg='black', width=20)
-            self.entryNomeFuncionario.place(relx= 0.45, rely=0.3)
-
-            button = tk.Button(self.modalAtualizaNomeFunc, text='ADICIONAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            button.place(relx=0.2, rely=0.65)
-
-            voltar = tk.Button(self.modalAtualizaNomeFunc, text='VOLTAR', command=self.modalAtualizaNomeFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            voltar.place(relx=0.6, rely=0.65)
+        
+        if self.opcao == "":
+            self.exibir_avisos("Selecione uma opção!")
             
-            self.modalAtualizaNomeFunc.mainloop()
+        else:
+            self.perguntaAtualizar.destroy()
 
-        if self.opcao == 'DATA DE NASCIMENTO':
-            
-            self.modalAtualizaDataFunc = tk.Tk()
-            self.modalAtualizaDataFunc.title('Funcionario')
-            self.modalAtualizaDataFunc.geometry('450x250')
-            self.modalAtualizaDataFunc.configure(background='#D3D3D3')
-            self.modalAtualizaDataFunc.resizable(False,False)
-            
-            dataText = tk.Label(self.modalAtualizaDataFunc, text=' ', background='#D3D3D3', fg='black', font='bold')
-            dataText['text'] = self.dataNascimentoFuncionario
-            dataText.place(relx= 0.4, rely=0.1)
-            
-            texto = tk.Label(self.modalAtualizaDataFunc, text='DATA DE NASCIMENTO', font='bold', background='#D3D3D3', fg='black')
-            texto.place(relx= 0.34, rely=0.3)
-            
-            self.entryDataDeNascimentoFunc = tk.Entry(self.modalAtualizaDataFunc)
-            self.entryDataDeNascimentoFunc.configure(background='white', fg='black', width=20)
-            self.entryDataDeNascimentoFunc.place(relx= 0.34, rely=0.5)
-            self.entryDataDeNascimentoFunc.bind('<KeyRelease>', self.formatar_data_atualizar)
-            
-            buttonData = tk.Button(self.modalAtualizaDataFunc, text='ADICIONAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            buttonData.place(relx=0.2, rely=0.65)
+            if self.opcao == 'NOME':
+                self.modalAtualizaNomeFunc = tk.Tk()
+                self.modalAtualizaNomeFunc.title('Funcionario')
+                self.modalAtualizaNomeFunc.geometry('450x250')
+                self.modalAtualizaNomeFunc.configure(background='#D3D3D3')
+                self.modalAtualizaNomeFunc.resizable(False,False)
+                self.modalAtualizaNomeFunc.colormapwindows(self.modalAtualizaNomeFunc)
 
-            voltarData = tk.Button(self.modalAtualizaDataFunc, text='VOLTAR', command=self.modalAtualizaDataFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            voltarData.place(relx=0.6, rely=0.65)
-            
-            self.modalAtualizaDataFunc.mainloop()
-            
+                nome = tk.Label(self.modalAtualizaNomeFunc, text=' ', background='#D3D3D3', fg='black', font='bold')
+                nome['text'] = self.nomeFuncionario
+                nome.place(relx= 0.2, rely=0.1)
 
+
+                funcionarioTxt = tk.Label(self.modalAtualizaNomeFunc, text='NOVO NOME:', font='bold')
+                funcionarioTxt.configure(background='#D3D3D3', fg='black')
+                funcionarioTxt.place(relx= 0.2, rely=0.3)
+
+                self.entryNomeFuncionario = tk.Entry(self.modalAtualizaNomeFunc)
+                self.entryNomeFuncionario.configure(background='white', fg='black', width=20)
+                self.entryNomeFuncionario.place(relx= 0.45, rely=0.3)
+
+                button = tk.Button(self.modalAtualizaNomeFunc, text='ADICIONAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+                button.place(relx=0.2, rely=0.65)
+
+                voltar = tk.Button(self.modalAtualizaNomeFunc, text='VOLTAR', command=self.modalAtualizaNomeFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+                voltar.place(relx=0.6, rely=0.65)
+                
+                self.modalAtualizaNomeFunc.mainloop()
+
+            elif self.opcao == 'DATA DE NASCIMENTO':
+                
+                self.modalAtualizaDataFunc = tk.Tk()
+                self.modalAtualizaDataFunc.title('Funcionario')
+                self.modalAtualizaDataFunc.geometry('450x250')
+                self.modalAtualizaDataFunc.configure(background='#D3D3D3')
+                self.modalAtualizaDataFunc.resizable(False,False)
+                
+                dataText = tk.Label(self.modalAtualizaDataFunc, text=' ', background='#D3D3D3', fg='black', font='bold')
+                dataText['text'] = self.dataNascimentoFuncionario
+                dataText.place(relx= 0.4, rely=0.1)
+                
+                texto = tk.Label(self.modalAtualizaDataFunc, text='DATA DE NASCIMENTO', font='bold', background='#D3D3D3', fg='black')
+                texto.place(relx= 0.34, rely=0.3)
+                
+                self.entryDataDeNascimentoFunc = tk.Entry(self.modalAtualizaDataFunc)
+                self.entryDataDeNascimentoFunc.configure(background='white', fg='black', width=20)
+                self.entryDataDeNascimentoFunc.place(relx= 0.34, rely=0.5)
+                self.entryDataDeNascimentoFunc.bind('<KeyRelease>', self.formatar_data_atualizar)
+                
+                buttonData = tk.Button(self.modalAtualizaDataFunc, text='ADICIONAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+                buttonData.place(relx=0.2, rely=0.65)
+
+                voltarData = tk.Button(self.modalAtualizaDataFunc, text='VOLTAR', command=self.modalAtualizaDataFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+                voltarData.place(relx=0.6, rely=0.65)
+                
+                self.modalAtualizaDataFunc.mainloop()
+            
     def alteraFuncionario(self):
+        
         if self.opcao == 'NOME':
-            self.dao.atualizaNomeFuncionario(self.funcId, self.entryNomeFuncionario.get())
+            self.dao.atualizaFuncionario(self.funcId, self.entryNomeFuncionario.get(), 'nome_funcionario')
             print('Nome alterado')
-            
-            
-            mensagem = tk.Tk()
-            mensagem.configure(background='#D3D3D3')
-            mensagem.geometry('250x100')
-            mensagem.title('Sucesso')
-            mensagem.resizable(False,False)
-
-            nome = tk.Label(mensagem, text='Nome alterado!', background='#D3D3D3', fg='black', font='bold')
-            nome.pack(padx=25, pady=10)
+            self.exibir_sucesso("Nome alterado!")
             self.modalAtualizaNomeFunc.destroy()
-
-            button = tk.Button(mensagem, text='OK', command=mensagem.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            button.pack(padx=25, pady=10)
             
-            mensagem.bind('<Return>', lambda event: button.invoke())
-
-            mensagem.mainloop()
-            
-        if self.opcao == 'DATA DE NASCIMENTO':
+        elif self.opcao == 'DATA DE NASCIMENTO':
             print(self.funcId)
             print(self.entryDataDeNascimentoFunc.get())
             
-            self.dao.atualizaDataFuncionario(self.funcId, self.entryDataDeNascimentoFunc.get())
-                            
-            dataMensagem = tk.Tk()
-            dataMensagem.configure(background='#D3D3D3')
-            dataMensagem.geometry('250x100')
-            dataMensagem.title('Sucesso')
-            dataMensagem.resizable(False,False)
-
-            nome = tk.Label(dataMensagem, text='Data alterado!', background='#D3D3D3', fg='black', font='bold')
-            nome.pack(padx=25, pady=10)
+            self.dao.atualizaFuncionario(self.funcId, self.entryDataDeNascimentoFunc.get(), 'data_nascimento')
+            self.exibir_sucesso("Data alterada!")
             self.modalAtualizaDataFunc.destroy()
-
-            button = tk.Button(dataMensagem, text='OK', command=dataMensagem.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            button.pack(padx=25, pady=10)
-            
-            dataMensagem.bind('<Return>', lambda event: button.invoke())
-
-            dataMensagem.mainloop()
-
-    def erroInsercaoFuncionario(self, mensagem):
-        telaErro = tk.Tk()
-        telaErro.title('Erro')
-        telaErro.resizable(False,False)
-        telaErro.configure(background='#A9A9A9')
-
-        txt2 = tk.Label(telaErro, text=f'Erro ao inserir o Funcionário. Tente novamente')
-        txt2.pack(padx=25, pady=10)
-        txt2.configure(background='#A9A9A9', fg='black')
-
-        txt3 = tk.Label(telaErro, text=mensagem)
-        txt3.pack(padx=25, pady=10)
-        txt3.configure(background='#A9A9A9', fg='black')
-
-        buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-        buttonOk.pack(padx=25, pady=10)
-
-        telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-        telaErro.mainloop()
 
     def setId(self, *args):
         self.selecao = self.opcoes.get()
@@ -757,55 +687,81 @@ class App:
         comp = self.CompFunc.get()
         email = self.EmailFunc.get()
         percentil = self.PercentilFunc.get()
+
+        if nome == "":
+            self.exibir_avisos("O campo Nome está vazio")
+            
+        elif especialidade == "":
+            self.exibir_avisos("O campo Especialidade está vazio")
+            
+        elif cpf == "":
+            self.exibir_avisos("O campo CPF está vazio")
+            
+        elif nascimento == "":
+            self.exibir_avisos("O campo Data de Nascimento está vazio")
+            
+        elif celular == "":
+            self.exibir_avisos("O campo Celular está vazio")
+            
+        elif rua == "":
+            self.exibir_avisos("O campo Rua está vazio")
+            
+        elif bairro == "":
+            self.exibir_avisos("O campo Bairro está vazio")
+            
+        elif estado == "" or estado == "AC":
+            self.exibir_avisos("O campo Estado está vazio")
+            
+        elif email == "":
+            self.exibir_avisos("O campo Email está vazio")
+            
+        elif percentil == "":
+            self.exibir_avisos("O campo Porcentagem está vazio")
         
         cpfSemFormatacao = ''.join(filter(str.isdigit, cpf))
         telefoneSemFormatacao = ''.join(filter(str.isdigit, telefone))
         celularSemFormatacao = ''.join(filter(str.isdigit, celular))
-
-        dao = self.dao.inserirFuncionario(
+        
+        if "@" in email:
+            dao = self.dao.inserirFuncionario(
             nome, especialidade, cpfSemFormatacao, nascimento, telefoneSemFormatacao, celularSemFormatacao,
             rua, bairro, estado, numero, comp, email, percentil
             )
-        if isinstance(dao, str):
-            self.erroInsercaoFuncionario(self.dao.erroinsercao)
-            
+            if isinstance(dao, str):
+                self.exibir_erro(self.dao.erroinsercaoFunc)
+                
+            else:
+                msn = f'Funcionário {nome}, inserido com sucesso'
+                self.exibir_sucesso(msn)
+                self.modalNovoFunc.destroy()
+                
         else:
-            telaSucesso = tk.Tk()
-            telaSucesso.title('Sucesso')
-            telaSucesso.configure(background='#A9A9A9')
-            self.modalNovoFunc.destroy()
+            self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
 
-            txt2 = tk.Label(telaSucesso, text=f'Funcionário inserido!')
-            txt2.pack(padx=25, pady=10)
-            txt2.configure(background='#A9A9A9', fg='black')
-
-            buttonOk = tk.Button(telaSucesso, text='Ok', command=telaSucesso.destroy, background='white', fg='black')
-            buttonOk.pack(padx=25, pady=10)
-            
-            telaSucesso.bind('<Return>', lambda event: buttonOk.invoke())
-            telaSucesso.mainloop()
-
+        
+        
     def mensagemExclusão(self, mensagem):
-        telaErro = tk.Tk()
-        telaErro.title('Erro')
-        telaErro.resizable(False,False)
-        telaErro.configure(background='#A9A9A9')
+    #     telaErro = tk.Tk()
+    #     telaErro.title('Erro')
+    #     telaErro.resizable(False,False)
+    #     telaErro.configure(background='#A9A9A9')
 
-        txt2 = tk.Label(telaErro, text=f'Erro ao desativar o Funcionário.\nTente novamente!')
-        txt2.pack(padx=25, pady=10)
-        txt2.configure(background='#A9A9A9', fg='black')
+    #     txt2 = tk.Label(telaErro, text=f'Erro ao desativar o Funcionário.\nTente novamente!')
+    #     txt2.pack(padx=25, pady=10)
+    #     txt2.configure(background='#A9A9A9', fg='black')
 
-        txt3 = tk.Label(telaErro, text=mensagem)
-        txt3.pack(padx=25, pady=10)
-        txt3.configure(background='#A9A9A9', fg='black')
+    #     txt3 = tk.Label(telaErro, text=mensagem)
+    #     txt3.pack(padx=25, pady=10)
+    #     txt3.configure(background='#A9A9A9', fg='black')
 
-        buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-        buttonOk.pack(padx=25, pady=10)
+    #     buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
+    #     buttonOk.pack(padx=25, pady=10)
 
-        telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-        telaErro.mainloop()
+    #     telaErro.bind('<Return>', lambda event: buttonOk.invoke())
+    #     telaErro.mainloop()
+        pass
 
-# Calendarios
+# Calendarios -------------------------------------
     def calendarioInicial(self):
         self.calendario = tkcalendar.Calendar(
             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
@@ -841,7 +797,7 @@ class App:
         self.data.delete(0 , END)
         self.data.insert(END, dataFinal)
         self.insereData.destroy()
-# Fim calendarios
+# Fim calendarios ---------------------------------
 
 # Formatação CPF
     def formatar_cpfFunc(self, event=None):
@@ -901,9 +857,9 @@ class App:
         if len(telefone) > 2:
             telefone = '(' + telefone[:2] + ') ' + telefone[2:]
         if len(telefone) > 8:  
-            telefone = telefone[:9] + '-' + telefone[9:]
+            telefone = telefone[:9] + '-' + telefone[9:13]
         
-        telefone = telefone[:15]
+        telefone = telefone[:14]
 
         self.telefone.delete(0, END)
         self.telefone.insert(0, telefone)
@@ -939,27 +895,13 @@ class App:
         pass
 
     def excluirItemFuncionario(self):
-        dao = self.dao.deleteLogicoFuncionario(self.funcId)
-        mensagem = self.dao.erroDeleteFunc
-
-        if isinstance(dao, str):
-            self.mensagemExclusão(mensagem)
-
+        if self.item_id == "":
+            self.exibir_avisos("Selecione um funcionário")
         else:
-            telaSucesso = tk.Tk()
-            telaSucesso.title('Sucesso')
-            telaSucesso.resizable(False,False)
-            telaSucesso.configure(background='#A9A9A9')
+            self.dao.deleteLogicoFuncionario(self.funcId)
             
-            txt2 = tk.Label(telaSucesso, text=f'Funcionário Desativado')
-            txt2.pack(padx=25, pady=10)
-            txt2.configure(background='#A9A9A9', fg='black')
-
-            buttonOk = tk.Button(telaSucesso, text='Ok', command=telaSucesso.destroy, background='white', fg='black')
-            buttonOk.pack(padx=25, pady=10)
-
-            telaSucesso.bind('<Return>', lambda event: buttonOk.invoke())
-            telaSucesso.mainloop() 
+            mensagem = f"{self.nomeFuncionario} foi excluído com sucesso"
+            self.exibir_sucesso(mensagem)
 
     def telaAgenda(self):
         pass
@@ -972,26 +914,78 @@ class App:
 
     def exibir_erro(self, mensagem):
 
-        telaErro = tk.Tk()
-        telaErro.title('Erro')
-        telaErro.resizable(False,False)
-        telaErro.configure(background='#A9A9A9')
+        if "Access denied for user" in mensagem:
+            telaErro = tk.Tk()
+            telaErro.title('Erro')
+            telaErro.resizable(False,False)
+            telaErro.configure(background='#A9A9A9')
 
-        txt2 = tk.Label(telaErro, text=f'Usuário ou Senha inválidos')
+            txt2 = tk.Label(telaErro, text=f'Usuário ou Senha inválidos')
+            txt2.pack(padx=25, pady=10)
+            txt2.configure(background='#A9A9A9', fg='black')
+
+            txt3 = tk.Label(telaErro, text=mensagem)
+            txt3.pack(padx=25, pady=10)
+            txt3.configure(background='#A9A9A9', fg='black')
+
+            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
+            buttonOk.pack(padx=25, pady=10)
+
+            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
+            telaErro.mainloop()
+            
+        elif "1062 (23000)" in mensagem:
+            telaErro = tk.Tk()
+            telaErro.title('Erro')
+            telaErro.resizable(False,False)
+            telaErro.configure(background='#A9A9A9')
+
+            txt2 = tk.Label(telaErro, text=f'Campo duplicado')
+            txt2.pack(padx=25, pady=10)
+            txt2.configure(background='#A9A9A9', fg='black')
+
+            txt3 = tk.Label(telaErro, text=mensagem)
+            txt3.pack(padx=25, pady=10)
+            txt3.configure(background='#A9A9A9', fg='black')
+
+            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
+            buttonOk.pack(padx=25, pady=10)
+
+            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
+            telaErro.mainloop()
+
+        # elif ""
+        
+    def exibir_avisos(self, mensagem):
+        telaAviso = tk.Tk()
+        telaAviso.title('Aviso')
+        telaAviso.resizable(False,False)
+        telaAviso.configure(background='#A9A9A9')
+
+        txt2 = tk.Label(telaAviso, text=mensagem)
         txt2.pack(padx=25, pady=10)
         txt2.configure(background='#A9A9A9', fg='black')
 
-        txt3 = tk.Label(telaErro, text=mensagem)
-        txt3.pack(padx=25, pady=10)
-        txt3.configure(background='#A9A9A9', fg='black')
-
-        buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
+        buttonOk = tk.Button(telaAviso, text='Ok', command=telaAviso.destroy, background='white', fg='black')
         buttonOk.pack(padx=25, pady=10)
 
-        telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-        telaErro.mainloop()
-    
+        telaAviso.bind('<Return>', lambda event: buttonOk.invoke())
+        telaAviso.mainloop()
+
+    def exibir_sucesso(self, mensagem):
+        telaSucesso = tk.Tk()
+        telaSucesso.title('Sucesso')
+        telaSucesso.resizable(False,False)
+        telaSucesso.configure(background='#A9A9A9')
+        
+        txt2 = tk.Label(telaSucesso, text=mensagem)
+        txt2.pack(padx=25, pady=10)
+        txt2.configure(background='#A9A9A9', fg='black')
+
+        buttonOk = tk.Button(telaSucesso, text='Ok', command=telaSucesso.destroy, background='white', fg='black')
+        buttonOk.pack(padx=25, pady=10)
+
+        telaSucesso.bind('<Return>', lambda event: buttonOk.invoke())
+        telaSucesso.mainloop() 
 
 App()
-
-
