@@ -100,7 +100,7 @@ class App:
 
     def conectar(self):
         if self.login.get() == "":
-            self.avisos("Insira um usuário")
+            self.exibir_avisos("Insira um usuário")
             
         else:
             self.dao = Dao(self.login.get(), self.senha.get())
