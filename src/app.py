@@ -388,7 +388,7 @@ class App:
             
             # Funcionario Data de Nascimento
             dataValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.dataNascimentoFuncionario = dataValue[5]
+            self.dataNascimentoFuncionario = dataValue[6]
             return self.funcId
 
         except IndexError as e:
@@ -663,9 +663,13 @@ class App:
             print(self.funcId)
             print(self.entryDataDeNascimentoFunc.get())
             
+            
             self.dao.atualizaFuncionario(self.funcId, self.entryDataDeNascimentoFunc.get(), 'data_nascimento')
             self.exibir_sucesso("Data alterada!")
             self.modalAtualizaDataFunc.destroy()
+            
+        elif self.opcao == 'ESPECIALIDADE':
+            pass
 
     def setId(self, *args):
         self.selecao = self.opcoes.get()
@@ -718,13 +722,13 @@ class App:
         elif percentil == "":
             self.exibir_avisos("O campo Porcentagem está vazio")
         
-        cpfSemFormatacao = ''.join(filter(str.isdigit, cpf))
-        telefoneSemFormatacao = ''.join(filter(str.isdigit, telefone))
-        celularSemFormatacao = ''.join(filter(str.isdigit, celular))
+        # cpfSemFormatacao = ''.join(filter(str.isdigit, cpf))
+        # telefoneSemFormatacao = ''.join(filter(str.isdigit, telefone))
+        # celularSemFormatacao = ''.join(filter(str.isdigit, celular))
         
         if "@" in email:
             dao = self.dao.inserirFuncionario(
-            nome, especialidade, cpfSemFormatacao, nascimento, telefoneSemFormatacao, celularSemFormatacao,
+            nome, especialidade, cpf, nascimento, telefone, celular,
             rua, bairro, estado, numero, comp, email, percentil
             )
             if isinstance(dao, str):
@@ -737,29 +741,6 @@ class App:
                 
         else:
             self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
-
-        
-        
-    def mensagemExclusão(self, mensagem):
-    #     telaErro = tk.Tk()
-    #     telaErro.title('Erro')
-    #     telaErro.resizable(False,False)
-    #     telaErro.configure(background='#A9A9A9')
-
-    #     txt2 = tk.Label(telaErro, text=f'Erro ao desativar o Funcionário.\nTente novamente!')
-    #     txt2.pack(padx=25, pady=10)
-    #     txt2.configure(background='#A9A9A9', fg='black')
-
-    #     txt3 = tk.Label(telaErro, text=mensagem)
-    #     txt3.pack(padx=25, pady=10)
-    #     txt3.configure(background='#A9A9A9', fg='black')
-
-    #     buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-    #     buttonOk.pack(padx=25, pady=10)
-
-    #     telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-    #     telaErro.mainloop()
-        pass
 
 # Calendarios -------------------------------------
     def calendarioInicial(self):
@@ -835,18 +816,18 @@ class App:
 # Fim Formatação Data
 
     def formatar_data_atualizar(self, event=None):
-        data = self.entryDataDeNascimentoFunc.get()
-        data = ''.join(filter(str.isdigit, data))
+        dataAtualizar = self.entryDataDeNascimentoFunc.get()
+        dataAtualizar = ''.join(filter(str.isdigit, dataAtualizar))
 
-        if len(data) > 2:
-            data = data[:2] + '/' + data[2:]
-        if len(data) > 5:
-            data = data[:5] + '/' + data[5:]
+        if len(dataAtualizar) > 2:
+            dataAtualizar = dataAtualizar[:2] + '/' + dataAtualizar[2:]
+        if len(dataAtualizar) > 5:
+            dataAtualizar = dataAtualizar[:5] + '/' + dataAtualizar[5:]
 
-        data = data[:10]
+        dataAtualizar = dataAtualizar[:10]
 
         self.entryDataDeNascimentoFunc.delete(0, END)
-        self.entryDataDeNascimentoFunc.insert(0, data)
+        self.entryDataDeNascimentoFunc.insert(0, dataAtualizar)
 
 # Formatação Telefone
     def formatar_telefone(self, event=None):
