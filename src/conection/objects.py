@@ -121,9 +121,14 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"UPDATE funcionarios SET {coluna} = '{dado}' WHERE id_funcionario = {id}"
-        self.cursor.execute(sql)
-        self.conecta.commit()
+        sql = f"UPDATE funcionarios SET {coluna} = %s WHERE id_funcionario = %s"
+        try:
+            self.cursor.execute(sql, (dado, id))
+            self.conecta.commit()
+            print("Atualização realizada com sucesso.")
+        except Exception as e:
+            print(f"Erro ao atualizar: {e}")
+
     
 
     # def trocaPwd(self, newPdw, user):

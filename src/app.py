@@ -301,7 +301,7 @@ class App:
         self.treeviewFunc.heading('CPF', text='CPF')
         self.treeviewFunc.heading('Telefone', text='Telefone')
         self.treeviewFunc.heading('Celular', text='Celular')
-        self.treeviewFunc.heading('Data de Nascimento', text='Dt Nascimento')
+        self.treeviewFunc.heading('Data de Nascimento', text='Dt.Nascimento')
         self.treeviewFunc.heading('Rua', text='Rua')
         self.treeviewFunc.heading('Bairro', text='Bairro')
         self.treeviewFunc.heading('UF', text='Estado')
@@ -315,7 +315,7 @@ class App:
         horizontalBar = ttk.Scrollbar(self.frameviewFunc, orient='horizontal', command=self.treeviewFunc.xview)
         self.treeviewFunc.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        style = ttk.Style()
+        style = ttk.Style(self.treeviewFunc)
         style.theme_use('clam')
         style.configure("self.treeviewFunc", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
@@ -329,13 +329,6 @@ class App:
 
         for row in self.rows:
             self.treeviewFunc.insert("", END, values=row)
-
-        # listFuncionario = self.treeviewFunc.item(self.item_id, 'values')
-        # status = listFuncionario[1]
-
-        # if status == 0:
-        #     style.configure("self.treeviewFunc", rowheight=30, background="white", foreground="red", fieldbackground="lightgray", bordercolor="black")
-        
 
         self.treeviewFunc.bind('<<TreeviewSelect>>', self.pegaId)
                 
@@ -389,6 +382,7 @@ class App:
             # Funcionario Data de Nascimento
             dataValue = self.treeviewFunc.item(self.item_id, 'values')
             self.dataNascimentoFuncionario = dataValue[6]
+            print(self.dataNascimentoFuncionario)
             return self.funcId
 
         except IndexError as e:
@@ -431,7 +425,10 @@ class App:
         rows = self.dao.funcionarioNome(nome)
 
         for row in rows:
-            self.treeviewFunc.insert("", 'end', values=row)
+            if len(row) == 15:
+                self.treeviewFunc.insert("", 'end', values=row)
+            else:
+                self.exibir_erro("Erro de tupla")
 
         self.campo_nome.delete(0, END)
         
@@ -652,7 +649,7 @@ class App:
                 self.modalAtualizaDataFunc.mainloop()
             
     def alteraFuncionario(self):
-        
+               
         if self.opcao == 'NOME':
             self.dao.atualizaFuncionario(self.funcId, self.entryNomeFuncionario.get(), 'nome_funcionario')
             print('Nome alterado')
@@ -660,17 +657,14 @@ class App:
             self.modalAtualizaNomeFunc.destroy()
             
         elif self.opcao == 'DATA DE NASCIMENTO':
-            print(self.funcId)
-            print(self.entryDataDeNascimentoFunc.get())
-            
-            
             self.dao.atualizaFuncionario(self.funcId, self.entryDataDeNascimentoFunc.get(), 'data_nascimento')
             self.exibir_sucesso("Data alterada!")
             self.modalAtualizaDataFunc.destroy()
             
         elif self.opcao == 'ESPECIALIDADE':
             pass
-
+        
+        
     def setId(self, *args):
         self.selecao = self.opcoes.get()
         self.idSelecao = self.especialidadeMap.get(self.selecao)
@@ -736,8 +730,9 @@ class App:
                 
             else:
                 msn = f'Funcionário {nome}, inserido com sucesso'
-                self.exibir_sucesso(msn)
                 self.modalNovoFunc.destroy()
+                self.exibir_sucesso(msn)
+                
                 
         else:
             self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
@@ -816,6 +811,7 @@ class App:
 # Fim Formatação Data
 
     def formatar_data_atualizar(self, event=None):
+        
         dataAtualizar = self.entryDataDeNascimentoFunc.get()
         dataAtualizar = ''.join(filter(str.isdigit, dataAtualizar))
 
