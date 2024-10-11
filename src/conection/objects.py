@@ -43,7 +43,17 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"SELECT * FROM Vw_FuncionariosAtivos WHERE `Nome do Funcionario` LIKE '%{nome}'"
+        sql = f"SELECT * FROM Vw_FuncionariosAtivos WHERE `Nome do Funcionario` LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+    
+    def funcionarioId(self, id):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_FuncionariosAtivos WHERE `Cod.Funcionario` = {id}"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -73,7 +83,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         try:
-            sql = f"INSERT INTO funcionarios (nome_funcionario, idEspecialidade, cpf, data_nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil) VALUES ('{nome}', {especialidade}, '{cpf}', STR_TO_DATE('{nascimento}', '%d/%m/%Y'), '{telefone}', '{celular}', '{rua}', '{bairro}', '{uf}', '{numero}' , '{complemento}', '{email}', '{percentil}')"
+            sql = f"INSERT INTO funcionarios (nome_funcionario, idEspecialidade, cpf, data_nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil) VALUES ('{nome}', {especialidade}, '{cpf}', '{nascimento}', '{telefone}', '{celular}', '{rua}', '{bairro}', '{uf}', '{numero}' , '{complemento}', '{email}', '{percentil}')"
             self.cursor.execute(sql)
             self.conecta.commit()
             return

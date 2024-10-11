@@ -1,6 +1,5 @@
 import mysql.connector
 
-
 class Conexao:
     
     def Conecta(self, login, key):
