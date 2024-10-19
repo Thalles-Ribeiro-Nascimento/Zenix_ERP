@@ -1,8 +1,9 @@
 
-from tkinter import DISABLED, END, INSERT, StringVar, ttk
+from tkinter import *
+from tkinter import ttk
 from conection.objects import Dao
 import tkinter as tk
-# from handler import *
+# import function as f
 import tkcalendar
 
 class App:
@@ -22,6 +23,7 @@ class App:
         self.root_login.colormapwindows(self.root_login)
         self.item_id = ""
         self.idSelecao = ""
+        
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
@@ -277,7 +279,7 @@ class App:
         # Fim do menu superior
 
         self.frameFuncionario()
-        texto_nome = tk.Label(self.framefuncionarios, text='NOME', background='#808080', fg='white', font=('Arial', 12, 'bold'))
+        texto_nome = tk.Label(self.framefuncionarios, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
         texto_nome.place(relx=0.02, rely=0.35)
 
         self.campo_nome = tk.Entry(self.framefuncionarios, width=25, bg='white', fg='black')
@@ -314,7 +316,7 @@ class App:
         self.treeviewFunc.heading('Email', text='Email')
         self.treeviewFunc.heading('Percentual', text='Percentual')
         self.treeviewFunc.heading('Status', text='Status')
-
+                
         verticalBar = ttk.Scrollbar(self.frameviewFunc, orient='vertical', command=self.treeviewFunc.yview)
         horizontalBar = ttk.Scrollbar(self.frameviewFunc, orient='horizontal', command=self.treeviewFunc.xview)
         self.treeviewFunc.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
@@ -345,7 +347,7 @@ class App:
 
         else:
             self.modalAtualizaFunc = tk.Tk()
-            self.modalAtualizaFunc.title('Novo Funcionario')
+            self.modalAtualizaFunc.title('Funcionario')
             self.modalAtualizaFunc.geometry('750x550')
             self.modalAtualizaFunc.configure(background='#D3D3D3')
             self.modalAtualizaFunc.resizable(False,False)
@@ -378,7 +380,6 @@ class App:
             self.dropdownAtualizaFunc = tk.OptionMenu(self.modalAtualizaFunc, self.opcoesAtualizaFunc, *rowsName)
             self.dropdownAtualizaFunc.configure(background='white', fg='black', activebackground='gray')
             self.dropdownAtualizaFunc.place(relx= 0.37, rely=0.245, relheight=0.05, relwidth=0.286)
-            print(self.opcoesAtualizaFunc.get())
             self.opcoesAtualizaFunc.trace_add('write', self.setIdEspecialidadeAtualiza)
 
             txtCpf = tk.Label(self.modalAtualizaFunc, text='CPF:', font='bold')
@@ -388,10 +389,9 @@ class App:
             self.cpfAtualizaFunc = tk.Entry(self.modalAtualizaFunc, width=15)
             self.cpfAtualizaFunc.place(relx= 0.7, rely=0.245)
             self.cpfAtualizaFunc.configure(background='white', fg='black')
-            self.cpfAtualizaFunc.bind('<KeyRelease>', lambda cpf: self.formatar_cpfFunc(self.cpfAtualizaFunc.get()))
-            self.cpfAtualizaFunc.bind('<BackSpace>', lambda e: self.formatar_cpfFunc)
-            self.cpfAtualizaFunc.insert(0, self.cpfFuncionario)
-
+            
+            self.cpfAtualizaFunc.bind('<KeyRelease>', self.formatar_cpfAtualizaFunc)
+            
             txtData = tk.Label(self.modalAtualizaFunc, text='DATA DE NASCIMENTO:', font='bold')
             txtData.place(relx= 0.06, rely=0.33)
             txtData.configure(background='#D3D3D3', fg='black')
@@ -399,8 +399,8 @@ class App:
             self.dataAtualizaFunc = tk.Entry(self.modalAtualizaFunc, width=20)
             self.dataAtualizaFunc.configure(background='white', fg='black')
             self.dataAtualizaFunc.place(relx= 0.06, rely=0.37)
-            self.dataAtualizaFunc.bind('<KeyRelease>', self.formatar_data)
-            self.dataAtualizaFunc.insert(0, self.dataNascimentoFuncionario)
+            
+            self.dataAtualizaFunc.bind('<KeyRelease>', self.formatar_data_atualizar)
 
             txtTelefone = tk.Label(self.modalAtualizaFunc, text='TELEFONE:', font='bold')
             txtTelefone.place(relx= 0.4, rely=0.33)
@@ -409,8 +409,8 @@ class App:
             self.telefoneAtualizaFunc = tk.Entry(self.modalAtualizaFunc, width=20)
             self.telefoneAtualizaFunc.configure(background='white', fg='black')
             self.telefoneAtualizaFunc.place(relx= 0.4, rely=0.37)
-            self.telefoneAtualizaFunc.bind('<KeyRelease>', self.formatar_telefone)
-            self.telefoneAtualizaFunc.insert(0, self.telefoneFuncionario)
+            
+            self.telefoneAtualizaFunc.bind('<KeyRelease>', self.formatar_telefone_Atualizar)
             
             txtCelular = tk.Label(self.modalAtualizaFunc, text='CELULAR:', font='bold')
             txtCelular.place(relx= 0.7, rely=0.33)
@@ -419,8 +419,8 @@ class App:
             self.celularAtualizaFunc = tk.Entry(self.modalAtualizaFunc, width=20)
             self.celularAtualizaFunc.configure(background='white', fg='black')
             self.celularAtualizaFunc.place(relx= 0.7, rely=0.37)
-            self.celularAtualizaFunc.insert(0, self.celularFuncionario)
             
+            self.celularAtualizaFunc.bind('<KeyRelease>', self.formatar_celular_Atualizar)
 
             txtEmail = tk.Label(self.modalAtualizaFunc, text='Email:', font='bold')
             txtEmail.place(relx= 0.06, rely=0.45)
@@ -431,7 +431,6 @@ class App:
             self.EmailAtualizaFunc.place(relx= 0.06, rely=0.495)
             self.EmailAtualizaFunc.insert(0, self.emailFuncionario)
             
-
             txtPercentil = tk.Label(self.modalAtualizaFunc, text='Porcentagem:', font='bold')
             txtPercentil.place(relx= 0.4, rely=0.45)
             txtPercentil.configure(background='#D3D3D3', fg='black')
@@ -441,8 +440,6 @@ class App:
             self.PercentilAtualizaFunc.place(relx= 0.4, rely=0.495)
             self.PercentilAtualizaFunc.insert(0, self.percentualFuncionario)
             
-            self.celularAtualizaFunc.bind('<KeyRelease>', self.formatar_celular)
-
             txtRua = tk.Label(self.modalAtualizaFunc, text='Rua:', font='bold')
             txtRua.place(relx= 0.06, rely=0.55)
             txtRua.configure(background='#D3D3D3', fg='black')
@@ -452,7 +449,6 @@ class App:
             self.RuaAtualizaFunc.place(relx= 0.06, rely=0.6)
             self.RuaAtualizaFunc.insert(0, self.ruaFuncionario)
             
-
             txtBairro = tk.Label(self.modalAtualizaFunc, text='Bairro:', font='bold')
             txtBairro.place(relx= 0.06, rely=0.65)
             txtBairro.configure(background='#D3D3D3', fg='black')
@@ -462,7 +458,6 @@ class App:
             self.BairroAtualizaFunc.place(relx= 0.06, rely=0.7)
             self.BairroAtualizaFunc.insert(0, self.bairroFuncionario)
             
-
             txtEstado = tk.Label(self.modalAtualizaFunc, text='Estado:', font='bold')
             txtEstado.place(relx= 0.65, rely=0.55)
             txtEstado.configure(background='#D3D3D3', fg='black')
@@ -495,6 +490,12 @@ class App:
             self.CompAtualizaFunc.place(relx= 0.4, rely=0.7)
             self.CompAtualizaFunc.insert(0, self.complementoFuncionario)
             
+            # self.var = StringVar()            
+            # if self.statusFuncionario == 1:
+            #     self.checkButton = tk.Checkbutton(self.modalAtualizaFunc, text='Ativo?', background='#D3D3D3', fg='black', activebackground='#D3D3D3', activeforeground='black', variable=self.var, onvalue="s")
+            #     self.checkButton.place(relx= 0.75, rely=0.7)
+                
+            
             self.buttonAtualizaFunc = tk.Button(self.modalAtualizaFunc, text='ALTERAR' , command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
             self.buttonAtualizaFunc.place(relx= 0.7, rely=0.85)
             
@@ -516,8 +517,6 @@ class App:
             # Funcionario Nome
             nomeValue = self.treeviewFunc.item(self.item_id, 'values')
             self.nomeFuncionario = nomeValue[1]
-            self.campo_nome.delete(0, END)
-            self.campo_nome.insert(0,self.nomeFuncionario)
             
             # Funcionario Especialidade
             especialidadeValue = self.treeviewFunc.item(self.item_id, 'values')
@@ -571,7 +570,7 @@ class App:
             statusValue = self.treeviewFunc.item(self.item_id, 'values')
             self.statusFuncionario = statusValue[14]
             
-
+            
         except IndexError as e:
             print(e)
 
@@ -664,8 +663,8 @@ class App:
         self.cpfFunc = tk.Entry(self.modalNovoFunc, width=15)
         self.cpfFunc.place(relx= 0.7, rely=0.245)
         self.cpfFunc.configure(background='white', fg='black')
-        self.cpfFunc.bind('<KeyRelease>', lambda cpf: self.formatar_cpfFunc(self.cpfFunc.get()))
-        self.cpfFunc.bind('<BackSpace>', lambda e: self.formatar_cpfFunc)
+        self.cpfFunc.bind('<KeyRelease>', self.formatar_cpfFunc)
+        self.cpfFunc.bind('<BackSpace>', self.formatar_cpfFunc)
 
         txtData = tk.Label(self.modalNovoFunc, text='*DATA DE NASCIMENTO:', font='bold')
         txtData.place(relx= 0.06, rely=0.33)
@@ -863,26 +862,21 @@ class App:
     def alteraFuncionario(self):    
         if self.nomeFuncionario != self.nomeAtualizaFunc.get():
             self.dao.atualizaFuncionario(self.funcId, self.nomeAtualizaFunc.get(), 'nome_funcionario')
-            self.exibir_sucesso("Nome alterado!")
-        
+                    
         elif self.especialidadeFuncionario != self.opcoesAtualizaFunc.get():
             self.dao.atualizaFuncionario(self.funcId, self.atualizaIdEspecialidade, 'idEspecialidade') 
-            self.exibir_sucesso("Especialidade alterada!")
             
         elif self.cpfFuncionario != self.cpfAtualizaFunc.get():
             self.dao.atualizaFuncionario(self.funcId, self.cpfAtualizaFunc.get(), 'cpf') 
-            self.exibir_sucesso("CPF alterado!")
-            
+                       
         elif self.telefoneFuncionario != self.telefoneAtualizaFunc.get():
             self.dao.atualizaFuncionario(self.funcId, self.telefoneAtualizaFunc.get(), 'telefone') 
-            self.exibir_sucesso("Telefone alterado!")
             
-        # elif self.opcao == 'DATA DE NASCIMENTO':
-        #     self.dao.atualizaFuncionario(self.funcId, self.entryDataDeNascimentoFunc.get(), 'data_nascimento')
-        #     self.exibir_sucesso("Data alterada!")
-            
-        # elif self.opcao == 'ESPECIALIDADE':
-            # pass
+        elif self.dataNascimentoFuncionario != self.dataAtualizaFunc:
+            self.dao.atualizaFuncionario(self.funcId, self.dataAtualizaFunc.get(), 'data_nascimento')
+                        
+        elif self.opcao == 'ESPECIALIDADE':
+            pass
  
     def setIdEspecialidade(self, *args):
         self.selecao = self.opcoes.get()
@@ -1010,8 +1004,8 @@ class App:
 # Fim calendarios ---------------------------------
 
 # Formatação CPF
-    def formatar_cpfFunc(self, cpf_objeto, event=None):
-            cpf = cpf_objeto
+    def formatar_cpfFunc(self,event=None):
+            cpf = self.cpfFunc.get()
             cpf = ''.join(filter(str.isdigit, cpf))
 
             if len(cpf) > 3:
@@ -1026,6 +1020,24 @@ class App:
             self.cpfFunc.delete(0, END)
             self.cpfFunc.insert(0, cpf)
 # Fim Formatação CPF
+
+# Formatação CPF Atualização
+    def formatar_cpfAtualizaFunc(self,event=None):
+            cpf = self.cpfAtualizaFunc.get()
+            cpf = ''.join(filter(str.isdigit, cpf))
+
+            if len(cpf) > 3:
+                cpf = cpf[:3] + '.' + cpf[3:]
+            if len(cpf) > 6:
+                cpf = cpf[:7] + '.' + cpf[7:]
+            if len(cpf) > 9:
+                cpf = cpf[:11] + '-' + cpf[11:]
+            
+            cpf = cpf[:14]
+
+            self.cpfAtualizaFunc.delete(0, END)
+            self.cpfAtualizaFunc.insert(0, cpf)
+# Fim Formatação CPF Atualização
 
 # Formatação Data
     def formatar_data(self,event=None):
@@ -1044,9 +1056,10 @@ class App:
         self.data.insert(0, data)
 # Fim Formatação Data
 
+# Formatação Atualiza Data
     def formatar_data_atualizar(self, event=None):
         
-        dataAtualizar = self.entryDataDeNascimentoFunc.get()
+        dataAtualizar = self.dataAtualizaFunc.get()
         dataAtualizar = ''.join(filter(str.isdigit, dataAtualizar))
 
         if len(dataAtualizar) > 2:
@@ -1056,8 +1069,9 @@ class App:
 
         dataAtualizar = dataAtualizar[:10]
 
-        self.entryDataDeNascimentoFunc.delete(0, END)
-        self.entryDataDeNascimentoFunc.insert(0, dataAtualizar)
+        self.dataAtualizaFunc.delete(0, END)
+        self.dataAtualizaFunc.insert(0, dataAtualizar)
+# Fim Formatação Atualiza Data
 
 # Formatação Telefone
     def formatar_telefone(self, event=None):
@@ -1076,6 +1090,23 @@ class App:
         self.telefone.insert(0, telefone)
 # Fim Formatação Telefone
 
+# Formatação Atualiza Telefone
+    def formatar_telefone_Atualizar(self, event=None):
+
+        telefone = self.telefoneAtualizaFunc.get()
+        telefone = ''.join(filter(str.isdigit, telefone))
+
+        if len(telefone) > 2:
+            telefone = '(' + telefone[:2] + ') ' + telefone[2:]
+        if len(telefone) > 8:  
+            telefone = telefone[:9] + '-' + telefone[9:13]
+        
+        telefone = telefone[:14]
+
+        self.telefoneAtualizaFunc.delete(0, END)
+        self.telefoneAtualizaFunc.insert(0, telefone)
+# Fim Formatação Atualiza Telefone
+
 # Formatação Celular
     def formatar_celular(self, event=None):
 
@@ -1092,6 +1123,23 @@ class App:
             self.celular.delete(0, END)
             self.celular.insert(0, celular)
 # Fim Formatação Celular
+
+# Formatação Atualiza Celular
+    def formatar_celular_Atualizar(self, event=None):
+
+            celular = self.celularAtualizaFunc.get()
+            celular = ''.join(filter(str.isdigit, celular))
+
+            if len(celular) > 2:
+                celular = '(' + celular[:2] + ') ' + celular[2:]
+            if len(celular) > 8:  
+                celular = celular[:9] + '-' + celular[9:]
+            
+            celular = celular[:15]
+
+            self.celularAtualizaFunc.delete(0, END)
+            self.celularAtualizaFunc.insert(0, celular)
+# Fim Formatação Atualiza Celular
 
     def telaClientes(self):
         pass
@@ -1110,10 +1158,10 @@ class App:
             self.exibir_avisos("Selecione um funcionário")
         else:
             self.dao.deleteLogicoFuncionario(self.funcId)
-            
             mensagem = f"{self.nomeFuncionario} foi excluído com sucesso"
+    
             self.exibir_sucesso(mensagem)
-
+            
     def telaAgenda(self):
         pass
 
