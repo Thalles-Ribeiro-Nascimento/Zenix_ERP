@@ -1,10 +1,9 @@
-
 from tkinter import *
 from tkinter import ttk
 from conection.objects import Dao
 import tkinter as tk
 # import function as f
-import tkcalendar
+# import tkcalendar
 
 class App:
     def __init__(self):
@@ -490,11 +489,15 @@ class App:
             self.CompAtualizaFunc.place(relx= 0.4, rely=0.7)
             self.CompAtualizaFunc.insert(0, self.complementoFuncionario)
             
+            self.cpfAtualizaFunc.insert(0, self.cpfFuncionario)
+            self.telefoneAtualizaFunc.insert(0, self.telefoneFuncionario)
+            self.dataAtualizaFunc.insert(0, self.dataNascimentoFuncionario)
+            self.celularAtualizaFunc.insert(0, self.celularFuncionario)
+            
             # self.var = StringVar()            
             # if self.statusFuncionario == 1:
             #     self.checkButton = tk.Checkbutton(self.modalAtualizaFunc, text='Ativo?', background='#D3D3D3', fg='black', activebackground='#D3D3D3', activeforeground='black', variable=self.var, onvalue="s")
-            #     self.checkButton.place(relx= 0.75, rely=0.7)
-                
+            #     self.checkButton.place(relx= 0.75, rely=0.7)   
             
             self.buttonAtualizaFunc = tk.Button(self.modalAtualizaFunc, text='ALTERAR' , command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
             self.buttonAtualizaFunc.place(relx= 0.7, rely=0.85)
@@ -510,65 +513,53 @@ class App:
             # Id do item selecionado
             self.item_id = self.treeviewFunc.selection()[0]
             
+            # Lista Informações Funcionário Selecionado
+            self.listaFuncionario = self.treeviewFunc.item(self.item_id, 'values')
+            
             # Funcionario ID
-            idValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.funcId = idValue[0]
+            self.funcId = self.listaFuncionario[0]
             
             # Funcionario Nome
-            nomeValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.nomeFuncionario = nomeValue[1]
+            self.nomeFuncionario = self.listaFuncionario[1]
             
             # Funcionario Especialidade
-            especialidadeValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.especialidadeFuncionario = especialidadeValue[2]
+            self.especialidadeFuncionario = self.listaFuncionario[2]
             
             # Funcionario CPF
-            cpfValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.cpfFuncionario = cpfValue[3]
+            self.cpfFuncionario = self.listaFuncionario[3]
             
             # Funcionario Telefone
-            telefoneValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.telefoneFuncionario = telefoneValue[4]
+            self.telefoneFuncionario = self.listaFuncionario[4]
             
             # Funcionario Celular
-            celularValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.celularFuncionario = celularValue[5]
+            self.celularFuncionario = self.listaFuncionario[5]
             
             # Funcionario Data de Nascimento
-            dataValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.dataNascimentoFuncionario = dataValue[6]
+            self.dataNascimentoFuncionario = self.listaFuncionario[6]
             
             # Funcionario Rua
-            ruaValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.ruaFuncionario = ruaValue[7]
+            self.ruaFuncionario = self.listaFuncionario[7]
             
             # Funcionario Bairro
-            bairroValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.bairroFuncionario = bairroValue[8]
+            self.bairroFuncionario = self.listaFuncionario[8]
             
             # Funcionario UF
-            estadoValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.estadoFuncionario = estadoValue[9]
+            self.estadoFuncionario = self.listaFuncionario[9]
             
             # Funcionario Nº
-            numValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.numeroRuaFuncionario = numValue[10]
+            self.numeroRuaFuncionario = self.listaFuncionario[10]
             
             # Funcionario Complemento
-            compValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.complementoFuncionario = compValue[11]
+            self.complementoFuncionario = self.listaFuncionario[11]
             
             # Funcionario Email
-            emailValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.emailFuncionario = emailValue[12]
+            self.emailFuncionario = self.listaFuncionario[12]
             
             # Funcionario Porcentagem
-            percentilValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.percentualFuncionario = percentilValue[13]
+            self.percentualFuncionario = self.listaFuncionario[13]
             
             # Funcionario Status
-            statusValue = self.treeviewFunc.item(self.item_id, 'values')
-            self.statusFuncionario = statusValue[14]
+            self.statusFuncionario = self.listaFuncionario[14]
             
             
         except IndexError as e:
@@ -608,7 +599,7 @@ class App:
 
         for row in rows:
             if len(row) == 15:
-                self.treeviewFunc.insert("", 'end', values=row)
+                self.treeviewFunc.insert("", END, values=row)
             else:
                 self.exibir_erro("Erro de tupla")
 
@@ -859,32 +850,55 @@ class App:
         #     self.modalAtualizaFunc.mainloop()
         pass
             
-    def alteraFuncionario(self):    
-        if self.nomeFuncionario != self.nomeAtualizaFunc.get():
-            self.dao.atualizaFuncionario(self.funcId, self.nomeAtualizaFunc.get(), 'nome_funcionario')
-                    
-        elif self.especialidadeFuncionario != self.opcoesAtualizaFunc.get():
-            self.dao.atualizaFuncionario(self.funcId, self.atualizaIdEspecialidade, 'idEspecialidade') 
+    def alteraFuncionario(self):
+        listaNew = [self.nomeAtualizaFunc.get().upper(), self.opcoesAtualizaFunc.get(), self.cpfAtualizaFunc.get(), self.telefoneAtualizaFunc.get(), self.celularAtualizaFunc.get(),
+                     self.dataAtualizaFunc.get(),
+                     self.RuaAtualizaFunc.get().upper(), self.BairroAtualizaFunc.get().upper(), self.ufAtualizaFunc.get(), self.NumeroAtualizaFunc.get(),
+                     self.CompAtualizaFunc.get().upper(), self.EmailAtualizaFunc.get().upper(), self.PercentilAtualizaFunc.get()]
+        colunas = [" ", "nome_funcionario", "idEspecialidade", "cpf", "telefone", 
+                        "celular", "data_nascimento", "rua", "bairro", "uf", "numero", "complemento", "email", "percentil"]
+        indices = []
+        
+        for old, new in zip(self.listaFuncionario[1:14], listaNew):
+            if old == new:
+                print("Iguais")
+                print(f"Old: {old}")
+                print(f"New: {new}")
+                print()
             
-        elif self.cpfFuncionario != self.cpfAtualizaFunc.get():
-            self.dao.atualizaFuncionario(self.funcId, self.cpfAtualizaFunc.get(), 'cpf') 
-                       
-        elif self.telefoneFuncionario != self.telefoneAtualizaFunc.get():
-            self.dao.atualizaFuncionario(self.funcId, self.telefoneAtualizaFunc.get(), 'telefone') 
+            else:
+                print()
+                print("Diferentes") 
+                print(f"Dado Selecionado: {old}")
+                print(f"Novo Dado (Diferente): {new}")
+                print(f"Index: {self.listaFuncionario.index(old)}")
+                indices.append(self.listaFuncionario.index(old))
+                print()
+                continue
             
-        elif self.dataNascimentoFuncionario != self.dataAtualizaFunc:
-            self.dao.atualizaFuncionario(self.funcId, self.dataAtualizaFunc.get(), 'data_nascimento')
-                        
-        elif self.opcao == 'ESPECIALIDADE':
-            pass
- 
+        if len(colunas) == 0:
+            self.exibir_avisos("Nenhum campo  foi alterado!")
+            
+        else:
+            for i in indices:
+                for c in colunas[1:14]:
+                    if i == colunas.index(c):
+                        print(f"Id: {self.funcId}\nDado: {listaNew[i - 1]}\nColuna: {c}")
+                        self.dao.atualizaFuncionario(self.funcId, listaNew[i - 1], c)
+            
+            self.exibir_sucesso("Alterações Realizadas")
+                
+            colunas.clear()
+        self.modalAtualizaFunc.destroy()   
+        
+    
+       
+
     def setIdEspecialidade(self, *args):
         self.selecao = self.opcoes.get()
         self.idSelecao = self.especialidadeMap.get(self.selecao)
     
-    def insertFuncionario(self):
-        print(self.data.get())
-        
+    def insertFuncionario(self):       
         nome = self.nomeFunc.get()
         especialidade = self.idSelecao
         cpf = self.cpfFunc.get()
@@ -901,6 +915,7 @@ class App:
 
         if nome == "":
             self.exibir_avisos("O campo Nome está vazio")
+            
             
         elif especialidade == "":
             self.exibir_avisos("O campo Especialidade está vazio")
@@ -950,57 +965,57 @@ class App:
             self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
 
 # Calendarios -------------------------------------
-    def calendarioInicial(self):
-        self.calendario = tkcalendar.Calendar(
-            self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
-            bg='white', fg='black'
-        )
-
-        self.calendario.place(relx=0.07, rely=0.4, relwidth=0.35, relheight=0.38)
-
-        self.insereData = tk.Button(self.modalNovoFunc, text='+', command=self.dataInicio)
-        self.insereData.place(relx=0.385, rely=0.786, relwidth=0.035, relheight=0.04)
-    
-    def dataInicio(self):
-        dataInicial = self.calendario.get_date()
-        self.calendario.destroy()
-        self.data.delete(0 , END)
-        self.data.insert(END, dataInicial)
-        self.insereData.destroy()
-
-    def calendarioFinal(self):
-        self.calendario = tkcalendar.Calendar(
-            self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
-            bg='white', fg='black'
-        )
-
-        self.calendario.place(relx=0.07, rely=0.4, relwidth=0.35, relheight=0.38)
-
-        self.insereData = tk.Button(self.modalNovoFunc, text='+', command=self.dataFim)
-        self.insereData.place(relx=0.385, rely=0.786, relwidth=0.035, relheight=0.04)
-
-        self.rows = self.dao.especialidadeAll()
-
-        self.rowsList = [item[1] for item in self.rows]
-        self.rowId = [item[0] for item in self.rows]
-        
-        self.especialidadeMap = dict(zip(self.rowsList, self.rowId))
-
-        menu = self.dropdown['menu']
-        menu.delete(0, 'end')
-        
-        for especialidade in self.rowsList:
-            menu.add_command(label=especialidade, 
-                            command=tk._setit(self.opcoes, especialidade))
-
-        self.opcoes.set(self.rowsList[0] if self.rowsList else "Especialidade")
-
-    def dataFim(self):
-        dataFinal = self.calendario.get_date()
-        self.calendario.destroy()
-        self.data.delete(0 , END)
-        self.data.insert(END, dataFinal)
-        self.insereData.destroy()
+#     def calendarioInicial(self):
+#         self.calendario = tkcalendar.Calendar(
+#             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
+#             bg='white', fg='black'
+#         )
+#
+#         self.calendario.place(relx=0.07, rely=0.4, relwidth=0.35, relheight=0.38)
+#
+#         self.insereData = tk.Button(self.modalNovoFunc, text='+', command=self.dataInicio)
+#         self.insereData.place(relx=0.385, rely=0.786, relwidth=0.035, relheight=0.04)
+#
+#     def dataInicio(self):
+#         dataInicial = self.calendario.get_date()
+#         self.calendario.destroy()
+#         self.data.delete(0 , END)
+#         self.data.insert(END, dataInicial)
+#         self.insereData.destroy()
+#
+#     def calendarioFinal(self):
+#         self.calendario = tkcalendar.Calendar(
+#             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
+#             bg='white', fg='black'
+#         )
+#
+#         self.calendario.place(relx=0.07, rely=0.4, relwidth=0.35, relheight=0.38)
+#
+#         self.insereData = tk.Button(self.modalNovoFunc, text='+', command=self.dataFim)
+#         self.insereData.place(relx=0.385, rely=0.786, relwidth=0.035, relheight=0.04)
+#
+#         self.rows = self.dao.especialidadeAll()
+#
+#         self.rowsList = [item[1] for item in self.rows]
+#         self.rowId = [item[0] for item in self.rows]
+#
+#         self.especialidadeMap = dict(zip(self.rowsList, self.rowId))
+#
+#         menu = self.dropdown['menu']
+#         menu.delete(0, 'end')
+#
+#         for especialidade in self.rowsList:
+#             menu.add_command(label=especialidade,
+#                             command=tk._setit(self.opcoes, especialidade))
+#
+#         self.opcoes.set(self.rowsList[0] if self.rowsList else "Especialidade")
+#
+#     def dataFim(self):
+#         dataFinal = self.calendario.get_date()
+#         self.calendario.destroy()
+#         self.data.delete(0 , END)
+#         self.data.insert(END, dataFinal)
+#         self.insereData.destroy()
 # Fim calendarios ---------------------------------
 
 # Formatação CPF
