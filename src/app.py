@@ -369,9 +369,10 @@ class App:
             # buttonEspecialidade.place(relx=0.58, rely=0.2, relwidth=0.035, relheight=0.04)
             # buttonEspecialidade.configure(background='white', fg='black', activebackground='blue', activeforeground='black')
 
-            rows = self.dao.especialidadeAll()
+            rows = self.dao.especialidadeView()
             rowsName = [item[1] for item in rows]
             self.rowId = [item[0] for item in rows]
+            print(f"Especialidade Id: {self.rowId}\nEspecialidade: {rowsName}")
             self.especialidadeAtualizaMap = dict(zip(rowsName, self.rowId))
                         
             self.opcoesAtualizaFunc = StringVar(self.modalAtualizaFunc)
@@ -379,6 +380,7 @@ class App:
             self.dropdownAtualizaFunc = tk.OptionMenu(self.modalAtualizaFunc, self.opcoesAtualizaFunc, *rowsName)
             self.dropdownAtualizaFunc.configure(background='white', fg='black', activebackground='gray')
             self.dropdownAtualizaFunc.place(relx= 0.37, rely=0.245, relheight=0.05, relwidth=0.286)
+            
             self.opcoesAtualizaFunc.trace_add('write', self.setIdEspecialidadeAtualiza)
 
             txtCpf = tk.Label(self.modalAtualizaFunc, text='CPF:', font='bold')
@@ -633,7 +635,7 @@ class App:
         buttonEspecialidade.place(relx=0.58, rely=0.2, relwidth=0.035, relheight=0.04)
         buttonEspecialidade.configure(background='white', fg='black', activebackground='blue', activeforeground='black')
 
-        self.rows = self.dao.especialidadeAll()
+        self.rows = self.dao.especialidadeView()
         self.rowsList = [item[1] for item in self.rows]
         self.rowId = [item[0] for item in self.rows]
         self.especialidadeMap = dict(zip(self.rowsList, self.rowId))
@@ -752,103 +754,6 @@ class App:
         self.button.place(relx= 0.7, rely=0.85)
         
         self.modalNovoFunc.mainloop()
-
-    def modalAtualizaFuncionario(self):
-        # self.opcao = self.tipoVar.get().upper()
-        
-        # if self.opcao == "":
-        #     self.exibir_avisos("Selecione uma opção!")
-            
-        # else:
-        #     self.modalAtualizaFunc.destroy()
-            
-        #     self.modalAtualizaFunc = tk.Tk()
-            
-        #     self.modalAtualizaFunc.title('Funcionario')
-        #     self.modalAtualizaFunc.geometry('1024x720')
-        #     self.modalAtualizaFunc.configure(background='#D3D3D3')
-        #     self.modalAtualizaFunc.resizable(False,False)
-        #     self.modalAtualizaFunc.colormapwindows(self.modalAtualizaFunc)
-            
-        #     self.frameAtualizaFunc()
-            
-        #     self.treeviewAtualizaFunc = ttk.Treeview(self.frameviewAtualizaFunc, columns=(
-        #         'Cod.Funcionario', 'Nome do Funcionario', 'Especialidade', 'CPF', 'Telefone', 
-        #         'Celular' ,'Data de Nascimento', 'Rua', 'Bairro',
-        #         'UF', 'Nº','Comp', 'Email', 'Percentual', 'Status' 
-        #         ), show='headings')
-
-        #     self.treeviewAtualizaFunc.heading('Cod.Funcionario', text='Cód.Funcionario')
-        #     self.treeviewAtualizaFunc.heading('Nome do Funcionario', text='Nome do Funcionário')
-        #     self.treeviewAtualizaFunc.heading('Especialidade', text='Especialidade')
-        #     self.treeviewAtualizaFunc.heading('CPF', text='CPF')
-        #     self.treeviewAtualizaFunc.heading('Telefone', text='Telefone')
-        #     self.treeviewAtualizaFunc.heading('Celular', text='Celular')
-        #     self.treeviewAtualizaFunc.heading('Data de Nascimento', text='Dt.Nascimento')
-        #     self.treeviewAtualizaFunc.heading('Rua', text='Rua')
-        #     self.treeviewAtualizaFunc.heading('Bairro', text='Bairro')
-        #     self.treeviewAtualizaFunc.heading('UF', text='Estado')
-        #     self.treeviewAtualizaFunc.heading('Nº', text='Nº')
-        #     self.treeviewAtualizaFunc.heading('Comp', text='Complemento')
-        #     self.treeviewAtualizaFunc.heading('Email', text='Email')
-        #     self.treeviewAtualizaFunc.heading('Percentual', text='Percentual')
-        #     self.treeviewAtualizaFunc.heading('Status', text='Status')
-
-        #     verticalBar = ttk.Scrollbar(self.frameviewFunc, orient='vertical', command=self.treeviewAtualizaFunc.yview)
-        #     horizontalBar = ttk.Scrollbar(self.frameviewFunc, orient='horizontal', command=self.treeviewAtualizaFunc.xview)
-        #     self.treeviewAtualizaFunc.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
-
-        #     style = ttk.Style(self.treeviewAtualizaFunc)
-        #     style.theme_use('clam')
-        #     style.configure("self.treeviewAtualizaFunc", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
-            
-        #     self.treeviewAtualizaFunc.place(relx=0, rely=0, relheight=1, relwidth=1)
-
-        #     verticalBar.place(relx=0.99 , rely=0, relheight=0.972)
-        #     horizontalBar.place(rely=0.972, relx=0, relwidth=1)
-            
-        #     rows = self.dao.funcionarioId(self.funcId)
-
-        #     for row in rows:
-        #         self.treeviewAtualizaFunc.insert("", END, values=row)
-            
-        #     txt = tk.Label(self.modalAtualizaFunc, text=' ', fg='black', background='#D3D3D3', font=('Arial', 10, 'bold'))
-        #     txt.place(relx= 0.02, rely=0.33)
-            
-        #     button = tk.Button(self.modalAtualizaFunc, text='ALTERAR', command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        #     button.place(relx=0.02, rely=0.44)
-
-        #     voltar = tk.Button(self.modalAtualizaFunc, text='VOLTAR', command=self.modalAtualizaFunc.destroy, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        #     voltar.place(relx=0.14, rely=0.44)
-            
-        #     if self.opcao == 'NOME':
-        #         txt['text'] = 'NOME:'
-        #         self.entryNomeFuncionario = tk.Entry(self.modalAtualizaFunc)
-        #         self.entryNomeFuncionario.configure(background='white', fg='black', width=20)
-        #         self.entryNomeFuncionario.place(relx= 0.02, rely=0.36)
-                
-
-        #     elif self.opcao == 'DATA DE NASCIMENTO':
-        #         txt['text'] = 'DATA:'
-        #         self.entryDataDeNascimentoFunc = tk.Entry(self.modalAtualizaFunc)
-        #         self.entryDataDeNascimentoFunc.configure(background='white', fg='black', width=20)
-        #         self.entryDataDeNascimentoFunc.place(relx= 0.02, rely=0.36)
-        #         self.entryDataDeNascimentoFunc.bind('<KeyRelease>', self.formatar_data_atualizar)
-            
-        #     # elif self.opcao == "ESPECIALIDADE":
-        #     #     rows = self.dao.especialidadeAll()
-        #     #     rowsList = [item[1] for item in rows]
-        #     #     rowId = [item[0] for item in rows]
-        #     #     especialidadeMap = dict(zip(rowsList, rowId))
-                
-        #     #     opcoes = StringVar(self.modalAtualizaFunc)
-        #     #     opcoes.set("Especialidade")
-        #     #     dropdown = tk.OptionMenu(self.modalAtualizaFunc, opcoes, *rowsList)
-        #     #     dropdown.configure(background='white', fg='black', activebackground='gray')
-        #     #     dropdown.place(relx= 0.37, rely=0.245, relheight=0.05, relwidth=0.286)
-                
-        #     self.modalAtualizaFunc.mainloop()
-        pass
             
     def alteraFuncionario(self):
         listaNew = [self.nomeAtualizaFunc.get().upper(), self.opcoesAtualizaFunc.get(), self.cpfAtualizaFunc.get(), self.telefoneAtualizaFunc.get(), self.celularAtualizaFunc.get(),
@@ -871,7 +776,8 @@ class App:
                 print("Diferentes") 
                 print(f"Dado Selecionado: {old}")
                 print(f"Novo Dado (Diferente): {new}")
-                print(f"Index: {self.listaFuncionario.index(old)}")
+                print(f"Index Old: {self.listaFuncionario.index(old)}")
+                print(f"Index New: {listaNew.index(new)}")
                 indices.append(self.listaFuncionario.index(old))
                 print()
                 continue
@@ -883,17 +789,30 @@ class App:
             for i in indices:
                 for c in colunas[1:14]:
                     if i == colunas.index(c):
-                        print(f"Id: {self.funcId}\nDado: {listaNew[i - 1]}\nColuna: {c}")
-                        self.dao.atualizaFuncionario(self.funcId, listaNew[i - 1], c)
+                        if i == 2:
+                            print(f"Inserindo nova Especialidade...\nId Especialidade: {self.atualizaIdEspecialidade}\nNome da Especialidade: {self.opcoesAtualizaFunc.get()}\nColuna: {c}\n")
+                            # self.dao.atualizaFuncionario(self.funcId, self.atualizaIdEspecialidade, c)
+                        else:
+                            if i == 12:
+                                if "@" in listaNew[11]:
+                                    print(f"Inserindo novo dado...\nDado: {listaNew[i - 1]}\nColuna: {c}\n")
+                                    # self.dao.atualizaFuncionario(self.funcId, listaNew[i - 1], c)
+                                    resultado = self.dao.atualizaFuncionario(self.funcId, listaNew[i - 1], c)
+                                    if isinstance(resultado, str):
+                                        self.exibir_erro(resultado)
+                                        return
+                                    else:
+                                        self.exibir_sucesso("Alterações Realizadas")
+                                        return
+                                else:
+                                    self.exibir_avisos("Email Inválido")
+                                    return
+                                
             
-            self.exibir_sucesso("Alterações Realizadas")
                 
             colunas.clear()
-        self.modalAtualizaFunc.destroy()   
+        # self.modalAtualizaFunc.destroy()  
         
-    
-       
-
     def setIdEspecialidade(self, *args):
         self.selecao = self.opcoes.get()
         self.idSelecao = self.especialidadeMap.get(self.selecao)
@@ -915,7 +834,6 @@ class App:
 
         if nome == "":
             self.exibir_avisos("O campo Nome está vazio")
-            
             
         elif especialidade == "":
             self.exibir_avisos("O campo Especialidade está vazio")
@@ -954,7 +872,7 @@ class App:
             rua, bairro, estado, numero, comp, email, percentil
             )
             if isinstance(dao, str):
-                self.exibir_erro(self.dao.erroinsercaoFunc)
+                self.exibir_erro(dao)
                 
             else:
                 msn = f'Funcionário {nome}, inserido com sucesso'
@@ -1187,7 +1105,6 @@ class App:
         pass
 
     def exibir_erro(self, mensagem):
-
         if "Access denied for user" in mensagem:
             telaErro = tk.Tk()
             telaErro.title('Erro')
@@ -1208,19 +1125,15 @@ class App:
             telaErro.bind('<Return>', lambda event: buttonOk.invoke())
             telaErro.mainloop()
             
-        elif "1062 (23000)" in mensagem:
+        elif "Duplicate entry" in mensagem:
             telaErro = tk.Tk()
             telaErro.title('Erro')
             telaErro.resizable(False,False)
             telaErro.configure(background='#A9A9A9')
 
-            txt2 = tk.Label(telaErro, text=f'Campo duplicado')
+            txt2 = tk.Label(telaErro, text=mensagem)
             txt2.pack(padx=25, pady=10)
             txt2.configure(background='#A9A9A9', fg='black')
-
-            txt3 = tk.Label(telaErro, text=mensagem)
-            txt3.pack(padx=25, pady=10)
-            txt3.configure(background='#A9A9A9', fg='black')
 
             buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
             buttonOk.pack(padx=25, pady=10)

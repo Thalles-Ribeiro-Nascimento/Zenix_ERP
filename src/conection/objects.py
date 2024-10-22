@@ -69,15 +69,15 @@ class Dao:
 
         return rows
     
-    def especialidadeAll(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
+    # def especialidadeAll(self):
+    #     if self.erro:
+    #        return f'Houve erro de conexão: {self.erro}'
         
-        sql = 'SELECT * FROM especialidade'
-        self.cursor.execute(sql)
-        rows = self.cursor.fetchall()
+    #     sql = 'SELECT * FROM especialidade'
+    #     self.cursor.execute(sql)
+    #     rows = self.cursor.fetchall()
 
-        return rows
+    #     return rows
        
     def inserirFuncionario(self, nome, especialidade, cpf, nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil):
         if self.erro:
@@ -91,12 +91,13 @@ class Dao:
         except mysql.connector.Error as e:
             print('Erro: ', e)
             
-            self.erroinsercaoFunc = str(e)
-            
-            # self.erroinsercaoFunc.split(':')[:1]
-            # if "Duplicate entry" in self.erroinsercaoFunc:
-        
-            return self.erroinsercaoFunc
+            error = str(e)
+            if "1062 (23000)" in error:
+                msg = error.split(":")[1]
+                return f"Campo Duplicado\n{msg}"
+            else:
+                print(error.split(":")[1])
+                return error.split(":")[1]
 
     def deleteLogicoFuncionario(self, id):
         if self.erro:
@@ -128,6 +129,7 @@ class Dao:
             print("Especialidade inserida!")
 
     def atualizaFuncionario(self, id, dado, coluna):
+        
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
@@ -135,9 +137,16 @@ class Dao:
         try:
             self.cursor.execute(sql, (dado, id))
             self.conecta.commit()
-            print("Atualização realizada com sucesso.")
         except Exception as e:
-            print(f"Erro ao atualizar: {e}")
+            print(e)
+            error = str(e)
+            if "1062 (23000)" in error:
+                msg = error.split(":")[1]
+                return f"Campo Duplicado\n{msg}"
+            else:
+                print(error.split(":")[1])
+                return error.split(":")[1]
+            
 
     
 
