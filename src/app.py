@@ -372,7 +372,6 @@ class App:
             rows = self.dao.especialidadeView()
             rowsName = [item[1] for item in rows]
             self.rowId = [item[0] for item in rows]
-            print(f"Especialidade Id: {self.rowId}\nEspecialidade: {rowsName}")
             self.especialidadeAtualizaMap = dict(zip(rowsName, self.rowId))
                         
             self.opcoesAtualizaFunc = StringVar(self.modalAtualizaFunc)
@@ -756,7 +755,7 @@ class App:
         self.modalNovoFunc.mainloop()
             
     def alteraFuncionario(self):
-        listaNew = [self.nomeAtualizaFunc.get().upper(), self.opcoesAtualizaFunc.get(), self.cpfAtualizaFunc.get(), self.telefoneAtualizaFunc.get(), self.celularAtualizaFunc.get(),
+        listaUpgrade = [self.nomeAtualizaFunc.get().upper(), self.opcoesAtualizaFunc.get(), self.cpfAtualizaFunc.get(), self.telefoneAtualizaFunc.get(), self.celularAtualizaFunc.get(),
                      self.dataAtualizaFunc.get(),
                      self.RuaAtualizaFunc.get().upper(), self.BairroAtualizaFunc.get().upper(), self.ufAtualizaFunc.get(), self.NumeroAtualizaFunc.get(),
                      self.CompAtualizaFunc.get().upper(), self.EmailAtualizaFunc.get().upper(), self.PercentilAtualizaFunc.get()]
@@ -764,7 +763,7 @@ class App:
                         "celular", "data_nascimento", "rua", "bairro", "uf", "numero", "complemento", "email", "percentil"]
         indices = []
         
-        for old, new in zip(self.listaFuncionario[1:14], listaNew):
+        for old, new in zip(self.listaFuncionario[1:14], listaUpgrade):
             if old == new:
                 print("Iguais")
                 print(f"Old: {old}")
@@ -777,12 +776,12 @@ class App:
                 print(f"Dado Selecionado: {old}")
                 print(f"Novo Dado (Diferente): {new}")
                 print(f"Index Old: {self.listaFuncionario.index(old)}")
-                print(f"Index New: {listaNew.index(new)}")
+                print(f"Index New: {listaUpgrade.index(new)}")
                 indices.append(self.listaFuncionario.index(old))
                 print()
                 continue
             
-        if len(colunas) == 0:
+        if len(indices) < 1:
             self.exibir_avisos("Nenhum campo  foi alterado!")
             
         else:
@@ -792,25 +791,52 @@ class App:
                         if i == 2:
                             print(f"Inserindo nova Especialidade...\nId Especialidade: {self.atualizaIdEspecialidade}\nNome da Especialidade: {self.opcoesAtualizaFunc.get()}\nColuna: {c}\n")
                             # self.dao.atualizaFuncionario(self.funcId, self.atualizaIdEspecialidade, c)
+                            continue
                         else:
                             if i == 12:
-                                if "@" in listaNew[11]:
-                                    print(f"Inserindo novo dado...\nDado: {listaNew[i - 1]}\nColuna: {c}\n")
-                                    # self.dao.atualizaFuncionario(self.funcId, listaNew[i - 1], c)
-                                    resultado = self.dao.atualizaFuncionario(self.funcId, listaNew[i - 1], c)
+                                if "@" in listaUpgrade[11]:
+                                    print(f"Inserindo novo dado...\nDado: {listaUpgrade[i - 1]}\nColuna: {c}\n")
+                                    resultado = self.dao.atualizaFuncionario(self.funcId, listaUpgrade[i - 1], c)
+                                
                                     if isinstance(resultado, str):
                                         self.exibir_erro(resultado)
-                                        return
+                                        break
+                                    
                                     else:
-                                        self.exibir_sucesso("Alterações Realizadas")
-                                        return
+                                        print(indices)
+                                        indices.remove(i)
+                                        print(indices)
+                                        
                                 else:
                                     self.exibir_avisos("Email Inválido")
-                                    return
+                                    break
+                            
+                            else:
+                                print(f"Inserindo novo dado...\nDado: {listaUpgrade[i - 1]}\nColuna: {c}\n")
+                                resultado = self.dao.atualizaFuncionario(self.funcId, listaUpgrade[i - 1], c)
+                                
+                                if isinstance(resultado, str):
+                                    self.exibir_erro(resultado)
+                                    break
+                                else:
+                                    if len(indices) < 1:
+                                        self.modalAtualizaFunc.destroy()
+                                        self.exibir_sucesso("Alterações Realizadas")
+                                        
+                                    else:
+                                        print(indices)
+                                        indices.remove(i)
+                                        print(indices)
+                                    
+                                    # self.modalAtualizaFunc.destroy()
+                                    
+                                
+                    else:
+                        continue
                                 
             
                 
-            colunas.clear()
+        indices.clear() 
         # self.modalAtualizaFunc.destroy()  
         
     def setIdEspecialidade(self, *args):

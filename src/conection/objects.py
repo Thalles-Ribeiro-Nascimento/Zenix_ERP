@@ -137,12 +137,14 @@ class Dao:
         try:
             self.cursor.execute(sql, (dado, id))
             self.conecta.commit()
+            
         except Exception as e:
             print(e)
             error = str(e)
             if "1062 (23000)" in error:
                 msg = error.split(":")[1]
-                return f"Campo Duplicado\n{msg}"
+                self.erroUpdateFunc = f"Campo Duplicado\n{msg}"
+                return self.erroUpdateFunc
             else:
                 print(error.split(":")[1])
                 return error.split(":")[1]
