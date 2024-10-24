@@ -360,7 +360,7 @@ class App:
             self.nomeAtualizaFunc.configure(background='white', fg='black')
             self.nomeAtualizaFunc.place(relx= 0.06, rely=0.245)
             self.nomeAtualizaFunc.insert(0, self.nomeFuncionario)
-                    
+            
             txtEspecialidade = tk.Label(self.modalAtualizaFunc, text='ESPECIALIDADE:', font='bold')
             txtEspecialidade.place(relx= 0.37, rely=0.2)
             txtEspecialidade.configure(background='#D3D3D3', fg='black')
@@ -785,59 +785,47 @@ class App:
             self.exibir_avisos("Nenhum campo  foi alterado!")
             
         else:
+            validacao = True
+            funcionarioUpgrade = dict()
             for i in indices:
+                if validacao == True:
+                    print(validacao)
+                else:
+                    break
                 for c in colunas[1:14]:
                     if i == colunas.index(c):
-                        if i == 2:
-                            print(f"Inserindo nova Especialidade...\nId Especialidade: {self.atualizaIdEspecialidade}\nNome da Especialidade: {self.opcoesAtualizaFunc.get()}\nColuna: {c}\n")
-                            # self.dao.atualizaFuncionario(self.funcId, self.atualizaIdEspecialidade, c)
-                            continue
-                        else:
-                            if i == 12:
-                                if "@" in listaUpgrade[11]:
-                                    print(f"Inserindo novo dado...\nDado: {listaUpgrade[i - 1]}\nColuna: {c}\n")
-                                    resultado = self.dao.atualizaFuncionario(self.funcId, listaUpgrade[i - 1], c)
-                                
-                                    if isinstance(resultado, str):
-                                        self.exibir_erro(resultado)
-                                        break
-                                    
-                                    else:
-                                        print(indices)
-                                        indices.remove(i)
-                                        print(indices)
-                                        
-                                else:
-                                    self.exibir_avisos("Email Inválido")
-                                    break
-                            
+                        if i == 12:
+                            if "@" in listaUpgrade[11]:
+                                validacao = True
+                                funcionarioUpgrade.update({c:listaUpgrade[i - 1]}) 
                             else:
-                                print(f"Inserindo novo dado...\nDado: {listaUpgrade[i - 1]}\nColuna: {c}\n")
-                                resultado = self.dao.atualizaFuncionario(self.funcId, listaUpgrade[i - 1], c)
-                                
-                                if isinstance(resultado, str):
-                                    self.exibir_erro(resultado)
-                                    break
-                                else:
-                                    if len(indices) < 1:
-                                        self.modalAtualizaFunc.destroy()
-                                        self.exibir_sucesso("Alterações Realizadas")
-                                        
-                                    else:
-                                        print(indices)
-                                        indices.remove(i)
-                                        print(indices)
-                                    
-                                    # self.modalAtualizaFunc.destroy()
-                                    
-                                
+                                validacao = False
+                                break
+                        
+                        else:
+                            validacao = True
+                            funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
+                            continue  
                     else:
                         continue
                                 
+        if validacao == False:
+            indices.clear()
+            funcionarioUpgrade.clear()
+            self.exibir_erro("Email está inválido")
+        else:
+            for k, v in zip(funcionarioUpgrade.keys(), funcionarioUpgrade.values()):
+                if k == "idEspecialidade":
+                    self.dao.atualizaFuncionario(self.funcId, self.atualizaIdEspecialidade, k)
+                else:
+                    self.dao.atualizaFuncionario(self.funcId, v, k)
             
-                
+            self.exibir_sucesso("Alterações Realizadas")
+            return
+                   
+        funcionarioUpgrade.clear()       
         indices.clear() 
-        # self.modalAtualizaFunc.destroy()  
+  
         
     def setIdEspecialidade(self, *args):
         self.selecao = self.opcoes.get()
