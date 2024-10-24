@@ -646,7 +646,7 @@ class App:
         self.dropdown.configure(background='white', fg='black', activebackground='gray')
         self.dropdown.place(relx= 0.37, rely=0.245, relheight=0.05, relwidth=0.286)
 
-        self.opcoes.trace_add('write', self.setId)
+        self.opcoes.trace_add('write', self.setIdEspecialidade)
 
         txtCpf = tk.Label(self.modalNovoFunc, text='*CPF:', font='bold')
         txtCpf.place(relx= 0.7, rely=0.2)
@@ -765,21 +765,9 @@ class App:
         
         for old, new in zip(self.listaFuncionario[1:14], listaUpgrade):
             if old == new:
-                print("Iguais")
-                print(f"Old: {old}")
-                print(f"New: {new}")
-                print()
-            
-            else:
-                print()
-                print("Diferentes") 
-                print(f"Dado Selecionado: {old}")
-                print(f"Novo Dado (Diferente): {new}")
-                print(f"Index Old: {self.listaFuncionario.index(old)}")
-                print(f"Index New: {listaUpgrade.index(new)}")
-                indices.append(self.listaFuncionario.index(old))
-                print()
                 continue
+            else: 
+                indices.append(self.listaFuncionario.index(old))
             
         if len(indices) < 1:
             self.exibir_avisos("Nenhum campo  foi alterado!")
@@ -789,44 +777,72 @@ class App:
             funcionarioUpgrade = dict()
             for i in indices:
                 if validacao == True:
-                    print(validacao)
+                    for c in colunas[1:14]:
+                        if i == colunas.index(c):
+                            if i == 12:
+                                if "@" in listaUpgrade[11] and ".COM" in listaUpgrade[11]:
+                                    validacao = True
+                                    funcionarioUpgrade.update({c:listaUpgrade[i - 1]}) 
+                                else:
+                                    validacao = False
+                                    break
+                            
+                            else:
+                                validacao = True
+                                funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
+                                print(funcionarioUpgrade)
+                                continue  
+                        else:
+                            continue
                 else:
                     break
-                for c in colunas[1:14]:
-                    if i == colunas.index(c):
-                        if i == 12:
-                            if "@" in listaUpgrade[11]:
-                                validacao = True
-                                funcionarioUpgrade.update({c:listaUpgrade[i - 1]}) 
-                            else:
-                                validacao = False
-                                break
+                # for c in colunas[1:14]:
+                #     if i == colunas.index(c):
+                #         if i == 12:
+                #             if "@" in listaUpgrade[11] and ".COM" in listaUpgrade[11]:
+                #                 validacao = True
+                #                 funcionarioUpgrade.update({c:listaUpgrade[i - 1]}) 
+                #             else:
+                #                 validacao = False
+                #                 break
                         
-                        else:
-                            validacao = True
-                            funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
-                            continue  
-                    else:
-                        continue
+                #         else:
+                #             validacao = True
+                #             funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
+                #             continue  
+                #     else:
+                #         continue
                                 
         if validacao == False:
             indices.clear()
             funcionarioUpgrade.clear()
-            self.exibir_erro("Email está inválido")
+            self.exibir_erro("Não foi possível fazer as alterações")
+            
         else:
+            erro = False
             for k, v in zip(funcionarioUpgrade.keys(), funcionarioUpgrade.values()):
                 if k == "idEspecialidade":
                     self.dao.atualizaFuncionario(self.funcId, self.atualizaIdEspecialidade, k)
+                    
                 else:
-                    self.dao.atualizaFuncionario(self.funcId, v, k)
-            
-            self.exibir_sucesso("Alterações Realizadas")
-            return
-                   
+                    resultado = self.dao.atualizaFuncionario(self.funcId, v, k)
+                    
+                    if isinstance(resultado, str):
+                        erro = True
+                        break
+                    else:
+                        erro = False
+                        continue
+            if erro == False:  
+                self.exibir_sucesso("Alterações Realizadas")
+            else:
+                self.exibir_erro(resultado)
+                     
+        listaUpgrade.clear()
+        colunas.clear()  
         funcionarioUpgrade.clear()       
         indices.clear() 
-  
-        
+   
     def setIdEspecialidade(self, *args):
         self.selecao = self.opcoes.get()
         self.idSelecao = self.especialidadeMap.get(self.selecao)

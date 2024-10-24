@@ -1,5 +1,5 @@
 listaUpgrade = ["THALLES", "TECNOLOGIA DA INFORMAÇÃO", "028.254.640-26", "(21)3638-8532","(21)9810-82817",
-                "22/05/1999", "AFONSO MELLO", "RIO VARZEA", "RJ", 200, "CASA 207", "THALLESRJ@GMAIL.COM", 40]
+                "22/05/1999", "AFONSO MELLO", "RIO VARZEA", "RJ", 40, "CASA 207", "THALLESRJ@GMAIL.COM", 40]
 
 colunas = [" ", "nome_funcionario", "idEspecialidade", "cpf", "telefone", 
                 "celular", "data_nascimento", "rua", "bairro", "uf", "numero", "complemento", "email", "percentil"]
