@@ -236,13 +236,17 @@ class App:
         self.framefuncionarios = tk.Frame(self.funcionarios, background='#A9A9A9')
         self.framefuncionarios.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
 
+    def frameClientes(self):
+        self.frameclientes = tk.Frame(self.clientes, background='#A9A9A9')
+        self.frameclientes.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
+    
     def frameTvFunc(self):
         self.frameviewFunc = tk.Frame(self.funcionarios, background='white')
         self.frameviewFunc.place(relx=0.02, rely=0.25, relheight=0.70, relwidth=0.96)
 
-    def frameAtualizaFunc(self):
-        self.frameviewAtualizaFunc = tk.Frame(self.modalAtualizaFunc, background='#808080')
-        self.frameviewAtualizaFunc.place(relx=0.02, rely=0.02, relheight=0.30, relwidth=0.96)
+    def frameTvClientes(self):
+        self.frameviewClientes = tk.Frame(self.clientes, background='white')
+        self.frameviewClientes.place(relx=0.02, rely=0.25, relheight=0.70, relwidth=0.96)
 
     def telaFuncionario(self):
         self.funcionarios = tk.Tk()
@@ -315,7 +319,8 @@ class App:
         self.treeviewFunc.heading('Email', text='Email')
         self.treeviewFunc.heading('Percentual', text='Percentual')
         self.treeviewFunc.heading('Status', text='Status')
-                
+        
+                   
         verticalBar = ttk.Scrollbar(self.frameviewFunc, orient='vertical', command=self.treeviewFunc.yview)
         horizontalBar = ttk.Scrollbar(self.frameviewFunc, orient='horizontal', command=self.treeviewFunc.xview)
         self.treeviewFunc.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
@@ -330,11 +335,16 @@ class App:
         horizontalBar.place(rely=0.972, relx=0, relwidth=1)
 
         self.rows = self.dao.funcionarioAll()
-        # self.rowsList = [item[13] for item in rows]
-
+        self.treeviewFunc.tag_configure("Vermelho", foreground='red')
+        
         for row in self.rows:
-            self.treeviewFunc.insert("", END, values=row)
-
+            status = row[14]
+            if status == 1:
+                self.treeviewFunc.insert("", END, values=row)
+            else:
+                self.treeviewFunc.insert("", END, values=row, tags='Vermelho')
+            
+            
         self.treeviewFunc.bind('<<TreeviewSelect>>', self.pegaId)
                 
         self.funcionarios.mainloop()
@@ -522,6 +532,7 @@ class App:
             
             # Funcionario Nome
             self.nomeFuncionario = self.listaFuncionario[1]
+            self.campo_nome.insert(0, self.nomeFuncionario)
             
             # Funcionario Especialidade
             self.especialidadeFuncionario = self.listaFuncionario[2]
@@ -600,12 +611,16 @@ class App:
 
         for row in rows:
             if len(row) == 15:
-                self.treeviewFunc.insert("", END, values=row)
+                status = row[14]
+                if status == 1:
+                    self.treeviewFunc.insert("", END, values=row)
+                else:
+                    self.treeviewFunc.insert("", END, values=row, tags='Vermelho')
             else:
-                self.exibir_erro("Erro de tupla")
+                self.exibir_avisos("Erro de tupla")
 
         self.campo_nome.delete(0, END)
-        
+         
     def modalNovoFuncionario(self):
         self.modalNovoFunc = tk.Tk()
         self.modalNovoFunc.title('Novo Funcionario')
@@ -790,33 +805,17 @@ class App:
                             else:
                                 validacao = True
                                 funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
-                                print(funcionarioUpgrade)
+                                
                                 continue  
                         else:
                             continue
                 else:
                     break
-                # for c in colunas[1:14]:
-                #     if i == colunas.index(c):
-                #         if i == 12:
-                #             if "@" in listaUpgrade[11] and ".COM" in listaUpgrade[11]:
-                #                 validacao = True
-                #                 funcionarioUpgrade.update({c:listaUpgrade[i - 1]}) 
-                #             else:
-                #                 validacao = False
-                #                 break
-                        
-                #         else:
-                #             validacao = True
-                #             funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
-                #             continue  
-                #     else:
-                #         continue
-                                
+                            
         if validacao == False:
+            self.exibir_avisos("Não foi possível fazer as alterações")
             indices.clear()
             funcionarioUpgrade.clear()
-            self.exibir_erro("Não foi possível fazer as alterações")
             
         else:
             erro = False
@@ -832,7 +831,7 @@ class App:
                         break
                     else:
                         erro = False
-                        continue
+                        
             if erro == False:  
                 self.exibir_sucesso("Alterações Realizadas")
             else:
@@ -913,7 +912,7 @@ class App:
             self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
 
 # Calendarios -------------------------------------
-#     def calendarioInicial(self):
+    def calendarioInicial(self):
 #         self.calendario = tkcalendar.Calendar(
 #             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
 #             bg='white', fg='black'
@@ -964,6 +963,7 @@ class App:
 #         self.data.delete(0 , END)
 #         self.data.insert(END, dataFinal)
 #         self.insereData.destroy()
+        pass
 # Fim calendarios ---------------------------------
 
 # Formatação CPF
@@ -1105,7 +1105,101 @@ class App:
 # Fim Formatação Atualiza Celular
 
     def telaClientes(self):
-        pass
+        self.clientes = tk.Tk()
+        self.clientes.title('Clientes')
+        self.clientes.configure(background='#A9A9A9')
+        self.clientes.geometry('1540x900')
+        self.clientes.resizable(False, False)
+        
+        # Menu superior
+        menu_bar = tk.Menu(self.clientes, background='#808080')
+        menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+        menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
+
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Lançamento',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Excluir',command=self.excluirItemFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+
+        self.clientes.config(menu=menu_bar)
+        # Fim do menu superior
+
+        self.frameClientes()
+        texto_nome = tk.Label(self.frameclientes, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
+        texto_nome.place(relx=0.02, rely=0.35)
+
+        self.campo_nomeClientes = tk.Entry(self.frameclientes, width=25, bg='white', fg='black')
+        self.campo_nomeClientes.place(relx=0.02, rely=0.5)
+
+        self.buscarClientes = tk.Button(self.frameclientes, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.buscarClientes.place(relx=0.02, rely=0.7 ,relheight=0.2)
+
+        self.atualizarClientes = tk.Button(self.frameclientes, text='ATUALIZAR' , command=self.atualizarModal, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.atualizarClientes.place(relx=0.45, rely=0.7 ,relheight=0.2)               
+
+        novoCliente = tk.Button(self.frameclientes, text='NOVO' , command=self.modalNovoFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        novoCliente.place(relx=0.91, rely=0.7 ,relheight=0.2)
+
+        self.frameTvClientes()
+        self.treeviewClientes = ttk.Treeview(self.frameviewClientes, columns=(
+            'Cod.Funcionario', 'Nome do Funcionario', 'Especialidade', 'CPF', 'Telefone', 
+            'Celular' ,'Data de Nascimento', 'Rua', 'Bairro',
+            'UF', 'Nº','Comp', 'Email', 'Percentual', 'Status' 
+            ), show='headings')
+
+        self.treeviewClientes.heading('Cod.Funcionario', text='Cód.Funcionario')
+        self.treeviewClientes.heading('Nome do Funcionario', text='Nome do Funcionário')
+        self.treeviewClientes.heading('Especialidade', text='Especialidade')
+        self.treeviewClientes.heading('CPF', text='CPF')
+        self.treeviewClientes.heading('Telefone', text='Telefone')
+        self.treeviewClientes.heading('Celular', text='Celular')
+        self.treeviewClientes.heading('Data de Nascimento', text='Dt.Nascimento')
+        self.treeviewClientes.heading('Rua', text='Rua')
+        self.treeviewClientes.heading('Bairro', text='Bairro')
+        self.treeviewClientes.heading('UF', text='Estado')
+        self.treeviewClientes.heading('Nº', text='Nº')
+        self.treeviewClientes.heading('Comp', text='Complemento')
+        self.treeviewClientes.heading('Email', text='Email')
+        self.treeviewClientes.heading('Percentual', text='Percentual')
+        self.treeviewClientes.heading('Status', text='Status')
+        
+                   
+        verticalBar = ttk.Scrollbar(self.frameviewClientes, orient='vertical', command=self.treeviewClientes.yview)
+        horizontalBar = ttk.Scrollbar(self.frameviewClientes, orient='horizontal', command=self.treeviewClientes.xview)
+        self.treeviewClientes.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeviewClientes)
+        style.theme_use('clam')
+        style.configure("self.treeviewClientes", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        self.treeviewClientes.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        verticalBar.place(relx=0.99 , rely=0, relheight=0.972)
+        horizontalBar.place(rely=0.972, relx=0, relwidth=1)
+
+        self.rowsClientes = self.dao.clientesAll()
+        self.treeviewClientes.tag_configure("Vermelho", foreground='red')
+        
+        for row in self.rowsClientes:
+            self.treeviewClientes.insert("", END, values=row)
+            
+            
+        self.treeviewClientes.bind('<<TreeviewSelect>>', self.pegaId)
+                
+        self.clientes.mainloop()
 
     def telaFinanceiro(self):
         pass

@@ -33,7 +33,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = 'SELECT * FROM Vw_FuncionariosAtivos'
+        sql = 'SELECT * FROM Vw_Funcionarios'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -43,22 +43,12 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"SELECT * FROM Vw_FuncionariosAtivos WHERE `Nome do Funcionario` LIKE '{nome}%'"
+        sql = f"SELECT * FROM Vw_Funcionarios WHERE `Nome do Funcionario` LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
-    
-    def funcionarioId(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        sql = f"SELECT * FROM Vw_FuncionariosAtivos WHERE `Cod.Funcionario` = {id}"
-        self.cursor.execute(sql)
-        rows = self.cursor.fetchall()
 
-        return rows
-    
     def especialidadeView(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -148,7 +138,16 @@ class Dao:
             else:
                 print(error.split(":")[1])
                 return error.split(":")[1]
-            
+    
+    def clientesAll(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT * FROM Vw_Clientes'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
 
     
 

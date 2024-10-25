@@ -1,87 +1,94 @@
-listaUpgrade = ["THALLES", "TECNOLOGIA DA INFORMAÇÃO", "028.254.640-26", "(21)3638-8532","(21)9810-82817",
-                "22/05/1999", "AFONSO MELLO", "RIO VARZEA", "RJ", 40, "CASA 207", "THALLESRJ@GMAIL.COM", 40]
+from conection.objects import Dao
 
-colunas = [" ", "nome_funcionario", "idEspecialidade", "cpf", "telefone", 
-                "celular", "data_nascimento", "rua", "bairro", "uf", "numero", "complemento", "email", "percentil"]
+# listaUpgrade = ["THALLES", "TECNOLOGIA DA INFORMAÇÃO", "028.254.640-26", "(21)3638-8532","(21)9810-82817",
+#                 "22/05/1999", "AFONSO MELLO", "RIO VARZEA", "RJ", 40, "CASA 207", "THALLESRJ@GMAIL.COM", 40]
 
-listaFuncionario = [1 ,"THALLES RIBEIRO NASCIMENTO", "GERENTE", "028.254.640-26", "(21)3638-8532","(21)9810-82817",
-                "22/05/1999", "AFONSO MELLO", "RIO VARZEA", "RJ", 200, "CASA 207", "THALLESRJ@GMAIL.COM", 50, 1]
+# colunas = [" ", "nome_funcionario", "idEspecialidade", "cpf", "telefone", 
+#                 "celular", "data_nascimento", "rua", "bairro", "uf", "numero", "complemento", "email", "percentil"]
 
-indices = []
+# listaFuncionario = [1 ,"THALLES RIBEIRO NASCIMENTO", "GERENTE", "028.254.640-26", "(21)3638-8532","(21)9810-82817",
+#                 "22/05/1999", "AFONSO MELLO", "RIO VARZEA", "RJ", 200, "CASA 207", "THALLESRJ@GMAIL.COM", 50, 1]
 
-for old, new in zip(listaFuncionario[1:14], listaUpgrade):
-    if old == new:
-        print("Iguais")
-        print(f"Old: {old}")
-        print(f"New: {new}")
-        print()
+# indices = []
+
+# for old, new in zip(listaFuncionario[1:14], listaUpgrade):
+#     if old == new:
+#         print("Iguais")
+#         print(f"Old: {old}")
+#         print(f"New: {new}")
+#         print()
     
-    else:
-        print()
-        print("Diferentes") 
-        print(f"Dado Selecionado: {old}")
-        print(f"Novo Dado (Diferente): {new}")
-        print(f"Index Old: {listaFuncionario.index(old)}")
-        print(f"Index New: {listaUpgrade.index(new)}")
-        indices.append(listaFuncionario.index(old))
-        print()
-        continue
+#     else:
+#         print()
+#         print("Diferentes") 
+#         print(f"Dado Selecionado: {old}")
+#         print(f"Novo Dado (Diferente): {new}")
+#         print(f"Index Old: {listaFuncionario.index(old)}")
+#         print(f"Index New: {listaUpgrade.index(new)}")
+#         indices.append(listaFuncionario.index(old))
+#         print()
+#         continue
     
-if len(indices) < 1:
-    print("Nenhum campo  foi alterado!")
+# if len(indices) < 1:
+#     print("Nenhum campo  foi alterado!")
     
-else:
-    validacao = True
-    funcionarioUpgrade = dict()
+# else:
+#     validacao = True
+#     funcionarioUpgrade = dict()
     
-    for i in indices:
-        if validacao == True:
-            print(validacao)
-        else:
-            break
-        for c in colunas[1:14]:
-            if i == colunas.index(c):
-                if i == 12:
-                    if "@" in listaUpgrade[11]:
-                        validacao = True
-                        funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
-                        print(funcionarioUpgrade)
-                        # indices.remove(i)
+#     for i in indices:
+#         if validacao == True:
+#             print(validacao)
+#         else:
+#             break
+#         for c in colunas[1:14]:
+#             if i == colunas.index(c):
+#                 if i == 12:
+#                     if "@" in listaUpgrade[11]:
+#                         validacao = True
+#                         funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
+#                         print(funcionarioUpgrade)
+#                         # indices.remove(i)
                     
-                    else:
-                        print("Email Inválido")
-                        validacao = False
-                        print(validacao)
-                        break
+#                     else:
+#                         print("Email Inválido")
+#                         validacao = False
+#                         print(validacao)
+#                         break
                 
-                else:
-                    validacao = True
-                    funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
-                    # indices.remove(i)
+#                 else:
+#                     validacao = True
+#                     funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
+#                     # indices.remove(i)
                     
-                    continue
+#                     continue
                             
-            else:
+#             else:
                 
-                continue
+#                 continue
                         
     
-print(f"Validação: {validacao}")
-if validacao == False:
-    indices.clear()
-    funcionarioUpgrade.clear()
-    print("Deu merda")
+# print(f"Validação: {validacao}")
+# if validacao == False:
+#     indices.clear()
+#     funcionarioUpgrade.clear()
+#     print("Deu merda")
     
     
-else:
-    for k, v in zip(funcionarioUpgrade.keys(), funcionarioUpgrade.values()):
-        print(f"Chaves: {k}\nValores: {v}\n")
-        if k == "idEspecialidade":
-            print("especialidade")
+# else:
+#     for k, v in zip(funcionarioUpgrade.keys(), funcionarioUpgrade.values()):
+#         print(f"Chaves: {k}\nValores: {v}\n")
+#         if k == "idEspecialidade":
+#             print("especialidade")
             
-        print(f"Inserindo novo dado...\nDado: {v}\nColuna: {k}\n")
+#         print(f"Inserindo novo dado...\nDado: {v}\nColuna: {k}\n")
         
-    print("Alterações Realizadas")  
+#     print("Alterações Realizadas")  
       
-indices.clear()
-funcionarioUpgrade.clear()
+# indices.clear()
+# funcionarioUpgrade.clear()
+dao = Dao("thalles", "Susga@667")
+rows = dao.funcionarioNome("Kamily")
+
+for row in rows:
+    print(row[14])
