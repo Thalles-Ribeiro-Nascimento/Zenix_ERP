@@ -88,7 +88,8 @@ from conection.objects import Dao
 # indices.clear()
 # funcionarioUpgrade.clear()
 dao = Dao("thalles", "Susga@667")
-rows = dao.funcionarioNome("Kamily")
+rows = dao.funcionarioAll()
 
 for row in rows:
-    print(row[14])
+    print(row)
+    print(len(row))

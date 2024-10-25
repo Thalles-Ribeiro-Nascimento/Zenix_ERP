@@ -149,7 +149,34 @@ class Dao:
 
         return rows
 
-    
+    def clienteNome(self, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Clientes WHERE `Nome do Cliente` LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def inserirCliente(self, nome, cpf, nascimento, sexo, telefone, celular, rua, bairro, uf, numero, complemento, email):
+        if self.erro:
+            return f'Houve erro de conexão: {self.erro}'
+        try:
+            sql = f"INSERT INTO cliente (nome_cliente, cpf, data_nascimento, sexo, rua, bairro, uf, numero, complemento, telefone, email, celular)  VALUES ('{nome}', '{cpf}', '{nascimento}', '{sexo}', '{rua}', '{bairro}', '{uf}', '{numero}' , '{complemento}', '{telefone}', '{email}', '{celular}')"
+            self.cursor.execute(sql)
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print('Erro: ', e)
+            
+            error = str(e)
+            if "1062 (23000)" in error:
+                msg = error.split(":")[1]
+                return f"Campo Duplicado\n{msg}"
+            else:
+                return error.split(":")[1]   
 
     # def trocaPwd(self, newPdw, user):
     #     if self.erro:
