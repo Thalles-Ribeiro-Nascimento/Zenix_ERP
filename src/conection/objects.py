@@ -68,17 +68,30 @@ class Dao:
         rows = self.cursor.fetchall()
 
         return rows
-    
-    # def especialidadeAll(self):
-    #     if self.erro:
-    #        return f'Houve erro de conexão: {self.erro}'
-        
-    #     sql = 'SELECT * FROM especialidade'
-    #     self.cursor.execute(sql)
-    #     rows = self.cursor.fetchall()
 
-    #     return rows
-       
+    def especialidadeViewNome(self, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Especialidade WHERE Especialidade LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def deleteLogicoEspecialidade(self, id):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+
+        try:
+            sql = f'UPDATE especialidade SET status = 0 WHERE idEspecialidade= {id}'
+            self.cursor.execute(sql)
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print("Erro: ", e)
+  
     def inserirFuncionario(self, nome, especialidade, cpf, nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -126,7 +139,7 @@ class Dao:
             return
         
         except mysql.connector.Error as e:
-            print("Especialidade inserida!")
+            print(e)
 
     def atualizaFuncionario(self, id, dado, coluna):
         
@@ -225,6 +238,25 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
 
+    def procedimentosAll(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT * FROM Vw_Procedimentos'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def procedimentoNome(self, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Procedimentos WHERE Procedimento LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
 
     # def trocaPwd(self, newPdw, user):
     #     if self.erro:

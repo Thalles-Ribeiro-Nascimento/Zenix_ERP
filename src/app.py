@@ -1849,28 +1849,93 @@ class App:
     def telaAgenda(self):
         pass
 
+# Especialidade --------------------------------
     def telaEspecialidade(self):
-        pass
+        self.modalEspecialidade = tk.Tk()
+        self.modalEspecialidade.title('Procedimento')
+        self.modalEspecialidade.geometry('650x450')
+        self.modalEspecialidade.configure(background='#D3D3D3')
+        self.modalEspecialidade.resizable(False,False)
+        self.modalEspecialidade.colormapwindows(self.modalEspecialidade)
 
+        titleNomeEspecialidade = tk.Label(self.modalEspecialidade, text='NOME DA ESPECIALIDADE:', font='bold')
+        titleNomeEspecialidade.configure(background='#D3D3D3', fg='black')
+        titleNomeEspecialidade.place(relx= 0.03, rely=0.05)
+
+        self.nomeEspecialidade = tk.Entry(self.modalEspecialidade)
+        self.nomeEspecialidade.configure(background='white', fg='black', width=20)
+        self.nomeEspecialidade.place(relx= 0.032, rely=0.1)
+
+        button = tk.Button(self.modalEspecialidade, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        button.place(relx=0.15, rely=0.28)   
+        
+        self.treeviewEspecialidade = ttk.Treeview(self.modalEspecialidade, columns=("idEspecialidade", "Especialidade", "Status"), show='headings')
+        self.treeviewEspecialidade.heading("idEspecialidade", text="Nome Procedimento")
+        self.treeviewEspecialidade.heading("Especialidade", text="Especialidade")
+        self.treeviewEspecialidade.heading("Status", text="Status")
+        
+        verticalBar = ttk.Scrollbar(self.modalEspecialidade, orient='vertical', command=self.treeviewEspecialidade.yview)
+        horizontalBar = ttk.Scrollbar(self.modalEspecialidade, orient='horizontal', command=self.treeviewEspecialidade.xview)
+        self.treeviewEspecialidade.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeviewEspecialidade)
+        style.theme_use('clam')
+        style.configure("self.treeviewEspecialidade", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        self.treeviewEspecialidade.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+
+        verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
+        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+        
+        resultado = self.dao.especialidadeView()
+        for row in resultado:
+            self.treeviewEspecialidade.insert("", END, values=row)
+        
+        buttonBuscar = tk.Button(self.modalEspecialidade, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+        buttonBuscar.place(relx=0.02, rely=0.28)
+
+        self.modalEspecialidade.mainloop()
+
+    def insertEspecialidadeNovo(self):
+        self.dao.insertEspecialidade(self.nomeEspecialidade.get())
+        self.exibir_sucesso("Especialidade Inserida!")
+
+    def buscarEspecialidade(self):      
+        self.treeviewEspecialidade.delete(*self.treeviewEspecialidade.get_children())
+        self.nomeEspecialidade.insert(END, '%')
+        nome = self.nomeEspecialidade.get()
+        rows = self.dao.especialidadeViewNome(nome)
+
+        for row in rows:
+            if len(row) == 3:
+                self.treeviewEspecialidade.insert("", END, values=row)
+            else:
+                self.exibir_avisos("Erro de tupla")
+
+        self.nomeEspecialidade.delete(0, END)
+
+# Fim Especialidade --------------------------------
+
+# Procedimentos --------------------------------
     def telaProcedimento(self):
         self.modalProcedimentos = tk.Tk()
         self.modalProcedimentos.title('Procedimento')
-        self.modalProcedimentos.geometry('550x250')
+        self.modalProcedimentos.geometry('650x450')
         self.modalProcedimentos.configure(background='#D3D3D3')
         self.modalProcedimentos.resizable(False,False)
         self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
 
         titleNomeProcedimento = tk.Label(self.modalProcedimentos, text='NOME DO PROCEDIMENTO:', font='bold')
         titleNomeProcedimento.configure(background='#D3D3D3', fg='black')
-        titleNomeProcedimento.place(relx= 0.03, rely=0.2)
+        titleNomeProcedimento.place(relx= 0.03, rely=0.05)
 
         self.nomeProcedimento = tk.Entry(self.modalProcedimentos)
         self.nomeProcedimento.configure(background='white', fg='black', width=20)
-        self.nomeProcedimento.place(relx= 0.032, rely=0.29)
+        self.nomeProcedimento.place(relx= 0.032, rely=0.1)
         
         titleEspecialidadeId = tk.Label(self.modalProcedimentos, text='ESPECIALIDADE:', font='bold')
         titleEspecialidadeId.configure(background='#D3D3D3', fg='black')
-        titleEspecialidadeId.place(relx= 0.03, rely=0.42)
+        titleEspecialidadeId.place(relx= 0.03, rely=0.16)
 
         self.rowsEspecialidade = self.dao.especialidadeView()
         self.rowsEspecialidadeList = [item[1] for item in self.rowsEspecialidade]
@@ -1881,22 +1946,49 @@ class App:
         self.opcoesEspecialidadeProcedimento.set("Especialidade")
         dropdown = tk.OptionMenu(self.modalProcedimentos, self.opcoesEspecialidadeProcedimento, *self.rowsEspecialidadeList)
         dropdown.configure(background='white', fg='black', activebackground='gray')
-        dropdown.place(relx= 0.03, rely=0.52, relheight=0.12)
+        dropdown.place(relx= 0.03, rely=0.22, relheight=0.08)
 
         self.opcoesEspecialidadeProcedimento.trace_add('write', self.setIdEspecialidadeProcedimentos)
         
         titleValores = tk.Label(self.modalProcedimentos, text='VALOR DO PROCEDIMENTO:', font='bold')
         titleValores.configure(background='#D3D3D3', fg='black')
-        titleValores.place(relx= 0.55, rely=0.2)
-
+        titleValores.place(relx= 0.55, rely=0.05)
+        
+        titleReal = tk.Label(self.modalProcedimentos, text='R$', font='bold')
+        titleReal.configure(background='#D3D3D3', fg='black')
+        titleReal.place(relx= 0.5, rely=0.1)
+        
         self.valorProcedimento = tk.Entry(self.modalProcedimentos)
         self.valorProcedimento.configure(background='white', fg='black', width=20)
-        self.valorProcedimento.place(relx= 0.553, rely=0.29)
+        self.valorProcedimento.place(relx= 0.553, rely=0.1)
 
         button = tk.Button(self.modalProcedimentos, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        button.place(relx=0.55, rely=0.52)
+        button.place(relx=0.635, rely=0.28)   
         
-        button.bind('<Return>', lambda event: button.invoke())
+        self.treeviewProcedimentos = ttk.Treeview(self.modalProcedimentos, columns=("Procedimento", "Especialidade", "Valor"), show='headings')
+        self.treeviewProcedimentos.heading("Procedimento", text="Nome Procedimento")
+        self.treeviewProcedimentos.heading("Especialidade", text="Especialidade")
+        self.treeviewProcedimentos.heading("Valor", text="Valor Procedimento")
+        
+        verticalBar = ttk.Scrollbar(self.modalProcedimentos, orient='vertical', command=self.treeviewProcedimentos.yview)
+        horizontalBar = ttk.Scrollbar(self.modalProcedimentos, orient='horizontal', command=self.treeviewProcedimentos.xview)
+        self.treeviewProcedimentos.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeviewProcedimentos)
+        style.theme_use('clam')
+        style.configure("self.treeviewProcedimentos", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        self.treeviewProcedimentos.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+
+        verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
+        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+        
+        resultado = self.dao.procedimentosAll()
+        for row in resultado:
+            self.treeviewProcedimentos.insert("", END, values=row)
+        
+        buttonBuscar = tk.Button(self.modalProcedimentos, text='BUSCAR', command=self.buscarProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+        buttonBuscar.place(relx=0.8, rely=0.28)
 
         self.modalProcedimentos.mainloop()
 
@@ -1904,7 +1996,7 @@ class App:
         self.selecaoEspecialidadeProc = self.opcoesEspecialidadeProcedimento.get()
         self.idEspecialidadeProcSelecao = self.especialidadeProcedimentoMap.get(self.selecaoEspecialidadeProc)
 
-    def insertProcedimento(self): 
+    def insertProcedimento(self):   
         if self.opcoesEspecialidadeProcedimento.get() == "Especialidade" or self.nomeProcedimento.get() == "" or self.valorProcedimento.get() == "":
             self.exibir_avisos("Preencha todos os campos!")
         else:
@@ -1914,7 +2006,23 @@ class App:
             else:
                 msn = "Procedimento inserido!"
                 self.exibir_sucesso(msn)
-                
+
+    def buscarProcedimento(self):      
+        self.treeviewProcedimentos.delete(*self.treeviewProcedimentos.get_children())
+        self.nomeProcedimento.insert(END, '%')
+        nome = self.nomeProcedimento.get()
+        rows = self.dao.procedimentoNome(nome)
+
+        for row in rows:
+            if len(row) == 3:
+                self.treeviewProcedimentos.insert("", END, values=row)
+            else:
+                self.exibir_avisos("Erro de tupla")
+
+        self.nomeProcedimento.delete(0, END)
+  
+# Fim Procedimentos --------------------------------  
+
     def exibir_erro(self, mensagem):
         if "Access denied for user" in mensagem:
             telaErro = tk.Tk()
