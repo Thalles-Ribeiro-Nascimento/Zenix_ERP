@@ -29,6 +29,16 @@ class Dao:
 
         return rows
 
+    def funcionarioAllAtivos(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT * FROM Vw_FuncionariosAtivos'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def funcionarioAll(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -198,6 +208,23 @@ class Dao:
             else:
                 print(error.split(":")[1])
                 return error.split(":")[1]
+
+    def insertProcedimento(self, nomeProc, especialidade, valor):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        try:
+            sql = f"INSERT INTO procedimentos (nome_procedimento, idEspecialidade, valor) VALUES (%s, %s, %s)"
+            self.cursor.execute(sql, (nomeProc, especialidade, valor))
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print(e)
+            
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado
+
 
     # def trocaPwd(self, newPdw, user):
     #     if self.erro:

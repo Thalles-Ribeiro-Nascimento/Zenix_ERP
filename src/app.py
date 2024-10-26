@@ -249,7 +249,13 @@ class App:
         self.frameviewClientes = tk.Frame(self.clientes, background='white')
         self.frameviewClientes.place(relx=0.02, rely=0.25, relheight=0.70, relwidth=0.96)
 
-# Funcionario
+    def clearFieldFunc(self):
+        self.campo_nome.delete(0, END)
+
+    def clearFieldCliente(self):
+        self.campo_nomeClientes.delete(0, END)
+
+# Funcionario -----------------------------------------------
 
     def telaFuncionario(self):
         self.funcionarios = tk.Tk()
@@ -275,7 +281,7 @@ class App:
         menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
 
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Lançamento',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_command(label='Todos Funcionarios',command=self.funcionariosAll, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Excluir',command=self.excluirItemFuncionario, font=('Arial', 10, 'bold'), foreground='black')
 
@@ -290,6 +296,9 @@ class App:
 
         self.campo_nome = tk.Entry(self.framefuncionarios, width=25, bg='white', fg='black')
         self.campo_nome.place(relx=0.02, rely=0.5)
+        
+        buttonClear = tk.Button(self.framefuncionarios, text='x', command=self.clearFieldFunc, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonClear.place(relx=0.16, rely=0.5, relwidth=0.02, relheight=0.13)
 
         self.buscarFunc = tk.Button(self.framefuncionarios, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buscarFunc.place(relx=0.02, rely=0.7 ,relheight=0.2)
@@ -337,16 +346,11 @@ class App:
         verticalBar.place(relx=0.99 , rely=0, relheight=0.972)
         horizontalBar.place(rely=0.972, relx=0, relwidth=1)
 
-        self.rows = self.dao.funcionarioAll()
-        self.treeviewFunc.tag_configure("Vermelho", foreground='red')
+        self.rows = self.dao.funcionarioAllAtivos()
+        # self.treeviewFunc.tag_configure("Vermelho", foreground='red')
         
         for row in self.rows:
-            status = row[14]
-            if status == 1:
-                self.treeviewFunc.insert("", END, values=row)
-            else:
-                self.treeviewFunc.insert("", END, values=row, tags='Vermelho')
-            
+            self.treeviewFunc.insert("", END, values=row)
             
         self.treeviewFunc.bind('<<TreeviewSelect>>', self.pegaId)
                 
@@ -506,12 +510,7 @@ class App:
             self.cpfAtualizaFunc.insert(0, self.cpfFuncionario)
             self.telefoneAtualizaFunc.insert(0, self.telefoneFuncionario)
             self.dataAtualizaFunc.insert(0, self.dataNascimentoFuncionario)
-            self.celularAtualizaFunc.insert(0, self.celularFuncionario)
-            
-            # self.var = StringVar()            
-            # if self.statusFuncionario == 1:
-            #     self.checkButton = tk.Checkbutton(self.modalAtualizaFunc, text='Ativo?', background='#D3D3D3', fg='black', activebackground='#D3D3D3', activeforeground='black', variable=self.var, onvalue="s")
-            #     self.checkButton.place(relx= 0.75, rely=0.7)   
+            self.celularAtualizaFunc.insert(0, self.celularFuncionario) 
             
             self.buttonAtualizaFunc = tk.Button(self.modalAtualizaFunc, text='ALTERAR' , command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
             self.buttonAtualizaFunc.place(relx= 0.7, rely=0.85)
@@ -523,6 +522,7 @@ class App:
         self.atualizaIdEspecialidade = self.especialidadeAtualizaMap.get(self.atualizaEspecialidade)
 
     def pegaId(self, event):
+        self.campo_nome.delete(0, END)
         try:
             # Id do item selecionado
             self.item_id = self.treeviewFunc.selection()[0]
@@ -598,6 +598,8 @@ class App:
 
         button = tk.Button(self.modalEspecialidade, text='ADICIONAR', command=self.insertEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         button.place(relx=0.35, rely=0.65)
+        
+        button.bind('<Return>', lambda event: button.invoke())
 
         self.modalEspecialidade.mainloop()
 
@@ -605,22 +607,41 @@ class App:
         self.dao.insertEspecialidade(self.entryEspecialidade.get())
         msn = "Especialidade Inserida!"
         self.exibir_sucesso(msn)
-            
+
+    def funcionariosAll(self):
+        self.treeviewFunc.delete(*self.treeviewFunc.get_children())
+        self.rows = self.dao.funcionarioAll()
+        self.treeviewFunc.tag_configure("Vermelho", foreground='red')
+        
+        for row in self.rows:
+            status = row[14]
+            if status == 1:
+                self.treeviewFunc.insert("", END, values=row)
+            else:
+                self.treeviewFunc.insert("", END, values=row, tags="Vermelho")
+
     def buscarFuncionarioNome(self):
         self.treeviewFunc.delete(*self.treeviewFunc.get_children())
         self.campo_nome.insert(END, '%')
         nome = self.campo_nome.get()
         rows = self.dao.funcionarioNome(nome)
-
-        for row in rows:
-            if len(row) == 15:
+        print(f"Nome: {nome}")
+        
+        if nome == "%":
+            self.treeviewFunc.delete(*self.treeviewFunc.get_children())
+            rows2 = self.dao.funcionarioAllAtivos()
+            for row in rows2:
+                self.treeviewFunc.insert("", END, values=row)
+            self.campo_nome.delete(0, END)
+        else:       
+            for row in rows:
                 status = row[14]
                 if status == 1:
                     self.treeviewFunc.insert("", END, values=row)
+                    print(f"Status igual a {status}")
                 else:
                     self.treeviewFunc.insert("", END, values=row, tags='Vermelho')
-            else:
-                self.exibir_avisos("Erro de tupla")
+                    print(f"Status = {status}")
 
         self.campo_nome.delete(0, END)
         
@@ -649,7 +670,7 @@ class App:
         txtEspecialidade.configure(background='#D3D3D3', fg='black')
 
         buttonEspecialidade = tk.Button(self.modalNovoFunc, text='+', command=self.modalNovaEspecialidade)
-        buttonEspecialidade.place(relx=0.58, rely=0.2, relwidth=0.035, relheight=0.04)
+        buttonEspecialidade.place(relx=0.571, rely=0.205, relwidth=0.03, relheight=0.03)
         buttonEspecialidade.configure(background='white', fg='black', activebackground='blue', activeforeground='black')
 
         self.rows = self.dao.especialidadeView()
@@ -773,6 +794,7 @@ class App:
         self.modalNovoFunc.mainloop()
             
     def alteraFuncionario(self):
+                
         listaUpgrade = [self.nomeAtualizaFunc.get().upper(), self.opcoesAtualizaFunc.get(), self.cpfAtualizaFunc.get(), self.telefoneAtualizaFunc.get(), self.celularAtualizaFunc.get(),
                      self.dataAtualizaFunc.get(),
                      self.RuaAtualizaFunc.get().upper(), self.BairroAtualizaFunc.get().upper(), self.ufAtualizaFunc.get(), self.NumeroAtualizaFunc.get(),
@@ -867,9 +889,6 @@ class App:
         if nome == "":
             self.exibir_avisos("O campo Nome está vazio")
             
-        elif especialidade == "":
-            self.exibir_avisos("O campo Especialidade está vazio")
-            
         elif cpf == "":
             self.exibir_avisos("O campo CPF está vazio")
             
@@ -898,7 +917,7 @@ class App:
         # telefoneSemFormatacao = ''.join(filter(str.isdigit, telefone))
         # celularSemFormatacao = ''.join(filter(str.isdigit, celular))
         
-        if "@" in email and ".COM" in email:
+        if "@" in email and ".com" in email:
             dao = self.dao.inserirFuncionario(
             nome, especialidade, cpf, nascimento, telefone, celular,
             rua, bairro, estado, numero, comp, email, percentil
@@ -923,7 +942,7 @@ class App:
     
             self.exibir_sucesso(mensagem)
 
-# Calendarios -------------------------------------
+# Calendarios
     def calendarioInicial(self):
 #         self.calendario = tkcalendar.Calendar(
 #             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
@@ -976,7 +995,7 @@ class App:
 #         self.data.insert(END, dataFinal)
 #         self.insereData.destroy()
         pass
-# Fim calendarios ---------------------------------
+# Fim calendarios
 
 # Formatação CPF
     def formatar_cpfFunc(self,event=None):
@@ -1116,9 +1135,9 @@ class App:
             self.celularAtualizaFunc.insert(0, celular)
 # Fim Formatação Atualiza Celular
 
-# Fim Funcionario
+# Fim Funcionario ----------------------------------------
  
-# Cliente
+# Cliente ------------------------------------------------
     def telaClientes(self):
         self.clientes = tk.Tk()
         self.clientes.title('Clientes')
@@ -1158,6 +1177,9 @@ class App:
 
         self.campo_nomeClientes = tk.Entry(self.frameclientes, width=25, bg='white', fg='black')
         self.campo_nomeClientes.place(relx=0.02, rely=0.5)
+        
+        buttonClear = tk.Button(self.frameclientes, text='x', command=self.clearFieldCliente, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonClear.place(relx=0.16, rely=0.5, relwidth=0.02, relheight=0.13)
 
         self.buscarClientes = tk.Button(self.frameclientes, text='BUSCAR' , command=self.buscarClienteNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buscarClientes.place(relx=0.02, rely=0.7 ,relheight=0.2)
@@ -1212,7 +1234,7 @@ class App:
             
             
         self.treeviewClientes.bind('<<TreeviewSelect>>', self.pegaIdClientes)
-                
+                        
         self.clientes.mainloop()
 
     def modalNovoCliente(self):
@@ -1564,10 +1586,10 @@ class App:
                 self.exibir_erro(resultado)
                      
         listaUpgrade.clear()
-        colunas.clear()  
-        clienteUpgrade.clear()       
+        colunas.clear()
+        clienteUpgrade.clear()   
         indices.clear()
-        
+       
 # Formatação Celular Cliente
     def formatar_celularCliente(self, event=None):
 
@@ -1758,6 +1780,7 @@ class App:
             self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
 
     def pegaIdClientes(self, event):
+        self.campo_nomeClientes.delete(0, END)
         try:
             # Id do item Cliente selecionado
             self.item_idCliente = self.treeviewClientes.selection()[0]
@@ -1812,7 +1835,7 @@ class App:
         except IndexError as e:
             print(e)
 
-# Fim Cliente
+# Fim Cliente -------------------------------------
 
     def telaFinanceiro(self):
         pass
@@ -1830,8 +1853,68 @@ class App:
         pass
 
     def telaProcedimento(self):
-        pass
+        self.modalProcedimentos = tk.Tk()
+        self.modalProcedimentos.title('Procedimento')
+        self.modalProcedimentos.geometry('550x250')
+        self.modalProcedimentos.configure(background='#D3D3D3')
+        self.modalProcedimentos.resizable(False,False)
+        self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
 
+        titleNomeProcedimento = tk.Label(self.modalProcedimentos, text='NOME DO PROCEDIMENTO:', font='bold')
+        titleNomeProcedimento.configure(background='#D3D3D3', fg='black')
+        titleNomeProcedimento.place(relx= 0.03, rely=0.2)
+
+        self.nomeProcedimento = tk.Entry(self.modalProcedimentos)
+        self.nomeProcedimento.configure(background='white', fg='black', width=20)
+        self.nomeProcedimento.place(relx= 0.032, rely=0.29)
+        
+        titleEspecialidadeId = tk.Label(self.modalProcedimentos, text='ESPECIALIDADE:', font='bold')
+        titleEspecialidadeId.configure(background='#D3D3D3', fg='black')
+        titleEspecialidadeId.place(relx= 0.03, rely=0.42)
+
+        self.rowsEspecialidade = self.dao.especialidadeView()
+        self.rowsEspecialidadeList = [item[1] for item in self.rowsEspecialidade]
+        self.rowEspecialidadeId = [item[0] for item in self.rowsEspecialidade]
+        self.especialidadeProcedimentoMap = dict(zip(self.rowsEspecialidadeList, self.rowEspecialidadeId))
+        
+        self.opcoesEspecialidadeProcedimento = StringVar(self.modalProcedimentos)
+        self.opcoesEspecialidadeProcedimento.set("Especialidade")
+        dropdown = tk.OptionMenu(self.modalProcedimentos, self.opcoesEspecialidadeProcedimento, *self.rowsEspecialidadeList)
+        dropdown.configure(background='white', fg='black', activebackground='gray')
+        dropdown.place(relx= 0.03, rely=0.52, relheight=0.12)
+
+        self.opcoesEspecialidadeProcedimento.trace_add('write', self.setIdEspecialidadeProcedimentos)
+        
+        titleValores = tk.Label(self.modalProcedimentos, text='VALOR DO PROCEDIMENTO:', font='bold')
+        titleValores.configure(background='#D3D3D3', fg='black')
+        titleValores.place(relx= 0.55, rely=0.2)
+
+        self.valorProcedimento = tk.Entry(self.modalProcedimentos)
+        self.valorProcedimento.configure(background='white', fg='black', width=20)
+        self.valorProcedimento.place(relx= 0.553, rely=0.29)
+
+        button = tk.Button(self.modalProcedimentos, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        button.place(relx=0.55, rely=0.52)
+        
+        button.bind('<Return>', lambda event: button.invoke())
+
+        self.modalProcedimentos.mainloop()
+
+    def setIdEspecialidadeProcedimentos(self, *args):
+        self.selecaoEspecialidadeProc = self.opcoesEspecialidadeProcedimento.get()
+        self.idEspecialidadeProcSelecao = self.especialidadeProcedimentoMap.get(self.selecaoEspecialidadeProc)
+
+    def insertProcedimento(self): 
+        if self.opcoesEspecialidadeProcedimento.get() == "Especialidade" or self.nomeProcedimento.get() == "" or self.valorProcedimento.get() == "":
+            self.exibir_avisos("Preencha todos os campos!")
+        else:
+            resultado = self.dao.insertProcedimento(self.nomeProcedimento.get(), self.idEspecialidadeProcSelecao, self.valorProcedimento.get())
+            if isinstance(resultado, str):
+                self.exibir_erro(resultado)
+            else:
+                msn = "Procedimento inserido!"
+                self.exibir_sucesso(msn)
+                
     def exibir_erro(self, mensagem):
         if "Access denied for user" in mensagem:
             telaErro = tk.Tk()
