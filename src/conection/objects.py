@@ -178,6 +178,27 @@ class Dao:
             else:
                 return error.split(":")[1]   
 
+    def atualizaCliente(self, id, dado, coluna):
+        
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"UPDATE cliente SET {coluna} = %s WHERE cod_cliente = %s"
+        try:
+            self.cursor.execute(sql, (dado, id))
+            self.conecta.commit()
+            
+        except Exception as e:
+            print(e)
+            error = str(e)
+            if "1062 (23000)" in error:
+                msg = error.split(":")[1]
+                self.erroUpdateFunc = f"Campo Duplicado\n{msg}"
+                return self.erroUpdateFunc
+            else:
+                print(error.split(":")[1])
+                return error.split(":")[1]
+
     # def trocaPwd(self, newPdw, user):
     #     if self.erro:
     #         return f'Houve erro de conexão: {self.erro}'

@@ -22,6 +22,7 @@ class App:
         self.root_login.colormapwindows(self.root_login)
         self.item_id = ""
         self.idSelecao = ""
+        self.item_idCliente = ""
         
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
@@ -913,6 +914,15 @@ class App:
         else:
             self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
 
+    def excluirItemFuncionario(self):
+        if self.item_id == "":
+            self.exibir_avisos("Selecione um funcionário")
+        else:
+            self.dao.deleteLogicoFuncionario(self.funcId)
+            mensagem = f"{self.nomeFuncionario} foi excluído com sucesso"
+    
+            self.exibir_sucesso(mensagem)
+
 # Calendarios -------------------------------------
     def calendarioInicial(self):
 #         self.calendario = tkcalendar.Calendar(
@@ -1133,7 +1143,7 @@ class App:
         menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
 
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Lançamento',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_command(label='Agendar',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Excluir',command=self.excluirItemFuncionario, font=('Arial', 10, 'bold'), foreground='black')
 
@@ -1152,7 +1162,7 @@ class App:
         self.buscarClientes = tk.Button(self.frameclientes, text='BUSCAR' , command=self.buscarClienteNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buscarClientes.place(relx=0.02, rely=0.7 ,relheight=0.2)
 
-        self.atualizarClientes = tk.Button(self.frameclientes, text='ATUALIZAR' , command=self.atualizarModal, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.atualizarClientes = tk.Button(self.frameclientes, text='ATUALIZAR' , command=self.atualizarClientesModal, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.atualizarClientes.place(relx=0.45, rely=0.7 ,relheight=0.2)               
 
         novoCliente = tk.Button(self.frameclientes, text='NOVO' , command=self.modalNovoCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
@@ -1255,7 +1265,7 @@ class App:
         selectGenero.configure(background='white', fg='black', activebackground='gray')
         selectGenero.place(relx= 0.45, rely=0.245, relwidth=0.09, relheight=0.05)
 
-        txtTelefone = tk.Label(self.modalNovoClientes, text='TELEFONE:', font='bold')
+        txtTelefone = tk.Label(self.modalNovoClientes, text='*TELEFONE:', font='bold')
         txtTelefone.place(relx= 0.4, rely=0.33)
         txtTelefone.configure(background='#D3D3D3', fg='black')
 
@@ -1348,6 +1358,216 @@ class App:
 
         self.campo_nomeClientes.delete(0, END)
 
+    def atualizarClientesModal(self):
+        if self.item_idCliente == "":
+            self.exibir_avisos("Selecione um cliente!")
+
+        else:
+            self.modalAtualizaCliente = tk.Tk()
+            self.modalAtualizaCliente.title('Cliente')
+            self.modalAtualizaCliente.geometry('750x550')
+            self.modalAtualizaCliente.configure(background='#D3D3D3')
+            self.modalAtualizaCliente.resizable(False,False)
+            self.modalAtualizaCliente.colormapwindows(self.modalAtualizaCliente)
+            
+            txtNome = tk.Label(self.modalAtualizaCliente, text='NOME:', font='bold')
+            txtNome.place(relx= 0.06, rely=0.2)
+            txtNome.configure(background='#D3D3D3', fg='black')
+
+            self.nomeAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=25)
+            self.nomeAtualizaCliente.configure(background='white', fg='black')
+            self.nomeAtualizaCliente.place(relx= 0.06, rely=0.245)
+            self.nomeAtualizaCliente.insert(0, self.nomeClienteSelect)
+
+            txtCpf = tk.Label(self.modalAtualizaCliente, text='CPF:', font='bold')
+            txtCpf.place(relx= 0.7, rely=0.2)
+            txtCpf.configure(background='#D3D3D3', fg='black')
+
+            self.cpfAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=15)
+            self.cpfAtualizaCliente.place(relx= 0.7, rely=0.245)
+            self.cpfAtualizaCliente.configure(background='white', fg='black')
+            
+            self.cpfAtualizaCliente.bind('<KeyRelease>', self.formatar_cpfAtualizaCliente)
+            
+            txtData = tk.Label(self.modalAtualizaCliente, text='DATA DE NASCIMENTO:', font='bold')
+            txtData.place(relx= 0.06, rely=0.33)
+            txtData.configure(background='#D3D3D3', fg='black')
+
+            self.dataAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=20)
+            self.dataAtualizaCliente.configure(background='white', fg='black')
+            self.dataAtualizaCliente.place(relx= 0.06, rely=0.37)
+            
+            self.dataAtualizaCliente.bind('<KeyRelease>', self.formatar_data_atualizarCliente)
+            
+            genero = tk.Label(self.modalAtualizaCliente, text='SEXO:', font='bold')
+            genero.place(relx= 0.45, rely=0.2)
+            genero.configure(background='#D3D3D3', fg='black')
+            
+            self.sexoAtualizar = StringVar(self.modalAtualizaCliente)
+            self.sexoAtualizar.set(self.sexoClienteSelect)
+            listUf = ['F', 'M']
+            
+            selectGenero = tk.OptionMenu(self.modalAtualizaCliente, self.sexoAtualizar, *listUf)
+            selectGenero.configure(background='white', fg='black', activebackground='gray')
+            selectGenero.place(relx= 0.45, rely=0.245, relwidth=0.09, relheight=0.05)
+
+            txtTelefone = tk.Label(self.modalAtualizaCliente, text='TELEFONE:', font='bold')
+            txtTelefone.place(relx= 0.4, rely=0.33)
+            txtTelefone.configure(background='#D3D3D3', fg='black')
+
+            self.telefoneAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=20)
+            self.telefoneAtualizaCliente.configure(background='white', fg='black')
+            self.telefoneAtualizaCliente.place(relx= 0.4, rely=0.37)
+            
+            self.telefoneAtualizaCliente.bind('<KeyRelease>', self.formatar_telefone_AtualizarCliente)
+            
+            txtCelular = tk.Label(self.modalAtualizaCliente, text='CELULAR:', font='bold')
+            txtCelular.place(relx= 0.7, rely=0.33)
+            txtCelular.configure(background='#D3D3D3', fg='black')
+
+            self.celularAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=20)
+            self.celularAtualizaCliente.configure(background='white', fg='black')
+            self.celularAtualizaCliente.place(relx= 0.7, rely=0.37)
+            
+            self.celularAtualizaCliente.bind('<KeyRelease>', self.formatar_celular_AtualizarCliente)
+
+            txtEmail = tk.Label(self.modalAtualizaCliente, text='Email:', font='bold')
+            txtEmail.place(relx= 0.06, rely=0.45)
+            txtEmail.configure(background='#D3D3D3', fg='black')
+
+            self.EmailAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=50)
+            self.EmailAtualizaCliente.configure(background='white', fg='black')
+            self.EmailAtualizaCliente.place(relx= 0.06, rely=0.495)
+            self.EmailAtualizaCliente.insert(0, self.emailClienteSelect)
+            
+            txtRua = tk.Label(self.modalAtualizaCliente, text='Rua:', font='bold')
+            txtRua.place(relx= 0.06, rely=0.55)
+            txtRua.configure(background='#D3D3D3', fg='black')
+
+            self.RuaAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=50)
+            self.RuaAtualizaCliente.configure(background='white', fg='black')
+            self.RuaAtualizaCliente.place(relx= 0.06, rely=0.6)
+            self.RuaAtualizaCliente.insert(0, self.ruaClienteSelect)
+            
+            txtBairro = tk.Label(self.modalAtualizaCliente, text='Bairro:', font='bold')
+            txtBairro.place(relx= 0.06, rely=0.65)
+            txtBairro.configure(background='#D3D3D3', fg='black')
+
+            self.BairroAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=25)
+            self.BairroAtualizaCliente.configure(background='white', fg='black')
+            self.BairroAtualizaCliente.place(relx= 0.06, rely=0.7)
+            self.BairroAtualizaCliente.insert(0, self.bairroClienteSelect)
+            
+            txtEstado = tk.Label(self.modalAtualizaCliente, text='Estado:', font='bold')
+            txtEstado.place(relx= 0.65, rely=0.55)
+            txtEstado.configure(background='#D3D3D3', fg='black')
+
+            self.ufAtualizaCliente = StringVar(self.modalAtualizaCliente)
+            self.ufAtualizaCliente.set(self.estadoClienteSelect)
+            listUf = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+                    'MT', 'MS', 'MG','PA', 'PB', 'PE', 'PI', 'RJ', 'RN', 'RS',
+                    'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
+            
+            self.EstadoAtualizaCliente = tk.OptionMenu(self.modalAtualizaCliente, self.ufAtualizaCliente, *listUf)
+            self.EstadoAtualizaCliente.configure(background='white', fg='black', activebackground='gray')
+            self.EstadoAtualizaCliente.place(relx= 0.65, rely=0.595, relwidth=0.09, relheight=0.05)
+
+            txtNumero = tk.Label(self.modalAtualizaCliente, text='Nº:', font='bold')
+            txtNumero.place(relx= 0.79, rely=0.55)
+            txtNumero.configure(background='#D3D3D3', fg='black')
+
+            self.NumeroAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=5)
+            self.NumeroAtualizaCliente.configure(background='white', fg='black')
+            self.NumeroAtualizaCliente.place(relx= 0.79, rely=0.595)
+            self.NumeroAtualizaCliente.insert(0, self.numeroRuaClienteSelect)
+
+            txtComplemento = tk.Label(self.modalAtualizaCliente, text='Complemento:', font='bold')
+            txtComplemento.place(relx= 0.4, rely=0.65)
+            txtComplemento.configure(background='#D3D3D3', fg='black')
+
+            self.CompAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=25)
+            self.CompAtualizaCliente.configure(background='white', fg='black')
+            self.CompAtualizaCliente.place(relx= 0.4, rely=0.7)
+            self.CompAtualizaCliente.insert(0, self.complementoClienteSelect)
+            
+            self.cpfAtualizaCliente.insert(0, self.cpfClienteSelect)
+            self.telefoneAtualizaCliente.insert(0, self.telefoneClienteSelect)
+            self.dataAtualizaCliente.insert(0, self.dataNascimentoClienteSelect)
+            self.celularAtualizaCliente.insert(0, self.celularClienteSelect) 
+            
+            self.buttonAtualizaCliente = tk.Button(self.modalAtualizaCliente, text='ALTERAR' , command=self.alteraCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+            self.buttonAtualizaCliente.place(relx= 0.7, rely=0.85)
+            
+            self.modalAtualizaCliente.mainloop()
+
+    def alteraCliente(self):
+        listaUpgrade = [self.nomeAtualizaCliente.get().upper(), self.cpfAtualizaCliente.get(), self.dataAtualizaCliente.get(), self.sexoAtualizar.get(),
+                        self.telefoneAtualizaCliente.get(), self.celularAtualizaCliente.get(), self.RuaAtualizaCliente.get().upper(), 
+                        self.BairroAtualizaCliente.get().upper(), self.ufAtualizaCliente.get(), self.NumeroAtualizaCliente.get(),
+                        self.CompAtualizaCliente.get().upper(), self.EmailAtualizaCliente.get().upper(), self.celularAtualizaCliente.get()]
+        colunas = [" ", "nome_cliente", "cpf", "data_nascimento", "sexo", "telefone", "celular", "rua", "bairro", "uf", "numero", "complemento", "email"]
+        indices = []
+        
+        for old, new in zip(self.listaCliente[1:13], listaUpgrade):
+            if old == new:
+                continue
+            else: 
+                indices.append(self.listaCliente.index(old))
+            
+        if len(indices) < 1:
+            self.exibir_avisos("Nenhum campo foi alterado!")
+            
+        else:
+            validacao = True
+            clienteUpgrade = dict()
+            for i in indices:
+                if validacao == True:
+                    for c in colunas[1:13]:
+                        if i == colunas.index(c):
+                            if i == 12:
+                                if "@" in listaUpgrade[11] and ".COM" in listaUpgrade[11]:
+                                    validacao = True
+                                    clienteUpgrade.update({c:listaUpgrade[i - 1]}) 
+                                else:
+                                    validacao = False
+                                    break
+                            
+                            else:
+                                validacao = True
+                                clienteUpgrade.update({c:listaUpgrade[i - 1]})
+                                
+                                continue  
+                        else:
+                            continue
+                else:
+                    break
+                            
+        if validacao == False:
+            self.exibir_avisos("Não foi possível fazer as alterações")
+            indices.clear()
+            clienteUpgrade.clear()
+            
+        else:
+            erro = False
+            for k, v in zip(clienteUpgrade.keys(), clienteUpgrade.values()):
+                
+                resultado = self.dao.atualizaCliente(self.ClienteId, v, k)
+                if isinstance(resultado, str):
+                    erro = True
+                    break
+                else:
+                    erro = False
+                        
+            if erro == False:  
+                self.exibir_sucesso("Alterações Realizadas")
+            else:
+                self.exibir_erro(resultado)
+                     
+        listaUpgrade.clear()
+        colunas.clear()  
+        clienteUpgrade.clear()       
+        indices.clear()
+        
 # Formatação Celular Cliente
     def formatar_celularCliente(self, event=None):
 
@@ -1417,6 +1637,75 @@ class App:
             self.cpfCliente.insert(0, cpf)
 # Fim Formatação CPF Cliente
 
+# Formatação CPF Atualização
+    def formatar_cpfAtualizaCliente(self,event=None):
+            cpf = self.cpfAtualizaCliente.get()
+            cpf = ''.join(filter(str.isdigit, cpf))
+
+            if len(cpf) > 3:
+                cpf = cpf[:3] + '.' + cpf[3:]
+            if len(cpf) > 6:
+                cpf = cpf[:7] + '.' + cpf[7:]
+            if len(cpf) > 9:
+                cpf = cpf[:11] + '-' + cpf[11:]
+            
+            cpf = cpf[:14]
+
+            self.cpfAtualizaCliente.delete(0, END)
+            self.cpfAtualizaCliente.insert(0, cpf)
+# Fim Formatação CPF Atualização
+
+# Formatação Atualiza Data
+    def formatar_data_atualizarCliente(self, event=None):
+        
+        dataAtualizar = self.dataAtualizaCliente.get()
+        dataAtualizar = ''.join(filter(str.isdigit, dataAtualizar))
+
+        if len(dataAtualizar) > 2:
+            dataAtualizar = dataAtualizar[:2] + '/' + dataAtualizar[2:]
+        if len(dataAtualizar) > 5:
+            dataAtualizar = dataAtualizar[:5] + '/' + dataAtualizar[5:]
+
+        dataAtualizar = dataAtualizar[:10]
+
+        self.dataAtualizaCliente.delete(0, END)
+        self.dataAtualizaCliente.insert(0, dataAtualizar)
+# Fim Formatação Atualiza Data
+
+# Formatação Atualiza Telefone
+    def formatar_telefone_AtualizarCliente(self, event=None):
+
+        telefone = self.telefoneAtualizaCliente.get()
+        telefone = ''.join(filter(str.isdigit, telefone))
+
+        if len(telefone) > 2:
+            telefone = '(' + telefone[:2] + ') ' + telefone[2:]
+        if len(telefone) > 8:  
+            telefone = telefone[:9] + '-' + telefone[9:13]
+        
+        telefone = telefone[:14]
+
+        self.telefoneAtualizaCliente.delete(0, END)
+        self.telefoneAtualizaCliente.insert(0, telefone)
+# Fim Formatação Atualiza Telefone
+
+# Formatação Atualiza Celular
+    def formatar_celular_AtualizarCliente(self, event=None):
+
+            celular = self.celularAtualizaCliente.get()
+            celular = ''.join(filter(str.isdigit, celular))
+
+            if len(celular) > 2:
+                celular = '(' + celular[:2] + ') ' + celular[2:]
+            if len(celular) > 8:  
+                celular = celular[:9] + '-' + celular[9:]
+            
+            celular = celular[:15]
+
+            self.celularAtualizaCliente.delete(0, END)
+            self.celularAtualizaCliente.insert(0, celular)
+# Fim Formatação Atualiza Celular
+
     def insertCliente(self):
         nome = self.nomeCliente.get()
         cpf = self.cpfCliente.get()
@@ -1471,53 +1760,53 @@ class App:
     def pegaIdClientes(self, event):
         try:
             # Id do item Cliente selecionado
-            self.item_id = self.treeviewClientes.selection()[0]
+            self.item_idCliente = self.treeviewClientes.selection()[0]
             
             # Lista Informações Cliente Selecionado
-            self.listaCliente = self.treeviewClientes.item(self.item_id, 'values')
+            self.listaCliente = self.treeviewClientes.item(self.item_idCliente, 'values')
             
             # Cliente ID
             self.ClienteId = self.listaCliente[0]
             
             # Cliente Nome
-            self.nomeCliente = self.listaCliente[1]
-            self.campo_nomeClientes.insert(0, self.nomeCliente)
+            self.nomeClienteSelect = self.listaCliente[1]
+            self.campo_nomeClientes.insert(0, self.nomeClienteSelect)
             
             # Cliente CPF
-            self.cpfCliente = self.listaCliente[2]
-            
-            # Cliente Telefone
-            self.telefoneCliente = self.listaCliente[3]
-            
-            # Cliente Celular
-            self.celularCliente = self.listaCliente[4]
+            self.cpfClienteSelect = self.listaCliente[2]
             
             # Cliente Data de Nascimento
-            self.dataNascimentoCliente = self.listaCliente[5]
+            self.dataNascimentoClienteSelect = self.listaCliente[3]
+            
+            # Cliente Sexo
+            self.sexoClienteSelect = self.listaCliente[4]
+            
+            # Cliente Telefone
+            self.telefoneClienteSelect = self.listaCliente[5]
+            
+            # Cliente Celular
+            self.celularClienteSelect = self.listaCliente[6]
             
             # Cliente Rua
-            self.ruaCliente = self.listaCliente[6]
+            self.ruaClienteSelect = self.listaCliente[7]
             
             # Cliente Bairro
-            self.bairroCliente = self.listaCliente[7]
+            self.bairroClienteSelect = self.listaCliente[8]
             
             # Cliente UF
-            self.estadoCliente = self.listaCliente[8]
+            self.estadoClienteSelect = self.listaCliente[9]
             
             # Cliente Nº
-            self.numeroRuaCliente = self.listaCliente[9]
+            self.numeroRuaClienteSelect = self.listaCliente[10]
             
             # Cliente Complemento
-            self.complementoCliente = self.listaCliente[10]
+            self.complementoClienteSelect = self.listaCliente[11]
             
             # Cliente Email
-            self.emailCliente = self.listaCliente[11]
-            
-            # Cliente Porcentagem
-            self.percentualCliente = self.listaCliente[12]
+            self.emailClienteSelect = self.listaCliente[12]
             
             # Cliente Status
-            self.statusCliente = self.listaCliente[13]
+            self.statusClienteSelect = self.listaCliente[13]
             
             
         except IndexError as e:
@@ -1533,15 +1822,6 @@ class App:
 
     def telaAtendimento(self):
         pass
-
-    def excluirItemFuncionario(self):
-        if self.item_id == "":
-            self.exibir_avisos("Selecione um funcionário")
-        else:
-            self.dao.deleteLogicoFuncionario(self.funcId)
-            mensagem = f"{self.nomeFuncionario} foi excluído com sucesso"
-    
-            self.exibir_sucesso(mensagem)
             
     def telaAgenda(self):
         pass
