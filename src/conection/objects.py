@@ -91,6 +91,10 @@ class Dao:
         
         except mysql.connector.Error as e:
             print("Erro: ", e)
+            
+            error = str(e)
+            resultado = error.split(":")[1]
+            return resultado
   
     def inserirFuncionario(self, nome, especialidade, cpf, nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil):
         if self.erro:
@@ -238,11 +242,21 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
 
+    def procedimentosAtivos(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT * FROM Vw_ProcedimentosAtivos'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def procedimentosAll(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = 'SELECT * FROM Vw_Procedimentos'
+        sql = 'SELECT * FROM Vw_ProcedimentosAll'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -252,12 +266,29 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"SELECT * FROM Vw_Procedimentos WHERE Procedimento LIKE '{nome}%'"
+        sql = f"SELECT * FROM Vw_ProcedimentosAtivos WHERE Procedimento LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
+    def deleteLogicoProcedimento(self, id):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+
+        try:
+            sql = f'UPDATE procedimentos SET status = 0 WHERE cod_procedimento= {id}'
+            self.cursor.execute(sql)
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print("Erro: ", e)
+            
+            error = str(e)
+            resultado = error.split(":")[1]
+            return resultado
+            
     # def trocaPwd(self, newPdw, user):
     #     if self.erro:
     #         return f'Houve erro de conexão: {self.erro}'
