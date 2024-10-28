@@ -488,6 +488,12 @@ class App:
             self.EstadoAtualizaFunc = tk.OptionMenu(self.modalAtualizaFunc, self.ufAtualizaFunc, *listUf)
             self.EstadoAtualizaFunc.configure(background='white', fg='black', activebackground='gray')
             self.EstadoAtualizaFunc.place(relx= 0.65, rely=0.595, relwidth=0.09, relheight=0.05)
+            
+            # valor_status = IntVar()
+            # # valor_status.set(self.statusFuncionario)
+            # checkButtonAtivo = tk.Checkbutton(self.modalAtualizaFunc, text="Ativo?", variable=valor_status, command=lambda: print(valor_status.get()))
+            # # , variable=valor_status, command=lambda: print(valor_status.get()), onvalue=1
+            # checkButtonAtivo.place(relx= 0.74, rely=0.7)
 
             txtNumero = tk.Label(self.modalAtualizaFunc, text='Nº:', font='bold')
             txtNumero.place(relx= 0.79, rely=0.55)
@@ -510,7 +516,7 @@ class App:
             self.cpfAtualizaFunc.insert(0, self.cpfFuncionario)
             self.telefoneAtualizaFunc.insert(0, self.telefoneFuncionario)
             self.dataAtualizaFunc.insert(0, self.dataNascimentoFuncionario)
-            self.celularAtualizaFunc.insert(0, self.celularFuncionario) 
+            self.celularAtualizaFunc.insert(0, self.celularFuncionario)
             
             self.buttonAtualizaFunc = tk.Button(self.modalAtualizaFunc, text='ALTERAR' , command=self.alteraFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
             self.buttonAtualizaFunc.place(relx= 0.7, rely=0.85)
@@ -521,7 +527,7 @@ class App:
         self.atualizaEspecialidade = self.opcoesAtualizaFunc.get()
         self.atualizaIdEspecialidade = self.especialidadeAtualizaMap.get(self.atualizaEspecialidade)
 
-    def pegaId(self, event):    
+    def pegaId(self, event):
         self.campo_nome.delete(0, END)
         try:
             # Id do item selecionado
