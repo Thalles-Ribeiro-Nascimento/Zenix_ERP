@@ -177,9 +177,10 @@ class App:
         self.frameTvRoot()
         
         treeview1 = ttk.Treeview(self.frame2, columns=(
-            'Data', 'Hora', 'Cod.Cliente', 'Protocolo',
-            'Nome do Cliente', 'Data de Nascimento', 'CPF', 'Sexo', 'Telefone/Celular', 'Email',
-            'Nome do Funcionario', 'Especialidade', 'Procedimento', 'Valor', 'Rua', 'Bairro',
+            'Data', 'Hora', 'Cod.Cliente', 'Protocolo', 'Cod.Atendimento',
+            'Nome do Cliente','Data de Nascimento','Procedimento', 'Valor','Nome do Funcionario','Especialidade',
+            'CPF', 'Sexo', 'Telefone', 'Celular', 'Email',
+            'Rua', 'Bairro',
             'Nº', 'UF','Comp', 'Status' 
             ), show='headings')
 
@@ -187,16 +188,18 @@ class App:
         treeview1.heading('Hora', text='Hora')
         treeview1.heading('Cod.Cliente', text='Cód.Cliente')
         treeview1.heading('Protocolo', text='Protocolo')
+        treeview1.heading('Cod.Atendimento', text='Cód.Atendimento')
         treeview1.heading('Nome do Cliente', text='Nome do Cliente')
         treeview1.heading('Data de Nascimento', text='Data de Nascimento')
-        treeview1.heading('CPF', text='CPF')
-        treeview1.heading('Sexo', text='Sexo')
-        treeview1.heading('Telefone/Celular', text='Tel/Cel')
-        treeview1.heading('Email', text='Email')
-        treeview1.heading('Nome do Funcionario', text='Funcionário')
-        treeview1.heading('Especialidade', text='Especialidade')
         treeview1.heading('Procedimento', text='Procedimento')
         treeview1.heading('Valor', text='Valor')
+        treeview1.heading('Nome do Funcionario', text='Funcionário')
+        treeview1.heading('Especialidade', text='Especialidade')
+        treeview1.heading('CPF', text='CPF')
+        treeview1.heading('Sexo', text='Sexo')
+        treeview1.heading('Telefone', text='Telefone')
+        treeview1.heading('Celular', text='Celular')
+        treeview1.heading('Email', text='Email')
         treeview1.heading('Rua', text='Rua')
         treeview1.heading('Bairro', text='Bairro')
         treeview1.heading('Nº', text='Nº')
