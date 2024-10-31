@@ -5,10 +5,6 @@ class Dao:
     def __init__(self, login, key):
         self.conecta = c.Conexao().Conecta(login, key)
         
-    # Tipos de erro:
-        self.erroDeleteFunc = ""
-        self.erroinsercaoFunc = ""
-        
     # Erro de conexão 
         if isinstance(self.conecta, str):
             self.erro = self.conecta
@@ -129,9 +125,9 @@ class Dao:
         except mysql.connector.Error as e:
             print("Erro: ", e)
 
-            self.erroDeleteFunc = str(e)
+            erroDeleteFunc = str(e)
 
-            return self.erroDeleteFunc
+            return erroDeleteFunc
 
     def insertEspecialidade(self, especialidade):
         if self.erro:

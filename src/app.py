@@ -535,6 +535,7 @@ class App:
         try:
             # Id do item selecionado
             self.item_id = self.treeviewFunc.selection()[0]
+            self.selecao_itemFunc = self.treeviewFunc.selection()
             
             # Lista Informações Funcionário Selecionado
             self.listaFuncionario = self.treeviewFunc.item(self.item_id, 'values')
@@ -940,10 +941,26 @@ class App:
         if self.item_id == "":
             self.exibir_avisos("Selecione um funcionário")
         else:
-            self.dao.deleteLogicoFuncionario(self.funcId)
-            mensagem = f"{self.nomeFuncionario} foi excluído com sucesso"
-    
-            self.exibir_sucesso(mensagem)
+            if len(self.selecao_itemFunc) > 1:
+                validar = True
+                for id in self.selecao_itemFunc:
+                    values = self.treeviewFunc.item(id, 'values')
+                    resultado = self.dao.deleteLogicoFuncionario(values[0])
+                    
+                    if isinstance(resultado, str):
+                        self.exibir_erro(resultado)
+                        validar = False
+                        break
+                    else:
+                        continue
+                    
+                if validar == False:
+                    return
+                else:
+                    self.exibir_sucesso("Funcionários Excluídos!")    
+            else:       
+                self.dao.deleteLogicoFuncionario(self.funcId)    
+                self.exibir_sucesso(f"{self.nomeFuncionario} foi excluído com sucesso")
 
 # Calendarios
     def calendarioInicial(self):
@@ -1925,6 +1942,8 @@ class App:
         try:
             # Id do Especialidade Selecionada
             self.ItemSelecionadoEspecialidade = self.treeviewEspecialidade.selection()[0]
+            self.selecao_itemEspecialidade = self.treeviewEspecialidade.selection()
+            print(self.selecao_itemEspecialidade)
                     
             # Lista do Especialidade selecionada
             self.listaEspecialidadeSelecionado = self.treeviewEspecialidade.item(self.ItemSelecionadoEspecialidade, 'values')
@@ -1957,12 +1976,35 @@ class App:
         self.nomeEspecialidade.delete(0, END)
 
     def deleteEspecialidade(self):
-        resultado = self.dao.deleteLogicoEspecialidade(self.idEspecialidadeSelecionado)
-        
-        if isinstance(resultado, str):
-            self.exibir_erro(resultado)
+        if self.ItemSelecionadoEspecialidade == "":
+            self.exibir_avisos("Selecione uma Especialidade")
         else:
-            self.exibir_sucesso("Especialidade excluída!")
+            if len(self.selecao_itemEspecialidade) > 1:
+                validar = True
+                for id in self.selecao_itemEspecialidade:
+                    values = self.treeviewEspecialidade.item(id, 'values')
+        
+                    resultado = self.dao.deleteLogicoEspecialidade(values[0])
+                    
+                    if isinstance(resultado, str):
+                        self.exibir_erro(resultado)
+                        validar = False
+                        break
+                    else:
+                        continue
+                    
+                if validar == False:
+                    return
+                else:
+                    self.exibir_sucesso("Especialidade Excluídas!")    
+            else:       
+                resultado = self.dao.deleteLogicoEspecialidade(self.idEspecialidadeSelecionado)
+        
+                if isinstance(resultado, str):
+                    self.exibir_erro(resultado)
+                else:
+                    self.exibir_sucesso("Especialidade excluída!")
+        
             
 
 # Fim Especialidade --------------------------------
@@ -2092,6 +2134,7 @@ class App:
         try:
             # Id do Procedimento Selecionado
             self.ItemSelecionadoProcedimento = self.treeviewProcedimentos.selection()[0]
+            self.selecao_itemProcedimento = self.treeviewProcedimentos.selection()
                     
             # Lista do Procedimento selecionado
             self.listaProcedimentoSelecionado = self.treeviewProcedimentos.item(self.ItemSelecionadoProcedimento, 'values')
@@ -2112,12 +2155,33 @@ class App:
             return
 
     def deleteProcedimento(self):
-        resultado = self.dao.deleteLogicoProcedimento(self.idProcedimentoSelecionado)
-        if isinstance(resultado, str):
-            self.exibir_erro(resultado)
-        
+        if self.ItemSelecionadoProcedimento == "":
+            self.exibir_avisos("Selecione um Procedimento")
         else:
-            self.exibir_sucesso("Procedimento deletado!")
+            if len(self.selecao_itemProcedimento) > 1:
+                validar = True
+                for id in self.selecao_itemProcedimento:
+                    values = self.treeviewProcedimentos.item(id, 'values')
+                    resultado = self.dao.deleteLogicoProcedimento(values[0])
+                    
+                    if isinstance(resultado, str):
+                        self.exibir_erro(resultado)
+                        validar = False
+                        break
+                    else:
+                        continue
+                    
+                if validar == False:
+                    return
+                else:
+                    self.exibir_sucesso("Procedimentos Excluídos!")   
+            else:
+                resultado = self.dao.deleteLogicoProcedimento(self.idProcedimentoSelecionado)
+                if isinstance(resultado, str):
+                    self.exibir_erro(resultado)
+                
+                else:
+                    self.exibir_sucesso("Procedimento Excluído!")
                
 # Fim Procedimentos --------------------------------  
 
