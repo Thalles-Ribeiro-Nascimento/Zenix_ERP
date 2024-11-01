@@ -51,54 +51,61 @@ class App:
         txt3.configure(background='#D3D3D3', fg='black')
 
         botao = tk.Button(self.root_login, text='ENTRAR' , command=self.conectar, relief='groove', bd=2, background='white', fg='black')
-        botao.place(relx= 0.4, rely=0.65)
-
-        # botaoSenha = tk.Button(self.root_login, text='ESQUECI A SENHA' , command=self.trocaSenha, relief='groove', bd=2, background='white', fg='black')
-        # botaoSenha.place(relx= 0.6, rely=0.65)
+        botao.place(relx= 0.42, rely=0.65)
 
         self.root_login.bind('<Return>', lambda event: botao.invoke())
         
         self.root_login.mainloop()
         
     def trocaSenha(self):
-    #     modal = tk.Tk()
-    #     modal.title('Nova Senha')
-    #     modal.geometry('550x350')
-    #     modal.configure(background='#D3D3D3')
-    #     modal.resizable(False,False)
+        self.modalTrocaSenha = tk.Tk()
+        self.modalTrocaSenha.title('Nova Senha')
+        self.modalTrocaSenha.geometry('350x250')
+        self.modalTrocaSenha.configure(background='#D3D3D3')
+        self.modalTrocaSenha.resizable(False,False)
+        
+        with open("zenix.txt", "r") as arquivo:
+            self.usuarioTrocaSenha = arquivo.read().split(":")[1]
 
+        titulo = tk.Label(self.modalTrocaSenha, text='NOVA SENHA', font=('Arial', 18, 'bold'))
+        titulo.place(relx= 0.3, rely=0.1)
+        titulo.configure(background='#D3D3D3', fg='black')
 
-    #     titulo = tk.Label(modal, text='INSIRA SUA NOVA SENHA', font=('Arial', 18, 'bold'))
-    #     titulo.place(relx= 0.25, rely=0.1)
-    #     titulo.configure(background='#D3D3D3', fg='black')
+        senhaNova = tk.Label(self.modalTrocaSenha, text='SENHA:', font='bold')
+        senhaNova.place(relx= 0.1, rely=0.35)
+        senhaNova.configure(background='#D3D3D3', fg='black')
 
-    #     senhaNova = tk.Label(modal, text='SENHA', font='bold')
-    #     senhaNova.place(relx= 0.2, rely=0.35)
-    #     senhaNova.configure(background='#D3D3D3', fg='black')
+        self.senhaAlterar = tk.Entry(self.modalTrocaSenha, width=15, show='*')
+        self.senhaAlterar.place(relx= 0.35, rely=0.34)
+        self.senhaAlterar.configure(background='white', fg='black')
 
-    #     senha = tk.Entry(modal, width=25, show='*')
-    #     senha.place(relx= 0.36, rely=0.34)
-    #     senha.configure(background='white', fg='black')
+        confirmaSenha = tk.Label(self.modalTrocaSenha, text='CONFIRME\nA SENHA:', font='bold')
+        confirmaSenha.place(relx= 0.08, rely=0.45)
+        confirmaSenha.configure(background='#D3D3D3', fg='black')
 
-    #     confirmaSenha = tk.Label(modal, text='CONFIRME A SENHA', font='bold')
-    #     confirmaSenha.place(relx= 0.05, rely=0.45)
-    #     confirmaSenha.configure(background='#D3D3D3', fg='black')
+        self.senhaConfirmada = tk.Entry(self.modalTrocaSenha, width=15, show='*')
+        self.senhaConfirmada.place(relx= 0.35, rely=0.5)
+        self.senhaConfirmada.configure(background='white', fg='black')
 
-    #     self.senhaConfirmada = tk.Entry(modal, width=25, show='*')
-    #     self.senhaConfirmada.place(relx= 0.36, rely=0.44)
-    #     self.senhaConfirmada.configure(background='white', fg='black')
+        buttonSenhaConfirmada = tk.Button(self.modalTrocaSenha, text='CONFIRMAR' , command=self.trocaSenhaConfirmada , relief='groove', bd=2, background='white', fg='black')
+        buttonSenhaConfirmada.place(relx= 0.15, rely=0.75)
 
-    #     buttonSenhaConfirmada = tk.Button(modal, text='CONFIRMAR SENHA' , command=self.trocaSenhaConfirmada , relief='groove', bd=2, background='white', fg='black')
-    #     buttonSenhaConfirmada.place(relx= 0.4, rely=0.65)
-
-    #     buttonCancel = tk.Button(modal, text='CANCELAR' , command=modal.destroy , relief='groove', bd=2, background='white', fg='black')
-    #     buttonCancel.place(relx= 0.2, rely=0.65)
-        pass
+        buttonCancel = tk.Button(self.modalTrocaSenha, text='CANCELAR' , command=self.modalTrocaSenha.destroy , relief='groove', bd=2, background='white', fg='black')
+        buttonCancel.place(relx= 0.55, rely=0.75)
 
     def trocaSenhaConfirmada(self):
-    #     novaSenha = self.senhaConfirmada.get()
-    #     self.dao.trocaPwd(novaSenha, self.login.get())
-        pass
+        novaSenha = self.senhaConfirmada.get()
+        senhaAlterada = self.senhaAlterar.get()
+                
+        if novaSenha != senhaAlterada:
+            self.exibir_avisos("As senhas não coincidem!")
+        else:
+            resultado = self.dao.trocaPwd(novaSenha, self.usuarioTrocaSenha)
+            if isinstance(resultado, str):
+                self.exibir_avisos(resultado)
+            else:
+                self.modalTrocaSenha.destroy()
+                self.exibir_sucesso(f"Senha alterada do usuário: {self.usuarioTrocaSenha}")
 
     def conectar(self):
         if self.login.get() == "":
@@ -146,9 +153,12 @@ class App:
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Sair', command=self.main.destroy, font=('Arial', 10, 'bold'), foreground='black')
         
-
-
         menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
+        
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Trocar Senha',command=self.trocaSenha, font=('Arial', 10, 'bold'), foreground='black')
+
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
         self.main.config(menu=menu_bar)
 
@@ -158,7 +168,7 @@ class App:
         txtAtende = tk.Label(self.frame, text='ATENDIMENTOS', background='#A9A9A9', fg='black', font=('Arial', 13, 'bold'))
         txtAtende.place(relx=0.08 , rely=0.1)
 
-        buttonAgenda = tk.Button(self.frame, text='AGENDA' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAgenda = tk.Button(self.frame, text='AGENDA' , command=self.telaAgenda, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonAgenda.place(relx=0.05 , rely=0.4)
     
         buttonAtendimento = tk.Button(self.frame, text='ATENDIMENTO' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
@@ -384,16 +394,12 @@ class App:
             txtEspecialidade = tk.Label(self.modalAtualizaFunc, text='ESPECIALIDADE:', font='bold')
             txtEspecialidade.place(relx= 0.37, rely=0.2)
             txtEspecialidade.configure(background='#D3D3D3', fg='black')
-
-            # buttonEspecialidade = tk.Button(self.modalAtualizaFunc, text='+', command=self.modalNovaEspecialidade)
-            # buttonEspecialidade.place(relx=0.58, rely=0.2, relwidth=0.035, relheight=0.04)
-            # buttonEspecialidade.configure(background='white', fg='black', activebackground='blue', activeforeground='black')
-
+            
             rows = self.dao.especialidadeView()
             rowsName = [item[1] for item in rows]
             self.rowId = [item[0] for item in rows]
             self.especialidadeAtualizaMap = dict(zip(rowsName, self.rowId))
-                        
+            
             self.opcoesAtualizaFunc = StringVar(self.modalAtualizaFunc)
             self.opcoesAtualizaFunc.set(self.especialidadeFuncionario)
             self.dropdownAtualizaFunc = tk.OptionMenu(self.modalAtualizaFunc, self.opcoesAtualizaFunc, *rowsName)
@@ -842,6 +848,7 @@ class App:
                     break
                             
         if validacao == False:
+            self.modalAtualizaFunc.destroy()
             self.exibir_avisos("Não foi possível fazer as alterações")
             indices.clear()
             funcionarioUpgrade.clear()
@@ -862,6 +869,7 @@ class App:
                         erro = False
                         
             if erro == False:  
+                self.modalAtualizaFunc.destroy()
                 self.exibir_sucesso("Alterações Realizadas")
             else:
                 self.exibir_erro(resultado)
@@ -1585,6 +1593,7 @@ class App:
                     break
                             
         if validacao == False:
+            self.modalAtualizaCliente.destroy()
             self.exibir_avisos("Não foi possível fazer as alterações")
             indices.clear()
             clienteUpgrade.clear()
@@ -1600,7 +1609,8 @@ class App:
                 else:
                     erro = False
                         
-            if erro == False:  
+            if erro == False: 
+                self.modalAtualizaCliente.destroy() 
                 self.exibir_sucesso("Alterações Realizadas")
             else:
                 self.exibir_erro(resultado)
@@ -1789,11 +1799,12 @@ class App:
             rua, bairro, estado, numero, comp, email
             )
             if isinstance(dao, str):
+                self.modalNovoClientes.destroy()
                 self.exibir_erro(dao)
                 
             else:
-                msn = f'Cliente inserido com sucesso'
                 self.modalNovoClientes.destroy()
+                msn = f'Cliente inserido com sucesso'
                 self.exibir_sucesso(msn)               
                 
         else:
@@ -1865,9 +1876,121 @@ class App:
 
     def telaAtendimento(self):
         pass
-            
+
+    def frameBotoesAgendaRoot(self):
+        self.frameAgenda = tk.Frame(self.agendaRoot, background='#A9A9A9')
+        self.frameAgenda.place(relx=0.02, rely=0.02, relheight=0.15, relwidth=0.96)
+
+    def frameTvAgendaRoot(self):
+        self.frameAgenda2 = tk.Frame(self.agendaRoot, background='#A9A9A9')
+        self.frameAgenda2.place(relx=0.02, rely=0.2, relheight=0.75, relwidth=0.96)
+
     def telaAgenda(self):
-        pass
+        self.agendaRoot = tk.Tk()
+        self.agendaRoot.title("Zenix")
+        self.agendaRoot.configure(background='#A9A9A9')
+        self.agendaRoot.geometry('1540x920')
+        self.agendaRoot.resizable(False,False)
+    
+        # self.agendaRoot.minsize(width=1920, height=1450)
+        menu_bar = tk.Menu(self.agendaRoot, background='#808080')
+        menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+        
+        menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
+        
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Trocar Senha',command=self.trocaSenha, font=('Arial', 10, 'bold'), foreground='black')
+
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+
+        self.agendaRoot.config(menu=menu_bar)
+
+
+        self.frameBotoesAgendaRoot()
+
+        txtAtende = tk.Label(self.frameAgenda, text='ATENDIMENTOS', background='#A9A9A9', fg='black', font=('Arial', 13, 'bold'))
+        txtAtende.place(relx=0.08 , rely=0.1)
+
+        buttonAgenda = tk.Button(self.frameAgenda, text='AGENDA' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAgenda.place(relx=0.05 , rely=0.4)
+    
+        buttonAtendimento = tk.Button(self.frameAgenda, text='ATENDIMENTO' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAtendimento.place(relx=0.126 , rely=0.4)
+
+        txtAtende = tk.Label(self.frameAgenda, text='EMPRESA', background='#A9A9A9', fg='black', font=('Arial', 13, 'bold'))
+        txtAtende.place(relx=0.82 , rely=0.1)
+
+        buttonFinanceiro = tk.Button(self.frameAgenda, text='FINANCEIRO' , command=self.telaFinanceiro, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonFinanceiro.place(relx=0.75 , rely=0.4)
+
+        buttonFatura = tk.Button(self.frameAgenda, text='FATURAMENTO' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonFatura.place(relx=0.85, rely=0.4)
+
+
+        self.frameTvAgendaRoot()
+        
+        treeview1 = ttk.Treeview(self.frameAgenda2, columns=(
+            'Data', 'Hora', 'Cod.Cliente', 'Protocolo', 'Cod.Atendimento',
+            'Nome do Cliente','Data de Nascimento','Procedimento', 'Valor','Nome do Funcionario','Especialidade',
+            'CPF', 'Sexo', 'Telefone', 'Celular', 'Email',
+            'Rua', 'Bairro',
+            'Nº', 'UF','Comp', 'Status' 
+            ), show='headings')
+
+        treeview1.heading('Data', text='Data')
+        treeview1.heading('Hora', text='Hora')
+        treeview1.heading('Cod.Cliente', text='Cód.Cliente')
+        treeview1.heading('Protocolo', text='Protocolo')
+        treeview1.heading('Cod.Atendimento', text='Cód.Atendimento')
+        treeview1.heading('Nome do Cliente', text='Nome do Cliente')
+        treeview1.heading('Data de Nascimento', text='Data de Nascimento')
+        treeview1.heading('Procedimento', text='Procedimento')
+        treeview1.heading('Valor', text='Valor')
+        treeview1.heading('Nome do Funcionario', text='Funcionário')
+        treeview1.heading('Especialidade', text='Especialidade')
+        treeview1.heading('CPF', text='CPF')
+        treeview1.heading('Sexo', text='Sexo')
+        treeview1.heading('Telefone', text='Telefone')
+        treeview1.heading('Celular', text='Celular')
+        treeview1.heading('Email', text='Email')
+        treeview1.heading('Rua', text='Rua')
+        treeview1.heading('Bairro', text='Bairro')
+        treeview1.heading('Nº', text='Nº')
+        treeview1.heading('UF', text='Estado')
+        treeview1.heading('Comp', text='Complemento')
+        treeview1.heading('Status', text='Status')
+
+        verticalBar = ttk.Scrollbar(self.frameAgenda2, orient='vertical', command=treeview1.yview)
+        horizontalBar = ttk.Scrollbar(self.frameAgenda2, orient='horizontal', command=treeview1.xview)
+        treeview1.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure("treeview1", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
+        
+        treeview1.place(relx=0.01, rely=0.01, relheight=0.96, relwidth=0.978)
+        verticalBar.place(relx=0.98 , rely=0.01, relheight=0.96)
+        horizontalBar.place(rely=0.958, relx=0.01, relwidth=0.971)
+        treelist = self.dao.atendimentoDoDia()
+        
+
+        for row in treelist:
+            treeview1.insert("", tk.END, values=row)
+        
+        
+
+        self.agendaRoot.mainloop()
 
 # Especialidade --------------------------------
     def telaEspecialidade(self):
@@ -1934,8 +2057,11 @@ class App:
         self.nomeEspecialidade.delete(0, END)
 
     def insertEspecialidadeNovo(self):
-        self.dao.insertEspecialidade(self.nomeEspecialidade.get())
-        self.exibir_sucesso("Especialidade Inserida!")
+        if self.nomeEspecialidade.get() == "":
+            self.exibir_avisos("Preencha o campo Nome!")
+        else:
+            self.dao.insertEspecialidade(self.nomeEspecialidade.get())
+            self.exibir_sucesso("Especialidade Inserida!")
 
     def selectItemTreeviewEspecialidade(self, event):
         self.nomeEspecialidade.delete(0, END)
@@ -1943,7 +2069,6 @@ class App:
             # Id do Especialidade Selecionada
             self.ItemSelecionadoEspecialidade = self.treeviewEspecialidade.selection()[0]
             self.selecao_itemEspecialidade = self.treeviewEspecialidade.selection()
-            print(self.selecao_itemEspecialidade)
                     
             # Lista do Especialidade selecionada
             self.listaEspecialidadeSelecionado = self.treeviewEspecialidade.item(self.ItemSelecionadoEspecialidade, 'values')
@@ -2005,8 +2130,6 @@ class App:
                 else:
                     self.exibir_sucesso("Especialidade excluída!")
         
-            
-
 # Fim Especialidade --------------------------------
 
 # Procedimentos --------------------------------

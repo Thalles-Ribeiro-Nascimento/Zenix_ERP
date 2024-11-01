@@ -285,12 +285,18 @@ class Dao:
             resultado = error.split(":")[1]
             return resultado
             
-    # def trocaPwd(self, newPdw, user):
-    #     if self.erro:
-    #         return f'Houve erro de conexão: {self.erro}'
+    def trocaPwd(self, newPdw, user):
+        if self.erro:
+            return f'Houve erro de conexão: {self.erro}'
         
-    #     sql = f'ALTER USER "{user}"@"localhost" IDENTIFIED BY "{newPdw}"'
-    #     bd = self.conecta
-    #     cr = self.cursor
-    #     cr.execute(sql)
-    #     bd.commit()
+        try:        
+            sql = f'ALTER USER "{user}"@"localhost" IDENTIFIED BY "{newPdw}"'
+            bd = self.conecta
+            cr = self.cursor
+            cr.execute(sql)
+            bd.commit()
+        except mysql.connector.Error as e:
+            erro = str(e)
+            print("Erro: ",erro)
+            
+            return erro
