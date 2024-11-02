@@ -88,8 +88,15 @@ from conection.objects import Dao
 # funcionarioUpgrade.clear()
 
 dao = Dao("thalles", "Susga@667")
-rows = dao.especialidadeView()
-
+rows = dao.AgendaNome("Gustavo")
 for row in rows:
     print(row)
     print(len(row))
+# print(status)
+
+# rows = dao.especialidadeView()
+
+# for row in rows:
+#     print(row)
+#     print(len(row))
+

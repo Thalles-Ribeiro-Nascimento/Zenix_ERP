@@ -300,3 +300,47 @@ class Dao:
             print("Erro: ",erro)
             
             return erro
+
+    def atendimentosAgenda(self, codClient, data):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+       
+        sql = f"SELECT * FROM Vw_Atendimentos_Agenda WHERE `Cod.Cliente` = {codClient} and `Data`= '{data}'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+       
+    def agenda(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT * FROM Vw_Agendamentos_Geral order by Protocolo asc'
+        cr = self.cursor
+        cr.execute(sql)
+        rows = cr.fetchall()
+        return rows
+
+    def AgendaNome(self, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Agendamentos_Geral WHERE `Nome do Cliente` LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def AgendaData(self, dataInicio, dataFim):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND STR_TO_DATE('{dataFim}','%d/%m/%Y')"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+
+
+# CURDATE()

@@ -1,18 +1,20 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from conection.objects import Dao
 import tkinter as tk
 # import function as f
-# import tkcalendar
+from tkcalendar import Calendar
+from datetime import datetime
 
 class App:
     def __init__(self):
-        self.root_login = tk.Tk(sync=True)
+        # self.root_login = tk.Tk(sync=True)
         # self.modalNovoFuncionario()
-        self.tela_login()
+        # self.tela_login()
+        self.telaAgenda()
         # # self.telaRoot()
         
-        self.root_login.mainloop()
+        # self.root_login.mainloop()
 
     def tela_login(self):
         self.root_login.title('Zenix')
@@ -23,7 +25,7 @@ class App:
         self.item_id = ""
         self.idSelecao = ""
         self.item_idCliente = ""
-        
+               
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
@@ -56,7 +58,7 @@ class App:
         self.root_login.bind('<Return>', lambda event: botao.invoke())
         
         self.root_login.mainloop()
-        
+        # 
     def trocaSenha(self):
         self.modalTrocaSenha = tk.Tk()
         self.modalTrocaSenha.title('Nova Senha')
@@ -98,25 +100,25 @@ class App:
         senhaAlterada = self.senhaAlterar.get()
                 
         if novaSenha != senhaAlterada:
-            self.exibir_avisos("As senhas não coincidem!")
+            messagebox.showinfo("Aviso","As senhas não coincidem!")
         else:
             resultado = self.dao.trocaPwd(novaSenha, self.usuarioTrocaSenha)
             if isinstance(resultado, str):
-                self.exibir_avisos(resultado)
+                messagebox.showinfo("Aviso",resultado)
             else:
                 self.modalTrocaSenha.destroy()
                 self.exibir_sucesso(f"Senha alterada do usuário: {self.usuarioTrocaSenha}")
 
     def conectar(self):
         if self.login.get() == "":
-            self.exibir_avisos("Insira um usuário")
+            messagebox.showinfo("Aviso","Insira um usuário")
             
         else:
             self.dao = Dao(self.login.get(), self.senha.get())
             self.resultado = self.dao.erro
 
             if isinstance(self.resultado, str):
-                self.exibir_erro(self.resultado)
+                messagebox.showerror("Acesso Negado", self.resultado)
 
             else:
                 with open("zenix.txt", "w") as arquivo:
@@ -345,6 +347,21 @@ class App:
         self.treeviewFunc.heading('Percentual', text='Percentual')
         self.treeviewFunc.heading('Status', text='Status')
         
+        self.treeviewFunc.column('Cod.Funcionario', stretch=False, width=90)
+        self.treeviewFunc.column('Nome do Funcionario', stretch=False)
+        self.treeviewFunc.column('Especialidade', stretch=False)
+        self.treeviewFunc.column('CPF', stretch=False, width=100)
+        self.treeviewFunc.column('Telefone', stretch=False, width=100)
+        self.treeviewFunc.column('Celular', stretch=False, width=100)
+        self.treeviewFunc.column('Data de Nascimento', stretch=False, width=100)
+        self.treeviewFunc.column('Rua', stretch=False)
+        self.treeviewFunc.column('Bairro', stretch=False)
+        self.treeviewFunc.column('UF', stretch=False, width=90)
+        self.treeviewFunc.column('Nº', stretch=False, width=90)
+        self.treeviewFunc.column('Comp', stretch=False)
+        self.treeviewFunc.column('Email', stretch=False)
+        self.treeviewFunc.column('Percentual', stretch=False, width=90)
+        self.treeviewFunc.column('Status', stretch=False, width=90)
                    
         verticalBar = ttk.Scrollbar(self.frameviewFunc, orient='vertical', command=self.treeviewFunc.yview)
         horizontalBar = ttk.Scrollbar(self.frameviewFunc, orient='horizontal', command=self.treeviewFunc.xview)
@@ -372,7 +389,7 @@ class App:
     def atualizarModal(self):
     
         if self.item_id == "":
-            self.exibir_avisos("Selecione um funcionário para ser atualizado!")
+            messagebox.showinfo("Aviso","Selecione um funcionário para ser atualizado!")
 
         else:
             self.modalAtualizaFunc = tk.Tk()
@@ -820,7 +837,7 @@ class App:
                 indices.append(self.listaFuncionario.index(old))
             
         if len(indices) < 1:
-            self.exibir_avisos("Nenhum campo  foi alterado!")
+            messagebox.showinfo("Aviso","Nenhum campo  foi alterado!")
             
         else:
             validacao = True
@@ -849,7 +866,7 @@ class App:
                             
         if validacao == False:
             self.modalAtualizaFunc.destroy()
-            self.exibir_avisos("Não foi possível fazer as alterações")
+            messagebox.showinfo("Aviso","Não foi possível fazer as alterações")
             indices.clear()
             funcionarioUpgrade.clear()
             
@@ -872,7 +889,7 @@ class App:
                 self.modalAtualizaFunc.destroy()
                 self.exibir_sucesso("Alterações Realizadas")
             else:
-                self.exibir_erro(resultado)
+                messagebox.showerror("Erro",resultado)
                      
         listaUpgrade.clear()
         colunas.clear()  
@@ -899,31 +916,31 @@ class App:
         percentil = self.PercentilFunc.get()
 
         if nome == "":
-            self.exibir_avisos("O campo Nome está vazio")
+            messagebox.showinfo("Aviso","O campo Nome está vazio")
             
         elif cpf == "":
-            self.exibir_avisos("O campo CPF está vazio")
+            messagebox.showinfo("Aviso","O campo CPF está vazio")
             
         elif nascimento == "":
-            self.exibir_avisos("O campo Data de Nascimento está vazio")
+            messagebox.showinfo("Aviso","O campo Data de Nascimento está vazio")
             
         elif celular == "":
-            self.exibir_avisos("O campo Celular está vazio")
+            messagebox.showinfo("Aviso","O campo Celular está vazio")
             
         elif rua == "":
-            self.exibir_avisos("O campo Rua está vazio")
+            messagebox.showinfo("Aviso","O campo Rua está vazio")
             
         elif bairro == "":
-            self.exibir_avisos("O campo Bairro está vazio")
+            messagebox.showinfo("Aviso","O campo Bairro está vazio")
             
         elif estado == "" or estado == "AC":
-            self.exibir_avisos("O campo Estado está vazio")
+            messagebox.showinfo("Aviso","O campo Estado está vazio")
             
         elif email == "":
-            self.exibir_avisos("O campo Email está vazio")
+            messagebox.showinfo("Aviso","O campo Email está vazio")
             
         elif percentil == "":
-            self.exibir_avisos("O campo Porcentagem está vazio")
+            messagebox.showinfo("Aviso","O campo Porcentagem está vazio")
         
         # cpfSemFormatacao = ''.join(filter(str.isdigit, cpf))
         # telefoneSemFormatacao = ''.join(filter(str.isdigit, telefone))
@@ -935,7 +952,7 @@ class App:
             rua, bairro, estado, numero, comp, email, percentil
             )
             if isinstance(dao, str):
-                self.exibir_erro(dao)
+                messagebox.showerror("Erro", dao)
                 
             else:
                 msn = f'Funcionário {nome}, inserido com sucesso'
@@ -943,11 +960,11 @@ class App:
                 self.exibir_sucesso(msn)               
                 
         else:
-            self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
+            messagebox.showinfo("Aviso","Email incompleto: Escreva -> exemplo@email.com")
 
     def excluirItemFuncionario(self):
         if self.item_id == "":
-            self.exibir_avisos("Selecione um funcionário")
+            messagebox.showinfo("Aviso","Selecione um funcionário")
         else:
             if len(self.selecao_itemFunc) > 1:
                 validar = True
@@ -956,7 +973,7 @@ class App:
                     resultado = self.dao.deleteLogicoFuncionario(values[0])
                     
                     if isinstance(resultado, str):
-                        self.exibir_erro(resultado)
+                        messagebox.showerror("Erro", resultado)
                         validar = False
                         break
                     else:
@@ -971,7 +988,7 @@ class App:
                 self.exibir_sucesso(f"{self.nomeFuncionario} foi excluído com sucesso")
 
 # Calendarios
-    def calendarioInicial(self):
+    # def calendarioInicial(self):
 #         self.calendario = tkcalendar.Calendar(
 #             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
 #             bg='white', fg='black'
@@ -1022,7 +1039,7 @@ class App:
 #         self.data.delete(0 , END)
 #         self.data.insert(END, dataFinal)
 #         self.insereData.destroy()
-        pass
+        # pass
 # Fim calendarios
 
 # Formatação CPF
@@ -1404,13 +1421,13 @@ class App:
             if len(row) == 14:
                 self.treeviewClientes.insert("", END, values=row)
             else:
-                self.exibir_avisos("Erro de tupla")
+                messagebox.showinfo("Aviso", "Erro de tupla")
 
         self.campo_nomeClientes.delete(0, END)
 
     def atualizarClientesModal(self):
         if self.item_idCliente == "":
-            self.exibir_avisos("Selecione um cliente!")
+            messagebox.showinfo("Aviso","Selecione um cliente!")
 
         else:
             self.modalAtualizaCliente = tk.Tk()
@@ -1565,8 +1582,8 @@ class App:
                 indices.append(self.listaCliente.index(old))
             
         if len(indices) < 1:
-            self.exibir_avisos("Nenhum campo foi alterado!")
-            
+            messagebox.showinfo("Aviso","Nenhum campo foi alterado!")
+            return
         else:
             validacao = True
             clienteUpgrade = dict()
@@ -1594,9 +1611,10 @@ class App:
                             
         if validacao == False:
             self.modalAtualizaCliente.destroy()
-            self.exibir_avisos("Não foi possível fazer as alterações")
+            messagebox.showinfo("Aviso","Não foi possível fazer as alterações")
             indices.clear()
             clienteUpgrade.clear()
+            return
             
         else:
             erro = False
@@ -1613,7 +1631,7 @@ class App:
                 self.modalAtualizaCliente.destroy() 
                 self.exibir_sucesso("Alterações Realizadas")
             else:
-                self.exibir_erro(resultado)
+                messagebox.showerror("Erro",resultado)
                      
         listaUpgrade.clear()
         colunas.clear()
@@ -1773,25 +1791,25 @@ class App:
         email = self.EmailCliente.get()
 
         if nome == "":
-            self.exibir_avisos("O campo Nome está vazio")
+            messagebox.showerror("Aviso","O campo Nome está vazio")
         
         elif cpf == "":
-            self.exibir_avisos("O campo CPF está vazio")
+            messagebox.showerror("Aviso","O campo CPF está vazio")
             
         elif nascimento == "":
-            self.exibir_avisos("O campo Data de Nascimento está vazio")
+            messagebox.showerror("Aviso","O campo Data de Nascimento está vazio")
             
         elif celular == "":
-            self.exibir_avisos("O campo Celular está vazio")
+            messagebox.showerror("Aviso","O campo Celular está vazio")
             
         elif rua == "":
-            self.exibir_avisos("O campo Rua está vazio")
+            messagebox.showerror("Aviso","O campo Rua está vazio")
             
         elif bairro == "":
-            self.exibir_avisos("O campo Bairro está vazio")
+            messagebox.showerror("Aviso","O campo Bairro está vazio")
             
         elif email == "":
-            self.exibir_avisos("O campo Email está vazio")
+            messagebox.showerror("Aviso","O campo Email está vazio")
         
         if "@" in email and ".com" in email:
             dao = self.dao.inserirCliente(
@@ -1800,7 +1818,7 @@ class App:
             )
             if isinstance(dao, str):
                 self.modalNovoClientes.destroy()
-                self.exibir_erro(dao)
+                messagebox.showerror("Erro",dao)
                 
             else:
                 self.modalNovoClientes.destroy()
@@ -1808,7 +1826,7 @@ class App:
                 self.exibir_sucesso(msn)               
                 
         else:
-            self.exibir_avisos("Email incompleto: Escreva -> exemplo@email.com")
+            messagebox.showerror("Email Incompleto","Email incompleto: Escreva -> exemplo@email.com")
 
     def pegaIdClientes(self, event):
         self.campo_nomeClientes.delete(0, END)
@@ -1879,118 +1897,257 @@ class App:
 
     def frameBotoesAgendaRoot(self):
         self.frameAgenda = tk.Frame(self.agendaRoot, background='#A9A9A9')
-        self.frameAgenda.place(relx=0.02, rely=0.02, relheight=0.15, relwidth=0.96)
+        self.frameAgenda.place(relx=0.02, rely=0.02, relheight=0.25, relwidth=0.96)
 
     def frameTvAgendaRoot(self):
         self.frameAgenda2 = tk.Frame(self.agendaRoot, background='#A9A9A9')
-        self.frameAgenda2.place(relx=0.02, rely=0.2, relheight=0.75, relwidth=0.96)
+        self.frameAgenda2.place(relx=0.01, rely=0.21, relheight=0.85, relwidth=0.78)
 
     def telaAgenda(self):
+        self.dao = Dao("thalles", "Susga@667")
         self.agendaRoot = tk.Tk()
-        self.agendaRoot.title("Zenix")
+        self.agendaRoot.title("Agendamento")
         self.agendaRoot.configure(background='#A9A9A9')
         self.agendaRoot.geometry('1540x920')
         self.agendaRoot.resizable(False,False)
     
-        # self.agendaRoot.minsize(width=1920, height=1450)
         menu_bar = tk.Menu(self.agendaRoot, background='#808080')
-        menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_separator()
-        menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_separator()
-        menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_separator()
-        menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+        menu = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menu.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_separator()
+        menu.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_separator()
+        menu.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_separator()
+        menu.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
         
-        menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
+        menu_bar.add_cascade(label='Gerencial', menu=menu, font=('Arial', 12, 'bold'))
         
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Trocar Senha',command=self.trocaSenha, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_command(label='Trocar Senha', font=('Arial', 10, 'bold'), foreground='black')
 
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
         self.agendaRoot.config(menu=menu_bar)
 
-
         self.frameBotoesAgendaRoot()
+        
+        titleNomeAgenda = tk.Label(self.frameAgenda, text='Nome do Cliente:', background='#A9A9A9', fg='black', font='bold')
+        titleNomeAgenda.place(relx=0.02 , rely=0.07)
+        
+        self.entryBuscarNomeAgenda = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
+        self.entryBuscarNomeAgenda.place(relx=0.02 , rely=0.15, width=170)
+        
+        buttonClear = tk.Button(self.frameAgenda, text='x', command=self.clearFieldCliente, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonClear.place(relx=0.12, rely=0.157, relwidth=0.015, relheight=0.103)
+        
+        buttonPesquisar = tk.Button(self.frameAgenda, text='Buscar', command=self.buscarAgenda, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonPesquisar.place(relx=0.02, rely=0.4)
 
-        txtAtende = tk.Label(self.frameAgenda, text='ATENDIMENTOS', background='#A9A9A9', fg='black', font=('Arial', 13, 'bold'))
-        txtAtende.place(relx=0.08 , rely=0.1)
-
-        buttonAgenda = tk.Button(self.frameAgenda, text='AGENDA' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAgenda.place(relx=0.05 , rely=0.4)
-    
-        buttonAtendimento = tk.Button(self.frameAgenda, text='ATENDIMENTO' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAtendimento.place(relx=0.126 , rely=0.4)
-
-        txtAtende = tk.Label(self.frameAgenda, text='EMPRESA', background='#A9A9A9', fg='black', font=('Arial', 13, 'bold'))
-        txtAtende.place(relx=0.82 , rely=0.1)
-
-        buttonFinanceiro = tk.Button(self.frameAgenda, text='FINANCEIRO' , command=self.telaFinanceiro, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonFinanceiro.place(relx=0.75 , rely=0.4)
-
-        buttonFatura = tk.Button(self.frameAgenda, text='FATURAMENTO' , command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonFatura.place(relx=0.85, rely=0.4)
-
-
+        titleDataInicio = tk.Label(self.frameAgenda, text='De:', background='#A9A9A9', fg='black', font='bold')
+        titleDataInicio.place(relx=0.2 , rely=0.07)
+        
+        self.entryDataAgenda = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
+        self.entryDataAgenda.place(relx=0.2 , rely=0.15, width=120)
+        
+        self.buttonCalendarAgenda = tk.Button(self.frameAgenda, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioIniAgenda)
+        self.buttonCalendarAgenda.place(relx=0.266, rely=0.157, relwidth=0.015, relheight=0.103)
+        
+        titleDataFinal = tk.Label(self.frameAgenda, text='Até:', background='#A9A9A9', fg='black', font='bold')
+        titleDataFinal.place(relx=0.3 , rely=0.07)
+        self.entryDataAgendaFinal = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
+        self.entryDataAgendaFinal.place(relx=0.3 , rely=0.15, width=120)
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
+        self.entryDataAgendaFinal.insert(0, dataAtualFormatada)
+                
+        self.buttonCalendarAgendaFinal = tk.Button(self.frameAgenda, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioFimAgenda)
+        self.buttonCalendarAgendaFinal.place(relx=0.366, rely=0.157, relwidth=0.015, relheight=0.103)
+        
         self.frameTvAgendaRoot()
         
-        treeview1 = ttk.Treeview(self.frameAgenda2, columns=(
-            'Data', 'Hora', 'Cod.Cliente', 'Protocolo', 'Cod.Atendimento',
-            'Nome do Cliente','Data de Nascimento','Procedimento', 'Valor','Nome do Funcionario','Especialidade',
-            'CPF', 'Sexo', 'Telefone', 'Celular', 'Email',
+        self.treeviewAgenda = ttk.Treeview(self.frameAgenda2, columns=(
+            'Data', 'Protocolo', 'Cod.Cliente', 'Nome do Cliente','Data de Nascimento', 'Sexo', 'CPF', 'Telefone', 'Celular', 'Email',
             'Rua', 'Bairro',
             'Nº', 'UF','Comp', 'Status' 
             ), show='headings')
 
-        treeview1.heading('Data', text='Data')
-        treeview1.heading('Hora', text='Hora')
-        treeview1.heading('Cod.Cliente', text='Cód.Cliente')
-        treeview1.heading('Protocolo', text='Protocolo')
-        treeview1.heading('Cod.Atendimento', text='Cód.Atendimento')
-        treeview1.heading('Nome do Cliente', text='Nome do Cliente')
-        treeview1.heading('Data de Nascimento', text='Data de Nascimento')
-        treeview1.heading('Procedimento', text='Procedimento')
-        treeview1.heading('Valor', text='Valor')
-        treeview1.heading('Nome do Funcionario', text='Funcionário')
-        treeview1.heading('Especialidade', text='Especialidade')
-        treeview1.heading('CPF', text='CPF')
-        treeview1.heading('Sexo', text='Sexo')
-        treeview1.heading('Telefone', text='Telefone')
-        treeview1.heading('Celular', text='Celular')
-        treeview1.heading('Email', text='Email')
-        treeview1.heading('Rua', text='Rua')
-        treeview1.heading('Bairro', text='Bairro')
-        treeview1.heading('Nº', text='Nº')
-        treeview1.heading('UF', text='Estado')
-        treeview1.heading('Comp', text='Complemento')
-        treeview1.heading('Status', text='Status')
+        self.treeviewAgenda.heading('Data', text='Data')
+        self.treeviewAgenda.heading('Cod.Cliente', text='Cód.Cliente')
+        self.treeviewAgenda.heading('Protocolo', text='Protocolo')
+        self.treeviewAgenda.heading('Nome do Cliente', text='Nome do Cliente')
+        self.treeviewAgenda.heading('Data de Nascimento', text='Data de Nascimento')
+        self.treeviewAgenda.heading('CPF', text='CPF')
+        self.treeviewAgenda.heading('Sexo', text='Sexo')
+        self.treeviewAgenda.heading('Telefone', text='Telefone')
+        self.treeviewAgenda.heading('Celular', text='Celular')
+        self.treeviewAgenda.heading('Email', text='Email')
+        self.treeviewAgenda.heading('Rua', text='Rua')
+        self.treeviewAgenda.heading('Bairro', text='Bairro')
+        self.treeviewAgenda.heading('Nº', text='Nº')
+        self.treeviewAgenda.heading('UF', text='Estado')
+        self.treeviewAgenda.heading('Comp', text='Complemento')
+        self.treeviewAgenda.heading('Status', text='Status')
+        
+        self.treeviewAgenda.column('Data', stretch=False, width=100)
+        self.treeviewAgenda.column('Cod.Cliente', stretch=False, width=100)
+        self.treeviewAgenda.column('Protocolo', stretch=False, width=100)
+        self.treeviewAgenda.column('Nome do Cliente', stretch=False)
+        self.treeviewAgenda.column('Data de Nascimento', stretch=False, width=100)
+        self.treeviewAgenda.column('CPF', stretch=False, width=120)
+        self.treeviewAgenda.column('Sexo', stretch=False, width=90)
+        self.treeviewAgenda.column('Telefone', stretch=False, width=120)
+        self.treeviewAgenda.column('Celular', stretch=False, width=120)
+        self.treeviewAgenda.column('Email', stretch=False)
+        self.treeviewAgenda.column('Rua', stretch=False)
+        self.treeviewAgenda.column('Bairro', stretch=False)
+        self.treeviewAgenda.column('UF', stretch=False, width=90)
+        self.treeviewAgenda.column('Nº', stretch=False, width=90)
+        self.treeviewAgenda.column('Comp', stretch=False)
+        self.treeviewAgenda.column('Status', stretch=False, width=90)
 
-        verticalBar = ttk.Scrollbar(self.frameAgenda2, orient='vertical', command=treeview1.yview)
-        horizontalBar = ttk.Scrollbar(self.frameAgenda2, orient='horizontal', command=treeview1.xview)
-        treeview1.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+        verticalBar = ttk.Scrollbar(self.frameAgenda2, orient='vertical', command=self.treeviewAgenda.yview)
+        horizontalBar = ttk.Scrollbar(self.frameAgenda2, orient='horizontal', command=self.treeviewAgenda.xview)
+        self.treeviewAgenda.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         style = ttk.Style()
         style.theme_use('clam')
-        style.configure("treeview1", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
+        style.configure("self.treeviewAgenda", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
         
-        treeview1.place(relx=0.01, rely=0.01, relheight=0.96, relwidth=0.978)
-        verticalBar.place(relx=0.98 , rely=0.01, relheight=0.96)
-        horizontalBar.place(rely=0.958, relx=0.01, relwidth=0.971)
-        treelist = self.dao.atendimentoDoDia()
+        self.treeviewAgenda.place(relx=0, rely=0.02, relheight=0.85, relwidth=0.959)
         
+        verticalBar.place(relx=0.95 , rely=0.02, relheight=0.83)
+        horizontalBar.place(rely=0.85, relx=0, relwidth=0.962)
+        
+        rowsAgenda = self.dao.agenda()
 
-        for row in treelist:
-            treeview1.insert("", tk.END, values=row)
+        for row in rowsAgenda:
+            self.treeviewAgenda.insert("", tk.END, values=row)
+            
+        self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAgendamento)
         
         
-
+        titleTreview2 = tk.Label(self.agendaRoot, text='Atendimentos', background='#A9A9A9', fg='black', font='bold')
+        titleTreview2.place(relx=0.767, rely=0.2)
+        
+        self.treeviewClientAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento', 'Procedimento', 'Valor', 'Status'), show='headings')       
+        
+        self.treeviewClientAtendimento.heading('Data', text='Data')
+        self.treeviewClientAtendimento.heading('Hora', text='Hora')
+        self.treeviewClientAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
+        self.treeviewClientAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
+        self.treeviewClientAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
+        self.treeviewClientAtendimento.heading('Procedimento', text='Procedimento')
+        self.treeviewClientAtendimento.heading('Valor', text='Valor')
+        self.treeviewClientAtendimento.heading('Status', text='Status')
+        
+        self.treeviewClientAtendimento.column('Data', stretch=False, width=100)
+        self.treeviewClientAtendimento.column('Hora', stretch=False, width=100)
+        self.treeviewClientAtendimento.column('Cod.Cliente', stretch=False, width=92)
+        self.treeviewClientAtendimento.column('Cod.Atendimento', stretch=False, width=92)
+        self.treeviewClientAtendimento.column('Nome do Cliente', stretch=False, width=100)
+        self.treeviewClientAtendimento.column('Procedimento', stretch=False, width=100)
+        self.treeviewClientAtendimento.column('Valor', stretch=False, width=100)
+        self.treeviewClientAtendimento.column('Status', stretch=False, width=90)
+        
+        verticalBarTreeview2 = ttk.Scrollbar(self.agendaRoot, orient='vertical', command=self.treeviewClientAtendimento.yview)
+        horizontalBarTreeview2 = ttk.Scrollbar(self.agendaRoot, orient='horizontal', command=self.treeviewClientAtendimento.xview)
+        self.treeviewClientAtendimento.configure(yscrollcommand=verticalBarTreeview2.set, xscrollcommand=horizontalBarTreeview2.set)
+        
+        self.treeviewClientAtendimento.place(relx=0.767, rely=0.226, relheight=0.35, relwidth=0.223)
+        verticalBarTreeview2.place(relx=0.981 , rely=0.226, relheight=0.34)
+        horizontalBarTreeview2.place(relx=0.767, rely=0.565, relwidth=0.223)
+        
+        styleTreeview2 = ttk.Style()
+        styleTreeview2.theme_use('clam')
+        styleTreeview2.configure("self.treeviewClientAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        
         self.agendaRoot.mainloop()
+
+    def selectAgendamento(self, event):
+        self.treeviewClientAtendimento.delete(*self.treeviewClientAtendimento.get_children())
+        try:
+            # Id do item da Agenda selecionada
+            self.item_idAgenda = self.treeviewAgenda.selection()[0]
+            
+            # Lista Informações da Agenda Selecionada
+            self.listaAgenda = self.treeviewAgenda.item(self.item_idAgenda, 'values')
+            # print(self.listaAgenda)
+            
+            # Data agendamento
+            self.dataAgendada = self.listaAgenda[0]
+            
+            # Id do Cliente
+            self.idClientAgenda = self.listaAgenda[2]
+            rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
+            for row in rows:
+                self.treeviewClientAtendimento.insert("", END, values=row)
+            
+        except IndexError as e:
+            return
+
+    def buscarAgenda(self):
+        if self.entryBuscarNomeAgenda.get() == "":
+            
+            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
+            dataInicio = self.entryDataAgenda.get()
+            dataFim = self.entryDataAgendaFinal.get()
+            rows = self.dao.AgendaData(dataInicio, dataFim)
+            for row in rows:
+                self.treeviewAgenda.insert("", END, values=row)
+        else:
+            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
+            self.entryBuscarNomeAgenda.insert(END, '%')
+            nome = self.entryBuscarNomeAgenda.get()
+            rows = self.dao.AgendaNome(nome)
+
+            for row in rows:
+                if len(row) == 16:
+                    self.treeviewAgenda.insert("", END, values=row)
+                else:
+                    messagebox.showinfo("Aviso", "Erro de tupla")
+
+            self.entryBuscarNomeAgenda.delete(0, END)
+
+# Calendarios Agenda
+    def calendarioIniAgenda(self):
+        self.calendarioInicioAgenda = Calendar(
+            self.agendaRoot, font=('Arial', 9, 'bold'), locale='pt_br',
+            bg='white', fg='black', showweeknumbers=False
+        )
+
+        self.calendarioInicioAgenda.place(relx=0.11 , rely=0.09, relwidth=0.16, relheight=0.2) 
+        self.buttonCalendarAgenda['command'] = self.dataInicioAgenda
+
+    def dataInicioAgenda(self, ):
+        dataInicial = self.calendarioInicioAgenda.get_date()
+        self.calendarioInicioAgenda.destroy()
+        self.entryDataAgenda.delete(0 , END)
+        self.entryDataAgenda.insert(END, dataInicial)
+        self.buttonCalendarAgenda['command'] = self.calendarioIniAgenda
+
+    def calendarioFimAgenda(self):
+        self.calendarioFinalAgenda = Calendar(
+            self.agendaRoot, font=('Arial', 9, 'bold'), locale='pt_br',
+            bg='white', fg='black', showweeknumbers=False
+        )
+
+        self.calendarioFinalAgenda.place(relx=0.35 , rely=0.09, relwidth=0.16, relheight=0.2)
+        self.buttonCalendarAgendaFinal['command'] = self.dataFimAgenda
+
+    def dataFimAgenda(self):
+        dataFinal = self.calendarioFinalAgenda.get_date()
+        self.calendarioFinalAgenda.destroy()
+        self.entryDataAgendaFinal.delete(0 , END)
+        self.entryDataAgendaFinal.insert(END, dataFinal)
+        self.buttonCalendarAgendaFinal['command'] = self.calendarioFimAgenda
+        
+# Fim Calendarios Agenda
 
 # Especialidade --------------------------------
     def telaEspecialidade(self):
@@ -2058,7 +2215,7 @@ class App:
 
     def insertEspecialidadeNovo(self):
         if self.nomeEspecialidade.get() == "":
-            self.exibir_avisos("Preencha o campo Nome!")
+            messagebox.showinfo("Aviso","Preencha o campo Nome!")
         else:
             self.dao.insertEspecialidade(self.nomeEspecialidade.get())
             self.exibir_sucesso("Especialidade Inserida!")
@@ -2096,13 +2253,13 @@ class App:
             if len(row) == 3:
                 self.treeviewEspecialidade.insert("", END, values=row)
             else:
-                self.exibir_avisos("Erro de tupla")
+                messagebox.showinfo("Aviso","Erro de tupla")
 
         self.nomeEspecialidade.delete(0, END)
 
     def deleteEspecialidade(self):
         if self.ItemSelecionadoEspecialidade == "":
-            self.exibir_avisos("Selecione uma Especialidade")
+            messagebox.showinfo("Aviso","Selecione uma Especialidade")
         else:
             if len(self.selecao_itemEspecialidade) > 1:
                 validar = True
@@ -2112,7 +2269,7 @@ class App:
                     resultado = self.dao.deleteLogicoEspecialidade(values[0])
                     
                     if isinstance(resultado, str):
-                        self.exibir_erro(resultado)
+                        messagebox.showerror("Erro",resultado)
                         validar = False
                         break
                     else:
@@ -2126,7 +2283,7 @@ class App:
                 resultado = self.dao.deleteLogicoEspecialidade(self.idEspecialidadeSelecionado)
         
                 if isinstance(resultado, str):
-                    self.exibir_erro(resultado)
+                    messagebox.showerror("Erro",resultado)
                 else:
                     self.exibir_sucesso("Especialidade excluída!")
         
@@ -2140,6 +2297,7 @@ class App:
         self.modalProcedimentos.configure(background='#D3D3D3')
         self.modalProcedimentos.resizable(False,False)
         self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
+        self.ItemSelecionadoProcedimento = ""
         
         menu_bar = tk.Menu(self.modalProcedimentos, background='#808080')
         
@@ -2232,11 +2390,11 @@ class App:
 
     def insertProcedimento(self):
         if self.opcoesEspecialidadeProcedimento.get() == "Especialidade" or self.nomeProcedimento.get() == "" or self.valorProcedimento.get() == "":
-            self.exibir_avisos("Preencha todos os campos!")
+            messagebox.showinfo("Aviso", "Preencha todos os campos!")
         else:
             resultado = self.dao.insertProcedimento(self.nomeProcedimento.get(), self.idEspecialidadeProcSelecao, self.valorProcedimento.get())
             if isinstance(resultado, str):
-                self.exibir_erro(resultado)
+                messagebox.showerror("Erro ao cadastrar", resultado)
             else:
                 msn = "Procedimento inserido!"
                 self.exibir_sucesso(msn)
@@ -2279,7 +2437,7 @@ class App:
 
     def deleteProcedimento(self):
         if self.ItemSelecionadoProcedimento == "":
-            self.exibir_avisos("Selecione um Procedimento")
+            messagebox.showinfo("Aviso","Selecione um Procedimento")
         else:
             if len(self.selecao_itemProcedimento) > 1:
                 validar = True
@@ -2288,7 +2446,7 @@ class App:
                     resultado = self.dao.deleteLogicoProcedimento(values[0])
                     
                     if isinstance(resultado, str):
-                        self.exibir_erro(resultado)
+                        messagebox.showerror("Erro ao deletar", resultado)
                         validar = False
                         break
                     else:
@@ -2296,89 +2454,17 @@ class App:
                     
                 if validar == False:
                     return
-                else:
+                else:                        
                     self.exibir_sucesso("Procedimentos Excluídos!")   
             else:
                 resultado = self.dao.deleteLogicoProcedimento(self.idProcedimentoSelecionado)
                 if isinstance(resultado, str):
-                    self.exibir_erro(resultado)
+                    messagebox.showerror("Erro ao deletar", resultado)
                 
                 else:
                     self.exibir_sucesso("Procedimento Excluído!")
                
-# Fim Procedimentos --------------------------------  
-
-    def exibir_erro(self, mensagem):
-        if "Access denied for user" in mensagem:
-            telaErro = tk.Tk()
-            telaErro.title('Erro')
-            telaErro.resizable(False,False)
-            telaErro.configure(background='#A9A9A9')
-
-            txt2 = tk.Label(telaErro, text=f'Usuário ou Senha inválidos')
-            txt2.pack(padx=25, pady=10)
-            txt2.configure(background='#A9A9A9', fg='black')
-
-            txt3 = tk.Label(telaErro, text=mensagem)
-            txt3.pack(padx=25, pady=10)
-            txt3.configure(background='#A9A9A9', fg='black')
-
-            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-            buttonOk.pack(padx=25, pady=10)
-
-            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-            telaErro.mainloop()
-            
-        elif "Duplicate entry" in mensagem:
-            telaErro = tk.Tk()
-            telaErro.title('Erro')
-            telaErro.resizable(False,False)
-            telaErro.configure(background='#A9A9A9')
-
-            txt2 = tk.Label(telaErro, text=mensagem)
-            txt2.pack(padx=25, pady=10)
-            txt2.configure(background='#A9A9A9', fg='black')
-
-            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-            buttonOk.pack(padx=25, pady=10)
-
-            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-            telaErro.mainloop()
-
-        elif "Data too long" in mensagem:
-            telaErro = tk.Tk()
-            telaErro.title('Erro')
-            telaErro.resizable(False,False)
-            telaErro.configure(background='#A9A9A9')
-
-            txt2 = tk.Label(telaErro, text=mensagem)
-            txt2.pack(padx=25, pady=10)
-            txt2.configure(background='#A9A9A9', fg='black')
-
-            buttonOk = tk.Button(telaErro, text='Ok', command=telaErro.destroy, background='white', fg='black')
-            buttonOk.pack(padx=25, pady=10)
-
-            telaErro.bind('<Return>', lambda event: buttonOk.invoke())
-            telaErro.mainloop()
-            
-        # elif " Unknown column" in mensagem:
-        #     pass
-        
-    def exibir_avisos(self, mensagem):
-        telaAviso = tk.Tk()
-        telaAviso.title('Aviso')
-        telaAviso.resizable(False,False)
-        telaAviso.configure(background='#A9A9A9')
-
-        txt2 = tk.Label(telaAviso, text=mensagem)
-        txt2.pack(padx=25, pady=10)
-        txt2.configure(background='#A9A9A9', fg='black')
-
-        buttonOk = tk.Button(telaAviso, text='Ok', command=telaAviso.destroy, background='white', fg='black')
-        buttonOk.pack(padx=25, pady=10)
-
-        telaAviso.bind('<Return>', lambda event: buttonOk.invoke())
-        telaAviso.mainloop()
+# Fim Procedimentos --------------------------------
 
     def exibir_sucesso(self, mensagem):
         telaSucesso = tk.Tk()
