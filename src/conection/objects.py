@@ -331,6 +331,16 @@ class Dao:
 
         return rows
 
+    def AgendaDataFim(self, dataFim):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select * from Vw_Agendamentos_Geral where Data '{dataFim}'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def AgendaData(self, dataInicio, dataFim):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
