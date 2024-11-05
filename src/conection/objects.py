@@ -351,6 +351,14 @@ class Dao:
 
         return rows
 
-
+    def addAgendamento(self, dataAgendamento, cliente, funcionario):
+        try:
+            sql = f"INSERT INTO agendamento (data_agenda, idCliente, idFuncionario) VALUES ('{dataAgendamento}', {cliente}, {funcionario})"
+            self.cursor.execute(sql)
+            self.conecta.commit()
+        except mysql.connector.Error as e:
+            print(e)
+            
+        
 
 # CURDATE()

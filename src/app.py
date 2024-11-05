@@ -1904,6 +1904,8 @@ class App:
     def telaAtendimento(self):
         pass
 
+# Agendamento --------------------------------
+
     def frameBotoesAgendaRoot(self):
         self.frameAgenda = tk.Frame(self.agendaRoot, background='#A9A9A9')
         self.frameAgenda.place(relx=0.02, rely=0.02, relheight=0.25, relwidth=0.96)
@@ -1959,9 +1961,11 @@ class App:
         buttonPesquisar = tk.Button(self.frameAgenda, text='Buscar', command=self.buscarAgenda, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonPesquisar.place(relx=0, rely=0.62)
         
-        buttonAdicionar = tk.Button(self.frameAgenda, text='Adicionar Atendimento', command=self.buscarAgenda, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAdicionar.place(relx=0.1, rely=0.62)        
-
+        buttonAdicionar = tk.Button(self.frameAgenda, text='Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdicionar.place(relx=0.058, rely=0.62)
+                     
+        buttonAdicionar = tk.Button(self.frameAgenda, text='Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdicionar.place(relx=0.058, rely=0.62)
         titleDataInicio = tk.Label(self.frameAgenda, text='De:', background='#A9A9A9', fg='black', font='bold')
         titleDataInicio.place(relx=0.2 , rely=0.07)
         
@@ -2180,30 +2184,30 @@ class App:
         button = tk.Button(self.modalAddAtendimento, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         button.place(relx=0.635, rely=0.28)   
         
-        self.treeviewProcedimentos = ttk.Treeview(self.modalAddAtendimento, columns=("cod_procedimento","Procedimento", "Especialidade", "Valor"), show='headings')
-        self.treeviewProcedimentos.heading("cod_procedimento", text="Cód.Procedimento")
-        self.treeviewProcedimentos.heading("Procedimento", text="Nome Procedimento")
-        self.treeviewProcedimentos.heading("Especialidade", text="Especialidade")
-        self.treeviewProcedimentos.heading("Valor", text="Valor Procedimento")
+        self.treeviewAtendimento2 = ttk.Treeview(self.modalAddAtendimento, columns=("cod_procedimento","Procedimento", "Especialidade", "Valor"), show='headings')
+        self.treeviewAtendimento2.heading("cod_procedimento", text="Cód.Procedimento")
+        self.treeviewAtendimento2.heading("Procedimento", text="Nome Procedimento")
+        self.treeviewAtendimento2.heading("Especialidade", text="Especialidade")
+        self.treeviewAtendimento2.heading("Valor", text="Valor Procedimento")
         
-        verticalBar = ttk.Scrollbar(self.modalAddAtendimento, orient='vertical', command=self.treeviewProcedimentos.yview)
-        horizontalBar = ttk.Scrollbar(self.modalAddAtendimento, orient='horizontal', command=self.treeviewProcedimentos.xview)
-        self.treeviewProcedimentos.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+        verticalBar = ttk.Scrollbar(self.modalAddAtendimento, orient='vertical', command=self.treeviewAtendimento2.yview)
+        horizontalBar = ttk.Scrollbar(self.modalAddAtendimento, orient='horizontal', command=self.treeviewAtendimento2.xview)
+        self.treeviewAtendimento2.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        style = ttk.Style(self.treeviewProcedimentos)
+        style = ttk.Style(self.treeviewAtendimento2)
         style.theme_use('clam')
-        style.configure("self.treeviewProcedimentos", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        style.configure("self.treeviewAtendimento2", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
-        self.treeviewProcedimentos.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+        self.treeviewAtendimento2.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
 
         verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
         horizontalBar.place(rely=0.968, relx=0, relwidth=1)
         
-        self.treeviewProcedimentos.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
+        self.treeviewAtendimento2.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
         
-        resultado = self.dao.procedimentosAtivos()
-        for row in resultado:
-            self.treeviewProcedimentos.insert("", END, values=row)
+        rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
+        for row in rows:
+            self.treeviewAtendimento2.insert("", END, values=row)
         
         buttonBuscar = tk.Button(self.modalAddAtendimento, text='BUSCAR', command=self.buscarProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
         buttonBuscar.place(relx=0.8, rely=0.28)
@@ -2246,6 +2250,8 @@ class App:
         self.buttonCalendarAgendaFinal['command'] = self.calendarioFimAgenda
         
 # Fim Calendarios Agenda
+
+# Fim Agendamento --------------------------------
 
 # Especialidade --------------------------------
     def telaEspecialidade(self):
