@@ -8,13 +8,13 @@ from datetime import datetime
 
 class App:
     def __init__(self):
-        self.root_login = tk.Tk(sync=True)
+        # self.root_login = tk.Tk(sync=True)
         # self.modalNovoFuncionario()
-        self.tela_login()
-        # self.telaAgenda()
+        # self.tela_login()
+        self.telaAgenda()
         # # self.telaRoot()
         
-        self.root_login.mainloop()
+        # self.root_login.mainloop()
 
     def tela_login(self):
         self.root_login.title('Zenix')
@@ -25,6 +25,7 @@ class App:
         self.item_id = ""
         self.idSelecao = ""
         self.item_idCliente = ""
+        self.item_idAgenda = ""
                
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
@@ -1918,6 +1919,7 @@ class App:
         self.frameAgenda2.place(relx=0.01, rely=0.21, relheight=0.85, relwidth=0.78)
 
     def telaAgenda(self):
+        self.dao = Dao("thalles", "Susga@667")
         self.agendaRoot = tk.Tk()
         self.agendaRoot.title("Agendamento")
         self.agendaRoot.configure(background='#A9A9A9')
@@ -1941,7 +1943,7 @@ class App:
         menu_bar.add_cascade(label='Gerencial', menu=menu, font=('Arial', 12, 'bold'))
         
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Trocar Senha', font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_command(label='Atendimento', font=('Arial', 10, 'bold'), foreground='black')
 
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
@@ -1960,12 +1962,10 @@ class App:
         
         buttonPesquisar = tk.Button(self.frameAgenda, text='Buscar', command=self.buscarAgenda, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonPesquisar.place(relx=0, rely=0.62)
-        
-        buttonAdicionar = tk.Button(self.frameAgenda, text='Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAdicionar.place(relx=0.058, rely=0.62)
                      
-        buttonAdicionar = tk.Button(self.frameAgenda, text='Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdicionar = tk.Button(self.frameAgenda, text='Agendar', command=self.adicionarAgendamento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonAdicionar.place(relx=0.058, rely=0.62)
+        
         titleDataInicio = tk.Label(self.frameAgenda, text='De:', background='#A9A9A9', fg='black', font='bold')
         titleDataInicio.place(relx=0.2 , rely=0.07)
         
@@ -2048,17 +2048,17 @@ class App:
             
         self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAgendamento)
         
-        
         titleTreview2 = tk.Label(self.agendaRoot, text='Atendimentos', background='#A9A9A9', fg='black', font='bold')
         titleTreview2.place(relx=0.767, rely=0.2)
         
-        self.treeviewClientAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento', 'Procedimento', 'Valor', 'Status'), show='headings')       
+        self.treeviewClientAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
         
         self.treeviewClientAtendimento.heading('Data', text='Data')
         self.treeviewClientAtendimento.heading('Hora', text='Hora')
         self.treeviewClientAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
         self.treeviewClientAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
         self.treeviewClientAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
+        self.treeviewClientAtendimento.heading('Funcionario', text='Funcionario')
         self.treeviewClientAtendimento.heading('Procedimento', text='Procedimento')
         self.treeviewClientAtendimento.heading('Valor', text='Valor')
         self.treeviewClientAtendimento.heading('Status', text='Status')
@@ -2068,6 +2068,7 @@ class App:
         self.treeviewClientAtendimento.column('Cod.Cliente', stretch=False, width=92)
         self.treeviewClientAtendimento.column('Cod.Atendimento', stretch=False, width=92)
         self.treeviewClientAtendimento.column('Nome do Cliente', stretch=False, width=100)
+        self.treeviewClientAtendimento.column('Funcionario', stretch=False, width=100)
         self.treeviewClientAtendimento.column('Procedimento', stretch=False, width=100)
         self.treeviewClientAtendimento.column('Valor', stretch=False, width=100)
         self.treeviewClientAtendimento.column('Status', stretch=False, width=90)
@@ -2143,78 +2144,124 @@ class App:
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row)
 
-    def adicionarAtendimento(self):
-        self.modalAddAtendimento = tk.Tk()
-        self.modalAddAtendimento.title('Atendimento')
-        self.modalAddAtendimento.geometry('650x450')
-        self.modalAddAtendimento.configure(background='#D3D3D3')
-        self.modalAddAtendimento.resizable(False,False)
-        self.modalAddAtendimento.colormapwindows(self.modalAddAtendimento)
-                
-        menu_bar = tk.Menu(self.modalAddAtendimento, background='#808080')
-        
-        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Excluir',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
-        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-        self.modalAddAtendimento.config(menu=menu_bar)
-        
-        titleNomeProcedimento = tk.Label(self.modalAddAtendimento, text='NOME DO PROCEDIMENTO:', font='bold')
-        titleNomeProcedimento.configure(background='#D3D3D3', fg='black')
-        titleNomeProcedimento.place(relx= 0.03, rely=0.05)
+    def adicionarAgendamento(self):
+            self.modalAddAgendamento = tk.Tk()
+            self.modalAddAgendamento.title('Agendamento')
+            self.modalAddAgendamento.geometry('650x450')
+            self.modalAddAgendamento.configure(background='#D3D3D3')
+            self.modalAddAgendamento.resizable(False,False)
+            self.modalAddAgendamento.colormapwindows(self.modalAddAgendamento)
+                    
+            menu_bar = tk.Menu(self.modalAddAgendamento, background='#808080')
+            
+            menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+            menuAuxiliar.add_command(label='Excluir',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+            menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+            self.modalAddAgendamento.config(menu=menu_bar)
+            
+            titledataAgendar = tk.Label(self.modalAddAgendamento, text='DATA:', font='bold')
+            titledataAgendar.configure(background='#D3D3D3', fg='black')
+            titledataAgendar.place(relx= 0.03, rely=0.05)
 
-        buttonClear = tk.Button(self.modalAddAtendimento, text='x', command=self.clearFieldProcedimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonClear.place(relx=0.282, rely=0.1, relwidth=0.05, relheight=0.05)
-        
-        self.nomeProcedimento = tk.Entry(self.modalAddAtendimento)
-        self.nomeProcedimento.configure(background='white', fg='black', width=20)
-        self.nomeProcedimento.place(relx= 0.032, rely=0.1)
-        
-        titleValores = tk.Label(self.modalAddAtendimento, text='VALOR DO PROCEDIMENTO:', font='bold')
-        titleValores.configure(background='#D3D3D3', fg='black')
-        titleValores.place(relx= 0.55, rely=0.05)
-        
-        titleReal = tk.Label(self.modalAddAtendimento, text='R$', font='bold')
-        titleReal.configure(background='#D3D3D3', fg='black')
-        titleReal.place(relx= 0.5, rely=0.1)
-        
-        self.valorProcedimento = tk.Entry(self.modalAddAtendimento)
-        self.valorProcedimento.configure(background='white', fg='black', width=20)
-        self.valorProcedimento.place(relx= 0.553, rely=0.1)
+            self.buttonCalendar = tk.Button(self.modalAddAgendamento, text='+', command=self.calendarioAgendamento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+            self.buttonCalendar.place(relx=0.165, rely=0.1, relwidth=0.035, relheight=0.05)
+            
+            self.dataAgendar = tk.Entry(self.modalAddAgendamento)
+            self.dataAgendar.configure(background='white', fg='black', width=10)
+            self.dataAgendar.place(relx= 0.032, rely=0.1)
+            
+            titleCliente = tk.Label(self.modalAddAgendamento, text='NOME DO CLIENTE:', font='bold')
+            titleCliente.configure(background='#D3D3D3', fg='black')
+            titleCliente.place(relx= 0.25, rely=0.05)
+            
+            self.buttonAddCliente = tk.Button(self.modalAddAgendamento, text='+', command=self.modalNovoCliente, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+            self.buttonAddCliente.place(relx=0.55, rely=0.1, relwidth=0.035, relheight=0.05)
+            
+            self.rowAgenda = self.dao.clientesAll()
+            self.rowAgendaList = [item[1] for item in self.rowAgenda]
+            self.rowIdAgenda = [item[0] for item in self.rowAgenda]
+            self.agendaMap = dict(zip(self.rowAgendaList, self.rowIdAgenda))
+            
+            self.opcoesAgenda = StringVar(self.modalAddAgendamento)
+            self.opcoesAgenda.set("Especialidade")
+            dropdown = tk.OptionMenu(self.modalAddAgendamento, self.opcoesAgenda, *self.rowAgendaList)
+            dropdown.configure(background='white', fg='black', activebackground='gray')
+            dropdown.place(relx= 0.25, rely=0.1, relheight=0.06, relwidth=0.286)
 
-        button = tk.Button(self.modalAddAtendimento, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        button.place(relx=0.635, rely=0.28)   
-        
-        self.treeviewAtendimento2 = ttk.Treeview(self.modalAddAtendimento, columns=("cod_procedimento","Procedimento", "Especialidade", "Valor"), show='headings')
-        self.treeviewAtendimento2.heading("cod_procedimento", text="Cód.Procedimento")
-        self.treeviewAtendimento2.heading("Procedimento", text="Nome Procedimento")
-        self.treeviewAtendimento2.heading("Especialidade", text="Especialidade")
-        self.treeviewAtendimento2.heading("Valor", text="Valor Procedimento")
-        
-        verticalBar = ttk.Scrollbar(self.modalAddAtendimento, orient='vertical', command=self.treeviewAtendimento2.yview)
-        horizontalBar = ttk.Scrollbar(self.modalAddAtendimento, orient='horizontal', command=self.treeviewAtendimento2.xview)
-        self.treeviewAtendimento2.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+            self.opcoesAgenda.trace_add('write', self.setIdAgenda)
 
-        style = ttk.Style(self.treeviewAtendimento2)
-        style.theme_use('clam')
-        style.configure("self.treeviewAtendimento2", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+            button = tk.Button(self.modalAddAgendamento, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button.place(relx=0.635, rely=0.28)   
+            
+            self.treeviewAtendimento2 = ttk.Treeview(self.modalAddAgendamento, columns=(
+                'Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento',
+                'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
         
-        self.treeviewAtendimento2.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+            self.treeviewAtendimento2.heading('Data', text='Data')
+            self.treeviewAtendimento2.heading('Hora', text='Hora')
+            self.treeviewAtendimento2.heading('Nome do Cliente', text='Nome do Cliente')
+            self.treeviewAtendimento2.heading('Cod.Cliente', text='Cód.Cliente')
+            self.treeviewAtendimento2.heading('Cod.Atendimento', text='Cód.Atendimento')
+            self.treeviewAtendimento2.heading('Funcionario', text='Funcionario')
+            self.treeviewAtendimento2.heading('Procedimento', text='Procedimento')
+            self.treeviewAtendimento2.heading('Valor', text='Valor')
+            self.treeviewAtendimento2.heading('Status', text='Status')
+            
+            self.treeviewAtendimento2.column('Data', stretch=False, width=100)
+            self.treeviewAtendimento2.column('Hora', stretch=False, width=100)
+            self.treeviewAtendimento2.column('Cod.Cliente', stretch=False, width=92)
+            self.treeviewAtendimento2.column('Cod.Atendimento', stretch=False, width=92)
+            self.treeviewAtendimento2.column('Nome do Cliente', stretch=False, width=100)
+            self.treeviewAtendimento2.column('Funcionario', stretch=False, width=100)
+            self.treeviewAtendimento2.column('Procedimento', stretch=False, width=100)
+            self.treeviewAtendimento2.column('Valor', stretch=False, width=100)
+            self.treeviewAtendimento2.column('Status', stretch=False, width=90)
+            
+            verticalBar = ttk.Scrollbar(self.modalAddAgendamento, orient='vertical', command=self.treeviewAtendimento2.yview)
+            horizontalBar = ttk.Scrollbar(self.modalAddAgendamento, orient='horizontal', command=self.treeviewAtendimento2.xview)
+            self.treeviewAtendimento2.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
-        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
-        
-        self.treeviewAtendimento2.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
-        
-        rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
-        for row in rows:
-            self.treeviewAtendimento2.insert("", END, values=row)
-        
-        buttonBuscar = tk.Button(self.modalAddAtendimento, text='BUSCAR', command=self.buscarProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
-        buttonBuscar.place(relx=0.8, rely=0.28)
+            style = ttk.Style(self.treeviewAtendimento2)
+            style.theme_use('clam')
+            style.configure("self.treeviewAtendimento2", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+            
+            self.treeviewAtendimento2.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
 
-        self.modalAddAtendimento.bind('<Return>', lambda event: buttonBuscar.invoke())
-        
-        self.modalAddAtendimento.mainloop()
+            verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
+            horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+            
+            self.treeviewAtendimento2.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
+            
+            rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
+            for row in rows:
+                self.treeviewAtendimento2.insert("", END, values=row)
+            
+            buttonBuscar = tk.Button(self.modalAddAgendamento, text='BUSCAR', command=self.buscarProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+            buttonBuscar.place(relx=0.8, rely=0.28)
+
+            self.modalAddAgendamento.bind('<Return>', lambda event: buttonBuscar.invoke())
+            
+            self.modalAddAgendamento.mainloop()
+
+    def setIdAgenda(self, *args):
+        self.selecaoAgenda = self.opcoesAgenda.get()
+        self.idSelecaoAgenda = self.agendaMap.get(self.selecaoAgenda)
+        print(f"Nome: {self.selecaoAgenda}\nId: {self.idSelecaoAgenda}")
+
+    def calendarioAgendamento(self):
+        self.calendarioAgendar = Calendar(
+            self.modalAddAgendamento, font=('Arial', 9, 'bold'), locale='pt_br',
+            bg='white', fg='black', showweeknumbers=False
+        )
+        self.calendarioAgendar.place(relx=0.11 , rely=0.15, relwidth=0.3, relheight=0.4) 
+        self.buttonCalendar['command'] = self.dataAgendamento
+
+    def dataAgendamento(self, ):
+        dataAgendar = self.calendarioAgendar.get_date()
+        self.dataAgendar.delete(0 , END)
+        self.dataAgendar.insert(END, dataAgendar)
+        self.calendarioAgendar.destroy()
+        self.buttonCalendar['command'] = self.calendarioAgendamento
 
 # Calendarios Agenda
     def calendarioIniAgenda(self):
