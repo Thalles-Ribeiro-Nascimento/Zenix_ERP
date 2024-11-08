@@ -1293,12 +1293,14 @@ class App:
         self.clientes.mainloop()
 
     def modalNovoCliente(self):
-        self.modalNovoClientes = tk.Tk()
+        self.modalNovoClientes = tk.Toplevel()
         self.modalNovoClientes.title('Novo Cliente')
         self.modalNovoClientes.geometry('750x550')
         self.modalNovoClientes.configure(background='#D3D3D3')
         self.modalNovoClientes.resizable(False,False)
-        self.modalNovoClientes.colormapwindows(self.modalNovoClientes)
+        self.modalNovoClientes.transient(self.clientes)
+        self.modalNovoClientes.focus_force()
+        self.modalNovoClientes.grab_set()
               
         titulo = tk.Label(self.modalNovoClientes, text='ADICIONAR NOVO CLIENTE', font=('Arial', 18, 'bold'), background='#D3D3D3', fg='black')
         titulo.place(relx= 0.25, rely=0.07)
@@ -2145,13 +2147,14 @@ class App:
                 self.treeviewAgenda.insert("", END, values=row)
 
     def adicionarAgendamento(self):
-            self.modalAddAgendamento = tk.Tk()
+            self.modalAddAgendamento = tk.Toplevel()
             self.modalAddAgendamento.title('Agendamento')
             self.modalAddAgendamento.geometry('650x450')
             self.modalAddAgendamento.configure(background='#D3D3D3')
             self.modalAddAgendamento.resizable(False,False)
-            self.modalAddAgendamento.colormapwindows(self.modalAddAgendamento)
-                    
+            self.modalAddAgendamento.transient(self.agendaRoot)
+            # self.modalAddAgendamento.grab_set()
+             
             menu_bar = tk.Menu(self.modalAddAgendamento, background='#808080')
             
             menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -2170,26 +2173,32 @@ class App:
             self.dataAgendar.configure(background='white', fg='black', width=10)
             self.dataAgendar.place(relx= 0.032, rely=0.1)
             
+            titleIdCliente = tk.Label(self.modalAddAgendamento, text='CÓDIGO:', font='bold')
+            titleIdCliente.place(relx= 0.032, rely=0.2)
+            titleIdCliente.configure(background='#D3D3D3', fg='black')
+            
+            self.codCliente = tk.Entry(self.modalAddAgendamento)
+            self.codCliente.configure(background='white', fg='black', width=10)
+            self.codCliente.place(relx= 0.032, rely=0.25)
+            
             titleCliente = tk.Label(self.modalAddAgendamento, text='NOME DO CLIENTE:', font='bold')
             titleCliente.configure(background='#D3D3D3', fg='black')
             titleCliente.place(relx= 0.25, rely=0.05)
             
-            self.buttonAddCliente = tk.Button(self.modalAddAgendamento, text='+', command=self.modalNovoCliente, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-            self.buttonAddCliente.place(relx=0.55, rely=0.1, relwidth=0.035, relheight=0.05)
-            
             self.rowAgenda = self.dao.clientesAll()
-            self.rowAgendaList = [item[1] for item in self.rowAgenda]
-            self.rowIdAgenda = [item[0] for item in self.rowAgenda]
-            self.agendaMap = dict(zip(self.rowAgendaList, self.rowIdAgenda))
-            
+            nomeRow = (item[1] for item in self.rowAgenda)
+            self.idRow = (item[0] for item in self.rowAgenda)
+            self.agendaMap = dict(zip(nomeRow, self.idRow))
+                    
             self.opcoesAgenda = StringVar(self.modalAddAgendamento)
-            self.opcoesAgenda.set("Especialidade")
-            dropdown = tk.OptionMenu(self.modalAddAgendamento, self.opcoesAgenda, *self.rowAgendaList)
+            self.opcoesAgenda.set("Escolha um Cliente")
+            
+            dropdown = tk.OptionMenu(self.modalAddAgendamento, self.opcoesAgenda, *nomeRow)
             dropdown.configure(background='white', fg='black', activebackground='gray')
-            dropdown.place(relx= 0.25, rely=0.1, relheight=0.06, relwidth=0.286)
+            dropdown.place(relx= 0.37, rely=0.245, relheight=0.05, relwidth=0.286)
 
             self.opcoesAgenda.trace_add('write', self.setIdAgenda)
-
+            
             button = tk.Button(self.modalAddAgendamento, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             button.place(relx=0.635, rely=0.28)   
             
@@ -2244,8 +2253,10 @@ class App:
             self.modalAddAgendamento.mainloop()
 
     def setIdAgenda(self, *args):
+        self.codCliente.delete(0, END)
         self.selecaoAgenda = self.opcoesAgenda.get()
         self.idSelecaoAgenda = self.agendaMap.get(self.selecaoAgenda)
+        self.codCliente.insert(0, self.idSelecaoAgenda)
         print(f"Nome: {self.selecaoAgenda}\nId: {self.idSelecaoAgenda}")
 
     def calendarioAgendamento(self):

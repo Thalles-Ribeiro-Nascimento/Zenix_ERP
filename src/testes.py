@@ -88,7 +88,7 @@ from conection.objects import Dao
 # funcionarioUpgrade.clear()
 
 dao = Dao("thalles", "Susga@667")
-rows = dao.AgendaNome("Gustavo")
+rows = dao.clientesAll()
 for row in rows:
     print(row)
     print(len(row))
