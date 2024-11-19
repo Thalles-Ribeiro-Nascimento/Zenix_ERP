@@ -1,2 +1,2 @@
 [LOGIN]
-usuario:thalles
+usuario:admin

@@ -91,7 +91,7 @@ dao = Dao("thalles", "Susga@667")
 rows = dao.clientesAll()
 for row in rows:
     print(row)
-    print(len(row))
+    print(row[1])
 # print(status)
 
 # rows = dao.especialidadeView()

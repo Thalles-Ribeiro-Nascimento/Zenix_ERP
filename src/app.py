@@ -1,20 +1,20 @@
+import tkinter as tk
 from tkinter import *
 from tkinter import ttk, messagebox
 from conection.objects import Dao
-import tkinter as tk
 # import function as f
 from tkcalendar import Calendar
 from datetime import datetime
 
 class App:
     def __init__(self):
-        # self.root_login = tk.Tk(sync=True)
+        self.root_login = tk.Tk(sync=True)
         # self.modalNovoFuncionario()
-        # self.tela_login()
-        self.telaAgenda()
+        self.tela_login()
+        # self.telaAgenda()
         # # self.telaRoot()
         
-        # self.root_login.mainloop()
+        self.root_login.mainloop()
 
     def tela_login(self):
         self.root_login.title('Zenix')
@@ -23,6 +23,7 @@ class App:
         self.root_login.resizable(False,False)
         self.root_login.colormapwindows(self.root_login)
         self.item_id = ""
+        self.selecao_itemFunc = ()
         self.idSelecao = ""
         self.item_idCliente = ""
         self.item_idAgenda = ""
@@ -267,6 +268,8 @@ class App:
 
     def clearFieldFunc(self):
         self.campo_nome.delete(0, END)
+        # if len(self.selecao_itemFunc) != 0:
+        #     self.selecao_itemFunc.
 
     def clearFieldCliente(self):
         self.campo_nomeClientes.delete(0, END)
@@ -562,6 +565,7 @@ class App:
             # Id do item selecionado
             self.item_id = self.treeviewFunc.selection()[0]
             self.selecao_itemFunc = self.treeviewFunc.selection()
+            print(self.selecao_itemFunc)
             
             # Lista Informações Funcionário Selecionado
             self.listaFuncionario = self.treeviewFunc.item(self.item_id, 'values')
@@ -1293,14 +1297,11 @@ class App:
         self.clientes.mainloop()
 
     def modalNovoCliente(self):
-        self.modalNovoClientes = tk.Toplevel()
+        self.modalNovoClientes = tk.Tk()
         self.modalNovoClientes.title('Novo Cliente')
         self.modalNovoClientes.geometry('750x550')
         self.modalNovoClientes.configure(background='#D3D3D3')
         self.modalNovoClientes.resizable(False,False)
-        self.modalNovoClientes.transient(self.clientes)
-        self.modalNovoClientes.focus_force()
-        self.modalNovoClientes.grab_set()
               
         titulo = tk.Label(self.modalNovoClientes, text='ADICIONAR NOVO CLIENTE', font=('Arial', 18, 'bold'), background='#D3D3D3', fg='black')
         titulo.place(relx= 0.25, rely=0.07)
@@ -1921,7 +1922,6 @@ class App:
         self.frameAgenda2.place(relx=0.01, rely=0.21, relheight=0.85, relwidth=0.78)
 
     def telaAgenda(self):
-        self.dao = Dao("thalles", "Susga@667")
         self.agendaRoot = tk.Tk()
         self.agendaRoot.title("Agendamento")
         self.agendaRoot.configure(background='#A9A9A9')
@@ -2147,13 +2147,11 @@ class App:
                 self.treeviewAgenda.insert("", END, values=row)
 
     def adicionarAgendamento(self):
-            self.modalAddAgendamento = tk.Toplevel()
+            self.modalAddAgendamento = tk.Tk()
             self.modalAddAgendamento.title('Agendamento')
             self.modalAddAgendamento.geometry('650x450')
             self.modalAddAgendamento.configure(background='#D3D3D3')
             self.modalAddAgendamento.resizable(False,False)
-            self.modalAddAgendamento.transient(self.agendaRoot)
-            # self.modalAddAgendamento.grab_set()
              
             menu_bar = tk.Menu(self.modalAddAgendamento, background='#808080')
             
@@ -2239,7 +2237,7 @@ class App:
             verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
             horizontalBar.place(rely=0.968, relx=0, relwidth=1)
             
-            self.treeviewAtendimento2.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
+            # self.treeviewAtendimento2.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
             
             rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
             for row in rows:
@@ -2253,10 +2251,8 @@ class App:
             self.modalAddAgendamento.mainloop()
 
     def setIdAgenda(self, *args):
-        self.codCliente.delete(0, END)
         self.selecaoAgenda = self.opcoesAgenda.get()
         self.idSelecaoAgenda = self.agendaMap.get(self.selecaoAgenda)
-        self.codCliente.insert(0, self.idSelecaoAgenda)
         print(f"Nome: {self.selecaoAgenda}\nId: {self.idSelecaoAgenda}")
 
     def calendarioAgendamento(self):
