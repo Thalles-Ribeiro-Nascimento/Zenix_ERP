@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, colorchooser
 from conection.objects import Dao
 # import function as f
 from tkcalendar import Calendar
@@ -277,7 +277,10 @@ class App:
 # Funcionario -----------------------------------------------
 
     def telaFuncionario(self):
-        self.funcionarios = tk.Tk()
+        self.funcionarios = tk.Toplevel()
+        self.funcionarios.transient(self.main)
+        # self.funcionarios.grab_set()
+        self.funcionarios.lift()
         self.funcionarios.title('Funcionarios')
         self.funcionarios.configure(background='#A9A9A9')
         self.funcionarios.geometry('1540x900')
@@ -298,14 +301,13 @@ class App:
         menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
-        menuFunCli.add_command(label='Principal', command=self.telaRoot, font=('Arial', 10, 'bold'), foreground='black')
+        # menuFunCli.add_command(label='Ocultar Tela', command=self.funcionarios.withdraw, font=('Arial', 10, 'bold'), foreground='black')
         menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
 
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
         menuAuxiliar.add_command(label='Todos Funcionarios',command=self.funcionariosAll, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
-
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
         self.funcionarios.config(menu=menu_bar)
@@ -398,12 +400,14 @@ class App:
             messagebox.showinfo("Aviso","Selecione um funcionário para ser atualizado!")
 
         else:
-            self.modalAtualizaFunc = tk.Tk()
+            self.modalAtualizaFunc = tk.Toplevel()
+            self.modalAtualizaFunc.transient(self.funcionarios)
+            self.modalAtualizaFunc.lift()
+            self.modalAtualizaFunc.grab_set()
             self.modalAtualizaFunc.title('Funcionario')
             self.modalAtualizaFunc.geometry('750x550')
             self.modalAtualizaFunc.configure(background='#D3D3D3')
             self.modalAtualizaFunc.resizable(False,False)
-            self.modalAtualizaFunc.colormapwindows(self.modalAtualizaFunc)
             
             txtNome = tk.Label(self.modalAtualizaFunc, text='NOME:', font='bold')
             txtNome.place(relx= 0.06, rely=0.2)
@@ -565,7 +569,6 @@ class App:
             # Id do item selecionado
             self.item_id = self.treeviewFunc.selection()[0]
             self.selecao_itemFunc = self.treeviewFunc.selection()
-            print(self.selecao_itemFunc)
             
             # Lista Informações Funcionário Selecionado
             self.listaFuncionario = self.treeviewFunc.item(self.item_id, 'values')
@@ -620,7 +623,10 @@ class App:
             return
 
     def modalNovaEspecialidade(self):
-        self.modalEspecialidade = tk.Tk()
+        self.modalEspecialidade = tk.Toplevel()
+        self.modalEspecialidade.transient(self.modalNovoFunc)
+        self.modalEspecialidade.grab_set()
+        self.modalEspecialidade.lift()
         self.modalEspecialidade.title('Novo Especialidade')
         self.modalEspecialidade.geometry('350x150')
         self.modalEspecialidade.configure(background='#D3D3D3')
@@ -680,7 +686,10 @@ class App:
             self.campo_nome.delete(0, END)
    
     def modalNovoFuncionario(self):
-        self.modalNovoFunc = tk.Tk()
+        self.modalNovoFunc = tk.Toplevel()
+        self.modalNovoFunc.transient(self.funcionarios)
+        self.modalNovoFunc.grab_set()
+        self.modalNovoFunc.lift()
         self.modalNovoFunc.title('Novo Funcionario')
         self.modalNovoFunc.geometry('750x550')
         self.modalNovoFunc.configure(background='#D3D3D3')
@@ -892,7 +901,8 @@ class App:
                     else:
                         erro = False
                         
-            if erro == False:  
+            if erro == False:
+                self.atualizaTreeFunc()
                 self.modalAtualizaFunc.destroy()
                 self.exibir_sucesso("Alterações Realizadas")
             else:
@@ -940,9 +950,6 @@ class App:
         elif bairro == "":
             messagebox.showinfo("Aviso","O campo Bairro está vazio")
             
-        elif estado == "" or estado == "AC":
-            messagebox.showinfo("Aviso","O campo Estado está vazio")
-            
         elif email == "":
             messagebox.showinfo("Aviso","O campo Email está vazio")
             
@@ -963,11 +970,19 @@ class App:
                 
             else:
                 msn = f'Funcionário {nome}, inserido com sucesso'
+                self.atualizaTreeFunc()
                 self.modalNovoFunc.destroy()
                 self.exibir_sucesso(msn)               
                 
         else:
             messagebox.showinfo("Aviso","Email incompleto: Escreva -> exemplo@email.com")
+
+    def atualizaTreeFunc(self):
+        self.treeviewFunc.delete(*self.treeviewFunc.get_children())
+
+        self.rows = self.dao.funcionarioAllAtivos()
+        for row in self.rows:
+            self.treeviewFunc.insert("", END, values=row)
 
     def confirmarExclusao(self):
         if self.item_id == "":
@@ -996,9 +1011,11 @@ class App:
             if validar == False:
                 return
             else:
+                self.atualizaTreeFunc()
                 self.exibir_sucesso("Funcionários Excluídos!")    
-        else:       
+        else:
             self.dao.deleteLogicoFuncionario(self.funcId)    
+            self.atualizaTreeFunc()       
             self.exibir_sucesso(f"{self.nomeFuncionario} foi excluído com sucesso")
 
 # Calendarios
@@ -1198,7 +1215,10 @@ class App:
  
 # Cliente ------------------------------------------------
     def telaClientes(self):
-        self.clientes = tk.Tk()
+        self.clientes = tk.Toplevel()
+        self.clientes.transient(self.main)
+        # self.clientes.grab_set()
+        self.clientes.lift()
         self.clientes.title('Clientes')
         self.clientes.configure(background='#A9A9A9')
         self.clientes.geometry('1540x900')
@@ -1297,7 +1317,10 @@ class App:
         self.clientes.mainloop()
 
     def modalNovoCliente(self):
-        self.modalNovoClientes = tk.Tk()
+        self.modalNovoClientes = tk.Toplevel()
+        self.modalNovoClientes.transient(self.clientes)
+        self.modalNovoClientes.grab_set()
+        self.modalNovoClientes.lift()
         self.modalNovoClientes.title('Novo Cliente')
         self.modalNovoClientes.geometry('750x550')
         self.modalNovoClientes.configure(background='#D3D3D3')
@@ -1443,7 +1466,10 @@ class App:
             messagebox.showinfo("Aviso","Selecione um cliente!")
 
         else:
-            self.modalAtualizaCliente = tk.Tk()
+            self.modalAtualizaCliente = tk.Toplevel()
+            self.modalAtualizaCliente.transient(self.clientes)
+            self.modalAtualizaCliente.grab_set()
+            self.modalAtualizaCliente.lift()
             self.modalAtualizaCliente.title('Cliente')
             self.modalAtualizaCliente.geometry('750x550')
             self.modalAtualizaCliente.configure(background='#D3D3D3')
@@ -1640,7 +1666,8 @@ class App:
                 else:
                     erro = False
                         
-            if erro == False: 
+            if erro == False:
+                self.atualizaTreeClient()
                 self.modalAtualizaCliente.destroy() 
                 self.exibir_sucesso("Alterações Realizadas")
             else:
@@ -1834,12 +1861,20 @@ class App:
                 messagebox.showerror("Erro",dao)
                 
             else:
+                self.atualizaTreeClient()
                 self.modalNovoClientes.destroy()
                 msn = f'Cliente inserido com sucesso'
                 self.exibir_sucesso(msn)               
                 
         else:
             messagebox.showerror("Email Incompleto","Email incompleto: Escreva -> exemplo@email.com")
+
+    def atualizaTreeClient(self):
+        self.treeviewClientes.delete(*self.treeviewClientes.get_children())
+
+        self.rowsClientes = self.dao.clientesAll()        
+        for row in self.rowsClientes:
+            self.treeviewClientes.insert("", END, values=row)
 
     def pegaIdClientes(self, event):
         self.campo_nomeClientes.delete(0, END)
@@ -2309,7 +2344,10 @@ class App:
 
 # Especialidade --------------------------------
     def telaEspecialidade(self):
-        self.modalEspecialidade = tk.Tk()
+        self.modalEspecialidade = tk.Toplevel()
+        self.modalEspecialidade.transient(self.main)
+        # self.modalEspecialidade.grab_set()
+        self.modalEspecialidade.lift()
         self.modalEspecialidade.title('Especialidade')
         self.modalEspecialidade.geometry('650x450')
         self.modalEspecialidade.configure(background='#D3D3D3')
@@ -2376,6 +2414,7 @@ class App:
             messagebox.showinfo("Aviso","Preencha o campo Nome!")
         else:
             self.dao.insertEspecialidade(self.nomeEspecialidade.get())
+            self.atualizaTreeEspecialidade()
             self.exibir_sucesso("Especialidade Inserida!")
 
     def selectItemTreeviewEspecialidade(self, event):
@@ -2400,6 +2439,13 @@ class App:
             
         except IndexError as e:
             return
+
+    def atualizaTreeEspecialidade(self):
+        self.treeviewEspecialidade.delete(*self.treeviewEspecialidade.get_children())
+
+        resultado = self.dao.especialidadeView()
+        for row in resultado:
+            self.treeviewEspecialidade.insert("", END, values=row)
 
     def buscarEspecialidade(self):
         self.treeviewEspecialidade.delete(*self.treeviewEspecialidade.get_children())
@@ -2436,6 +2482,7 @@ class App:
                 if validar == False:
                     return
                 else:
+                    self.atualizaTreeEspecialidade()
                     self.exibir_sucesso("Especialidade Excluídas!")    
             else:       
                 resultado = self.dao.deleteLogicoEspecialidade(self.idEspecialidadeSelecionado)
@@ -2443,20 +2490,25 @@ class App:
                 if isinstance(resultado, str):
                     messagebox.showerror("Erro",resultado)
                 else:
+                    self.atualizaTreeEspecialidade()
                     self.exibir_sucesso("Especialidade excluída!")
         
 # Fim Especialidade --------------------------------
 
 # Procedimentos --------------------------------
     def telaProcedimento(self):
-        self.modalProcedimentos = tk.Tk()
+        self.modalProcedimentos = tk.Toplevel()
+        self.modalProcedimentos.transient(self.main)
+        # self.modalProcedimentos.grab_set()
+        self.modalProcedimentos.lift()
         self.modalProcedimentos.title('Procedimento')
         self.modalProcedimentos.geometry('650x450')
         self.modalProcedimentos.configure(background='#D3D3D3')
         self.modalProcedimentos.resizable(False,False)
         self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
         self.ItemSelecionadoProcedimento = ""
-        
+        # colors = colorchooser.Chooser()
+        # colors.show()
         menu_bar = tk.Menu(self.modalProcedimentos, background='#808080')
         
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -2554,6 +2606,7 @@ class App:
             if isinstance(resultado, str):
                 messagebox.showerror("Erro ao cadastrar", resultado)
             else:
+                self.atualizaTreeProcedimento()
                 msn = "Procedimento inserido!"
                 self.exibir_sucesso(msn)
 
@@ -2593,6 +2646,13 @@ class App:
         except IndexError as e:
             return
 
+    def atualizaTreeProcedimento(self):
+        self.treeviewProcedimentos.delete(*self.treeviewProcedimentos.get_children())
+
+        resultado = self.dao.procedimentosAtivos()
+        for row in resultado:
+            self.treeviewProcedimentos.insert("", END, values=row)
+
     def deleteProcedimento(self):
         if self.ItemSelecionadoProcedimento == "":
             messagebox.showinfo("Aviso","Selecione um Procedimento")
@@ -2612,7 +2672,8 @@ class App:
                     
                 if validar == False:
                     return
-                else:                        
+                else:
+                    self.atualizaTreeProcedimento()               
                     self.exibir_sucesso("Procedimentos Excluídos!")   
             else:
                 resultado = self.dao.deleteLogicoProcedimento(self.idProcedimentoSelecionado)
@@ -2620,6 +2681,7 @@ class App:
                     messagebox.showerror("Erro ao deletar", resultado)
                 
                 else:
+                    self.atualizaTreeProcedimento()
                     self.exibir_sucesso("Procedimento Excluído!")
                
 # Fim Procedimentos --------------------------------
