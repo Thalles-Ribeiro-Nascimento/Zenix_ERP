@@ -2082,10 +2082,10 @@ class App:
         button = tk.Button(self.formaPagamento, text='ADICIONAR', command=self.adicionarFormaPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         button.place(relx=0.15, rely=0.28)   
         
-        self.treeviewFormaPagamento = ttk.Treeview(self.formaPagamento, columns=("idEspecialidade", "Especialidade", "Status"), show='headings')
-        self.treeviewFormaPagamento.heading("idEspecialidade", text="Cód.Especialidade")
-        self.treeviewFormaPagamento.heading("Especialidade", text="Especialidade")
-        self.treeviewFormaPagamento.heading("Status", text="Status")
+        self.treeviewFormaPagamento = ttk.Treeview(self.formaPagamento, columns=("Forma de Pagamento", "Tipo de Pagamento", "Taxa"), show='headings')
+        self.treeviewFormaPagamento.heading("Forma de Pagamento", text="Forma de Pagamento")
+        self.treeviewFormaPagamento.heading("Tipo de Pagamento", text="Tipo de Pagamento")
+        self.treeviewFormaPagamento.heading("Taxa", text="Taxa")
         
         verticalBar = ttk.Scrollbar(self.formaPagamento, orient='vertical', command=self.treeviewFormaPagamento.yview)
         horizontalBar = ttk.Scrollbar(self.formaPagamento, orient='horizontal', command=self.treeviewFormaPagamento.xview)
@@ -2115,25 +2115,25 @@ class App:
         self.modalNovaFormaPagamento.grab_set()
         self.modalNovaFormaPagamento.lift()
         self.modalNovaFormaPagamento.title('Nova Forma de Pagamento')
-        self.modalNovaFormaPagamento.geometry('520x350')
+        self.modalNovaFormaPagamento.geometry('520x200')
         self.modalNovaFormaPagamento.configure(background='#D3D3D3')
         self.modalNovaFormaPagamento.resizable(False,False)
         self.modalNovaFormaPagamento.colormapwindows(self.modalNovaFormaPagamento)
         
         
         titulo = tk.Label(self.modalNovaFormaPagamento, text='ADICIONAR FORMA DE PAGAMENTO', font=('Arial', 14, 'bold'), background='#D3D3D3', fg='black')
-        titulo.place(relx= 0.1, rely=0.07)
+        titulo.place(relx= 0.2, rely=0.07)
 
-        txtNome = tk.Label(self.modalNovaFormaPagamento, text='FORMA DE PAGAMENTO:', font=('Arial', 12, 'bold'))
-        txtNome.place(relx= 0.06, rely=0.2)
+        txtNome = tk.Label(self.modalNovaFormaPagamento, text='FORMA DE PAGAMENTO:', font=('Arial', 10, 'bold'))
+        txtNome.place(relx= 0.05, rely=0.25)
         txtNome.configure(background='#D3D3D3', fg='black')
 
         self.nomeFormaPagamento = tk.Entry(self.modalNovaFormaPagamento,width=25)
         self.nomeFormaPagamento.configure(background='white', fg='black')
-        self.nomeFormaPagamento.place(relx= 0.06, rely=0.25)
+        self.nomeFormaPagamento.place(relx= 0.05, rely=0.35)
                 
-        txtTipo = tk.Label(self.modalNovaFormaPagamento, text='TIPO DE PAGAMENTO:', font=('Arial', 12, 'bold'))
-        txtTipo.place(relx= 0.06, rely=0.4)
+        txtTipo = tk.Label(self.modalNovaFormaPagamento, text='TIPO DE PAGAMENTO:', font=('Arial', 10, 'bold'))
+        txtTipo.place(relx= 0.05, rely=0.55)
         txtTipo.configure(background='#D3D3D3', fg='black')
 
         self.tipoPagamento = StringVar(self.modalNovaFormaPagamento)
@@ -2142,20 +2142,55 @@ class App:
         
         self.tipoPagamentoDrop = tk.OptionMenu(self.modalNovaFormaPagamento, self.tipoPagamento, *listTipo)
         self.tipoPagamentoDrop.configure(background='white', fg='black', activebackground='gray')
-        self.tipoPagamentoDrop.place(relx= 0.06, rely=0.45)
+        self.tipoPagamentoDrop.place(relx= 0.05, rely=0.65)
 
-        txtTaxa = tk.Label(self.modalNovaFormaPagamento, text='TAXA:', font=('Arial', 12, 'bold'))
-        txtTaxa.place(relx= 0.52, rely=0.2)
+        txtTaxa = tk.Label(self.modalNovaFormaPagamento, text='TAXA:', font=('Arial', 10, 'bold'))
+        txtTaxa.place(relx= 0.7, rely=0.25)
         txtTaxa.configure(background='#D3D3D3', fg='black')
 
-        self.taxaPagamento = tk.Entry(self.modalNovaFormaPagamento)
-        self.taxaPagamento.place(relx= 0.52, rely=0.25, width=20)
+        self.taxaPagamento = tk.Entry(self.modalNovaFormaPagamento, width=5)
+        self.taxaPagamento.place(relx= 0.7, rely=0.35)
         self.taxaPagamento.configure(background='white', fg='black')
 
-        buttonAdd = tk.Button(self.modalNovaFormaPagamento, text='ADICIONAR' , command=self.insertFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAdd.place(relx= 0.7, rely=0.85)
+        buttonAdd = tk.Button(self.modalNovaFormaPagamento, text='ADICIONAR' , command=self.insertPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdd.place(relx= 0.7, rely=0.65)
         
         self.modalNovaFormaPagamento.mainloop()
+
+    def insertPagamento(self):
+        nomeFormaPagamento = self.nomeFormaPagamento.get().upper()
+        tipoPagamento = self.tipoPagamento.get().upper()
+        taxa = self.taxaPagamento.get()
+
+        if nomeFormaPagamento == "":
+            messagebox.showerror("Aviso","O campo Forma de Pagamento está vazio")
+            return
+        
+        elif tipoPagamento == "":
+            messagebox.showerror("Aviso","O campo Tipo de Pagamento está vazio")
+            return
+            
+        elif taxa == "":
+            messagebox.showerror("Aviso","O campo Taxa está vazio")
+            return
+
+        dao = self.dao.insertFormaPagamento(nomeFormaPagamento, tipoPagamento, taxa)
+        if isinstance(dao, str):
+            self.modalNovaFormaPagamento.destroy()
+            messagebox.showerror("Erro",dao, parent=self.formaPagamento)
+            
+        else:
+            self.atualizaTreeFormaPagamento()
+            self.modalNovaFormaPagamento.destroy()
+            msn = f'Forma de pagamento inserida com sucesso'
+            self.exibir_sucesso(msn, self.formaPagamento) 
+
+    def atualizaTreeFormaPagamento(self):
+        self.treeviewFormaPagamento.delete(*self.treeviewFormaPagamento.get_children())
+
+        rowsFormaPagamento = self.dao.formaPagamentoAll()        
+        for row in rowsFormaPagamento:
+            self.treeviewFormaPagamento.insert("", END, values=row)
 
 # Fim Parte de Financeiro -------------------------------------
 

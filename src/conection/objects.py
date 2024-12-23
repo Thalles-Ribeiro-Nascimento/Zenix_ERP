@@ -389,6 +389,15 @@ class Dao:
             erroInsercao = str(e)
             resultado = erroInsercao.split(":")[1]
             return resultado      
+
+    def formaPagamentoAll(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
         
+        sql = 'SELECT * FROM Vw_FormaPagamento'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows        
 
 # CURDATE()
