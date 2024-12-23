@@ -373,7 +373,22 @@ class Dao:
             self.conecta.commit()
         except mysql.connector.Error as e:
             print(e)
+
+    def insertFormaPagamento(self, formaPagamento, tipoPagamento, taxa):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        try:
+            sql = f"INSERT INTO pagamento (forma_pagamento, tipo_pagamento, taxa) VALUES (%s, %s, %s)"
+            self.cursor.execute(sql, (formaPagamento, tipoPagamento, taxa))
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print(e)
             
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado      
         
 
 # CURDATE()

@@ -87,8 +87,8 @@ from conection.objects import Dao
 # indices.clear()
 # funcionarioUpgrade.clear()
 
-dao = Dao("admin", "Susga@3200")
-rows = dao.atendimentosAgenda(17, '14/12/2024')
+dao = Dao("admin", "SysteM98")
+rows = dao.agenda()
 for row in rows:
     print(row)
     # print(row[1])

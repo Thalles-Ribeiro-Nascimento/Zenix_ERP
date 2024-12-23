@@ -144,6 +144,7 @@ class App:
     def telaRoot(self):
         # Criando a janela principal
         self.main = tk.Tk()
+        self.main.attributes('-zoomed',True)
         self.main.title(f"Zenix - {self.usuario.upper()}")
         self.main.minsize(1024,720)
         self.main.configure(background='#A9A9A9')
@@ -1936,8 +1937,228 @@ class App:
 
 # Fim Cliente -------------------------------------
 
+
+# Parte de Financeiro -------------------------------------
+
+    def frameFinanceiro(self):
+        self.framefinanceiros = tk.Frame(self.financeiro, background='#A9A9A9')
+        self.framefinanceiros.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
+
+    def frameTvFinanceiro(self):
+        self.frameviewFinanceiro = tk.Frame(self.financeiro, background='white')
+        self.frameviewFinanceiro.place(relx=0.02, rely=0.25, relheight=0.70, relwidth=0.96)
+
     def telaFinanceiro(self):
-        pass
+        self.financeiro = tk.Toplevel()
+        self.financeiro.transient(self.main)
+        # self.financeiro.grab_set()
+        self.financeiro.lift()
+        self.financeiro.title('Lançamentos')
+        self.financeiro.configure(background='#A9A9A9')
+        self.financeiro.geometry('1024x720')
+        self.financeiro.resizable(False, False)
+        
+        # Menu superior
+        menu_bar = tk.Menu(self.financeiro, background='#808080')
+        menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_separator()
+        # menuFunCli.add_command(label='Ocultar Tela', command=self.financeiro.withdraw, font=('Arial', 10, 'bold'), foreground='black')
+        menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
+
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Novo',command=self.modalNovoFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+
+        self.financeiro.config(menu=menu_bar)
+        # Fim do menu superior
+
+        self.frameFinanceiro()
+        texto_nome = tk.Label(self.framefinanceiros, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
+        texto_nome.place(relx=0.02, rely=0.35)
+
+        self.campo_nome = tk.Entry(self.framefinanceiros, width=25, bg='white', fg='black')
+        self.campo_nome.place(relx=0.02, rely=0.5)
+
+        self.buscarFunc = tk.Button(self.framefinanceiros, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.buscarFunc.place(relx=0.02, rely=0.7 ,relheight=0.2)
+
+        self.frameTvFinanceiro()
+        self.treeviewFinanceiro = ttk.Treeview(self.frameviewFinanceiro, columns=(
+            'Cod.Funcionario', 'Nome do Funcionario', 'Especialidade', 'CPF', 'Telefone', 
+            'Celular' ,'Data de Nascimento', 'Rua', 'Bairro',
+            'UF', 'Nº','Comp', 'Email', 'Percentual', 'Status' 
+            ), show='headings')
+
+        self.treeviewFinanceiro.heading('Cod.Funcionario', text='Cód.Funcionario')
+        self.treeviewFinanceiro.heading('Nome do Funcionario', text='Nome do Funcionário')
+        self.treeviewFinanceiro.heading('Especialidade', text='Especialidade')
+        self.treeviewFinanceiro.heading('CPF', text='CPF')
+        self.treeviewFinanceiro.heading('Telefone', text='Telefone')
+        self.treeviewFinanceiro.heading('Celular', text='Celular')
+        self.treeviewFinanceiro.heading('Data de Nascimento', text='Dt.Nascimento')
+        self.treeviewFinanceiro.heading('Rua', text='Rua')
+        self.treeviewFinanceiro.heading('Bairro', text='Bairro')
+        self.treeviewFinanceiro.heading('UF', text='Estado')
+        self.treeviewFinanceiro.heading('Nº', text='Nº')
+        self.treeviewFinanceiro.heading('Comp', text='Complemento')
+        self.treeviewFinanceiro.heading('Email', text='Email')
+        self.treeviewFinanceiro.heading('Percentual', text='Percentual')
+        self.treeviewFinanceiro.heading('Status', text='Status')
+        
+        self.treeviewFinanceiro.column('Cod.Funcionario', stretch=False, width=90)
+        self.treeviewFinanceiro.column('Nome do Funcionario', stretch=False)
+        self.treeviewFinanceiro.column('Especialidade', stretch=False)
+        self.treeviewFinanceiro.column('CPF', stretch=False, width=100)
+        self.treeviewFinanceiro.column('Telefone', stretch=False, width=100)
+        self.treeviewFinanceiro.column('Celular', stretch=False, width=100)
+        self.treeviewFinanceiro.column('Data de Nascimento', stretch=False, width=100)
+        self.treeviewFinanceiro.column('Rua', stretch=False)
+        self.treeviewFinanceiro.column('Bairro', stretch=False)
+        self.treeviewFinanceiro.column('UF', stretch=False, width=90)
+        self.treeviewFinanceiro.column('Nº', stretch=False, width=90)
+        self.treeviewFinanceiro.column('Comp', stretch=False)
+        self.treeviewFinanceiro.column('Email', stretch=False)
+        self.treeviewFinanceiro.column('Percentual', stretch=False, width=90)
+        self.treeviewFinanceiro.column('Status', stretch=False, width=90)
+                   
+        verticalBar = ttk.Scrollbar(self.frameviewFinanceiro, orient='vertical', command=self.treeviewFinanceiro.yview)
+        horizontalBar = ttk.Scrollbar(self.frameviewFinanceiro, orient='horizontal', command=self.treeviewFinanceiro.xview)
+        self.treeviewFinanceiro.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeviewFinanceiro)
+        style.theme_use('clam')
+        style.configure("self.treeviewFinanceiro", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        self.treeviewFinanceiro.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        verticalBar.place(relx=0.988 , rely=0, relheight=0.976)
+        horizontalBar.place(rely=0.976, relx=0, relwidth=1)
+                
+        self.financeiro.mainloop()
+
+    def telaForma_pagamento(self):
+        self.formaPagamento = tk.Toplevel()
+        self.formaPagamento.transient(self.financeiro)
+        # self.formaPagamento.grab_set()
+        self.formaPagamento.lift()
+        self.formaPagamento.title('Forma de Pagamento')
+        self.formaPagamento.geometry('650x450')
+        self.formaPagamento.configure(background='#D3D3D3')
+        self.formaPagamento.resizable(False,False)
+        self.formaPagamento.colormapwindows(self.formaPagamento)
+        
+        menu_bar = tk.Menu(self.formaPagamento, background='#808080')
+        
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Parcelas',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+        self.formaPagamento.config(menu=menu_bar)
+        
+        titleFormaPagamento = tk.Label(self.formaPagamento, text='FORMA DE PAGAMENTO:', font='bold')
+        titleFormaPagamento.configure(background='#D3D3D3', fg='black')
+        titleFormaPagamento.place(relx= 0.03, rely=0.05)
+
+        self.formaPagamentoEntry = tk.Entry(self.formaPagamento)
+        self.formaPagamentoEntry.configure(background='white', fg='black', width=20)
+        self.formaPagamentoEntry.place(relx= 0.032, rely=0.1)
+
+        button = tk.Button(self.formaPagamento, text='ADICIONAR', command=self.adicionarFormaPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        button.place(relx=0.15, rely=0.28)   
+        
+        self.treeviewFormaPagamento = ttk.Treeview(self.formaPagamento, columns=("idEspecialidade", "Especialidade", "Status"), show='headings')
+        self.treeviewFormaPagamento.heading("idEspecialidade", text="Cód.Especialidade")
+        self.treeviewFormaPagamento.heading("Especialidade", text="Especialidade")
+        self.treeviewFormaPagamento.heading("Status", text="Status")
+        
+        verticalBar = ttk.Scrollbar(self.formaPagamento, orient='vertical', command=self.treeviewFormaPagamento.yview)
+        horizontalBar = ttk.Scrollbar(self.formaPagamento, orient='horizontal', command=self.treeviewFormaPagamento.xview)
+        self.treeviewFormaPagamento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeviewFormaPagamento)
+        style.theme_use('clam')
+        style.configure("self.treeviewFormaPagamento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        self.treeviewFormaPagamento.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+
+        verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
+        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+        
+        buttonBuscar = tk.Button(self.formaPagamento, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+        buttonBuscar.place(relx=0.02, rely=0.28)
+        
+        self.treeviewFormaPagamento.bind('<<TreeviewSelect>>', self.selectItemTreeviewEspecialidade)
+        
+        self.formaPagamento.bind('<Return>', lambda event: buttonBuscar.invoke())
+
+        self.formaPagamento.mainloop()
+
+    def adicionarFormaPagamento(self):
+        self.modalNovaFormaPagamento = tk.Toplevel()
+        self.modalNovaFormaPagamento.transient(self.formaPagamento)
+        self.modalNovaFormaPagamento.grab_set()
+        self.modalNovaFormaPagamento.lift()
+        self.modalNovaFormaPagamento.title('Nova Forma de Pagamento')
+        self.modalNovaFormaPagamento.geometry('520x350')
+        self.modalNovaFormaPagamento.configure(background='#D3D3D3')
+        self.modalNovaFormaPagamento.resizable(False,False)
+        self.modalNovaFormaPagamento.colormapwindows(self.modalNovaFormaPagamento)
+        
+        
+        titulo = tk.Label(self.modalNovaFormaPagamento, text='ADICIONAR FORMA DE PAGAMENTO', font=('Arial', 14, 'bold'), background='#D3D3D3', fg='black')
+        titulo.place(relx= 0.1, rely=0.07)
+
+        txtNome = tk.Label(self.modalNovaFormaPagamento, text='FORMA DE PAGAMENTO:', font=('Arial', 12, 'bold'))
+        txtNome.place(relx= 0.06, rely=0.2)
+        txtNome.configure(background='#D3D3D3', fg='black')
+
+        self.nomeFormaPagamento = tk.Entry(self.modalNovaFormaPagamento,width=25)
+        self.nomeFormaPagamento.configure(background='white', fg='black')
+        self.nomeFormaPagamento.place(relx= 0.06, rely=0.25)
+                
+        txtTipo = tk.Label(self.modalNovaFormaPagamento, text='TIPO DE PAGAMENTO:', font=('Arial', 12, 'bold'))
+        txtTipo.place(relx= 0.06, rely=0.4)
+        txtTipo.configure(background='#D3D3D3', fg='black')
+
+        self.tipoPagamento = StringVar(self.modalNovaFormaPagamento)
+        self.tipoPagamento.set('À Vista')
+        listTipo = ['À Vista', 'Parcelado']
+        
+        self.tipoPagamentoDrop = tk.OptionMenu(self.modalNovaFormaPagamento, self.tipoPagamento, *listTipo)
+        self.tipoPagamentoDrop.configure(background='white', fg='black', activebackground='gray')
+        self.tipoPagamentoDrop.place(relx= 0.06, rely=0.45)
+
+        txtTaxa = tk.Label(self.modalNovaFormaPagamento, text='TAXA:', font=('Arial', 12, 'bold'))
+        txtTaxa.place(relx= 0.52, rely=0.2)
+        txtTaxa.configure(background='#D3D3D3', fg='black')
+
+        self.taxaPagamento = tk.Entry(self.modalNovaFormaPagamento)
+        self.taxaPagamento.place(relx= 0.52, rely=0.25, width=20)
+        self.taxaPagamento.configure(background='white', fg='black')
+
+        buttonAdd = tk.Button(self.modalNovaFormaPagamento, text='ADICIONAR' , command=self.insertFuncionario, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdd.place(relx= 0.7, rely=0.85)
+        
+        self.modalNovaFormaPagamento.mainloop()
+
+# Fim Parte de Financeiro -------------------------------------
+
 
     def telaFaturamento(self):
         pass
@@ -2138,8 +2359,7 @@ class App:
             
             # Lista Informações da Agenda Selecionada
             self.listaAgenda = self.treeviewAgenda.item(self.item_idAgenda, 'values')
-            # print(self.listaAgenda)
-            
+                        
             # Data agendamento
             self.dataAgendada = self.listaAgenda[0]
             
@@ -2148,6 +2368,25 @@ class App:
             rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
             for row in rows:
                 self.treeviewClientAtendimento.insert("", END, values=row)
+            
+            # Nome do Cliente
+            self.nomeClienteAgenda = self.listaAgenda[3]
+            
+        except IndexError as e:
+            return
+
+    def selectAtendeAgenda(self, event):
+        self.horaAtendimento.delete(0, END)
+        try:
+            # Id do item da Atendimento selecionado
+            self.item_idAtendimento = self.treeviewAtendimento2.selection()[0]
+            
+            # Lista Informações do Atendimento Selecionado
+            self.listaAtendimento = self.treeviewAtendimento2.item(self.item_idAtendimento, 'values')
+                        
+            # Hora Atendimento
+            self.horaAgendada = self.listaAtendimento[1]
+            self.horaAtendimento.insert(0, self.horaAgendada)
             
         except IndexError as e:
             return
@@ -2201,25 +2440,14 @@ class App:
             menuAuxiliar.add_command(label='Excluir',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
             menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
             self.modalAtendimentoAdd.config(menu=menu_bar)
-            
-            titledataAgendar = tk.Label(self.modalAtendimentoAdd, text='DATA:', font='bold')
-            titledataAgendar.configure(background='#D3D3D3', fg='black')
-            titledataAgendar.place(relx= 0.03, rely=0.05)
-
-            self.buttonCalendar = tk.Button(self.modalAtendimentoAdd, text='+', command=self.calendarioAgendamento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-            self.buttonCalendar.place(relx=0.165, rely=0.1, relwidth=0.035, relheight=0.05)
-            
-            self.dataAgendar = tk.Entry(self.modalAtendimentoAdd)
-            self.dataAgendar.configure(background='white', fg='black', width=10)
-            self.dataAgendar.place(relx= 0.032, rely=0.1)
 
             titleHora = tk.Label(self.modalAtendimentoAdd, text='HORA:', font='bold')
             titleHora.configure(background='#D3D3D3', fg='black')
-            titleHora.place(relx= 0.25, rely=0.05)
+            titleHora.place(relx= 0.03, rely=0.05)
 
             self.horaAtendimento = tk.Entry(self.modalAtendimentoAdd)
             self.horaAtendimento.configure(background='white', fg='black', width=10)
-            self.horaAtendimento.place(relx= 0.032, rely=0.25)
+            self.horaAtendimento.place(relx= 0.032, rely=0.1)
             
             titleIdCliente = tk.Label(self.modalAtendimentoAdd, text='CÓDIGO:', font='bold')
             titleIdCliente.place(relx= 0.032, rely=0.2)
@@ -2227,6 +2455,7 @@ class App:
             
             self.codCliente = tk.Entry(self.modalAtendimentoAdd)
             self.codCliente.configure(background='white', fg='black', width=10)
+            self.codCliente.insert(0, self.idClientAgenda)
             self.codCliente.place(relx= 0.032, rely=0.25)
             
             titleCliente = tk.Label(self.modalAtendimentoAdd, text='NOME DO CLIENTE:', font='bold')
@@ -2235,6 +2464,7 @@ class App:
             
             self.nameClient = tk.Entry(self.modalAtendimentoAdd)
             self.nameClient.configure(background='white', fg='black', width=20)
+            self.nameClient.insert(0, self.nomeClienteAgenda)
             self.nameClient.place(relx= 0.45, rely=0.1)
             
             button = tk.Button(self.modalAtendimentoAdd, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
@@ -2277,7 +2507,7 @@ class App:
             verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
             horizontalBar.place(rely=0.968, relx=0, relwidth=1)
             
-            # self.treeviewAtendimento2.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
+            self.treeviewAtendimento2.bind('<<TreeviewSelect>>', self.selectAtendeAgenda)
             
             rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
             for row in rows:
