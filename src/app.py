@@ -1465,7 +1465,7 @@ class App:
 
     def atualizarClientesModal(self):
         if self.item_idCliente == "":
-            messagebox.showinfo("Aviso","Selecione um cliente!")
+            messagebox.showinfo("Aviso","Selecione um cliente!", parent=self.clientes)
 
         else:
             self.modalAtualizaCliente = tk.Toplevel()
@@ -1961,7 +1961,6 @@ class App:
         rows = self.dao.clienteId(idCliente)
         for row in rows:
                 self.treeviewAtendimento2.insert("", END, values=row)
-
 
     def telaAgenda(self):
         self.agendaRoot = tk.Toplevel()

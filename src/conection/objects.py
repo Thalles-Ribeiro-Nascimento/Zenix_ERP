@@ -1,5 +1,8 @@
 import conection.conexao as c
 import mysql.connector
+from datetime import datetime
+
+
 
 class Dao:
     def __init__(self, login, key):
@@ -325,7 +328,9 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = 'SELECT * FROM Vw_Agendamentos_Geral order by Protocolo asc'
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
+        sql = f'SELECT * FROM Vw_Agendamentos_Geral where Data = {dataAtualFormatada}'
         cr = self.cursor
         cr.execute(sql)
         rows = cr.fetchall()
