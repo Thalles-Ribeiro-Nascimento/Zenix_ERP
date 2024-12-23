@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Elinux.iml" filepath="$PROJECT_DIR$/.idea/Elinux.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/TestesSistema.iml" filepath="$PROJECT_DIR$/.idea/TestesSistema.iml" />
     </modules>
   </component>
 </project>

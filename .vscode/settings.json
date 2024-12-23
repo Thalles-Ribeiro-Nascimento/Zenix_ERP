@@ -1,0 +1,18 @@
+{
+    "python.globalModuleInstallation": false,
+    "python.terminal.activateEnvironment": true,
+    "python.createEnvironment.contentButton": "show",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.extraPaths": [
+        "./conection",
+        "./src/dao"
+    ],
+    "docwriter.progress.trackMethods": true,
+    "docwriter.progress.trackClasses": true,
+    "cSpell.words": [
+        "Atualiza",
+        "Especialidade",
+        "formatar",
+        "opcoes"
+    ]
+}

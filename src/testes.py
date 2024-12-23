@@ -87,11 +87,11 @@ from conection.objects import Dao
 # indices.clear()
 # funcionarioUpgrade.clear()
 
-dao = Dao("thalles", "Susga@667")
-rows = dao.clientesAll()
+dao = Dao("admin", "Susga@3200")
+rows = dao.atendimentosAgenda(17, '14/12/2024')
 for row in rows:
     print(row)
-    print(row[1])
+    # print(row[1])
 # print(status)
 
 # rows = dao.especialidadeView()

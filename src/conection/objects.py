@@ -181,6 +181,16 @@ class Dao:
         rows = self.cursor.fetchall()
 
         return rows
+    
+    def clienteId(self, id):
+        if self.erro:
+            return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Clientes WHERE `Cod.Cliente` = {id}"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
 
     def inserirCliente(self, nome, cpf, nascimento, sexo, telefone, celular, rua, bairro, uf, numero, complemento, email):
         if self.erro:
