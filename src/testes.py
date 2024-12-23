@@ -88,10 +88,11 @@ from conection.objects import Dao
 # funcionarioUpgrade.clear()
 
 dao = Dao("admin", "SysteM98")
-rows = dao.agenda()
+rows = dao.clienteNome("Zenil")
 for row in rows:
     print(row)
-    # print(row[1])
+    print(row[1])
+    print(row[2])
 # print(status)
 
 # rows = dao.especialidadeView()

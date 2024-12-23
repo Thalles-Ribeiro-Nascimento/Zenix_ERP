@@ -179,7 +179,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"SELECT * FROM Vw_Clientes WHERE `Nome do Cliente` LIKE '{nome}%'"
+        sql = f"SELECT * FROM Vw_Clientes WHERE `Nome do Cliente` LIKE '%{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -323,7 +323,17 @@ class Dao:
         rows = self.cursor.fetchall()
 
         return rows
+
+    def atendimentoCliente(self, nomeCliente):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
        
+        sql = f"SELECT * FROM Vw_Atendimentos_Cliente WHERE `Nome do Cliente` = {nomeCliente}"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def agenda(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -369,6 +379,14 @@ class Dao:
     def addAgendamento(self, dataAgendamento, cliente, funcionario):
         try:
             sql = f"INSERT INTO agendamento (data_agenda, idCliente, idFuncionario) VALUES ('{dataAgendamento}', {cliente}, {funcionario})"
+            self.cursor.execute(sql)
+            self.conecta.commit()
+        except mysql.connector.Error as e:
+            print(e)
+
+    def addAtendimento(self, horaAtendimento, procedimento, agenda, formaPagamento):
+        try:
+            sql = f"INSERT INTO atendimentos (hora, idProcedimento, idAgenda, forma_pagamento) VALUES ('{horaAtendimento}', {procedimento}, {agenda}, {formaPagamento})"
             self.cursor.execute(sql)
             self.conecta.commit()
         except mysql.connector.Error as e:
