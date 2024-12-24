@@ -3173,7 +3173,7 @@ class App:
             self.prcParcela.configure(background='white', fg='black', width=25, state='disabled', disabledbackground='white', disabledforeground='black')
             self.prcParcela.place(relx= 0.5, rely=0.1)
 
-            buttonAdd = tk.Button(self.modalAddParcela, text='Ok' , command=self.insertParcela, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+            buttonAdd = tk.Button(self.modalAddParcela, text='Ok' , command=self.insertParcelasAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
             buttonAdd.place(relx= 0.03, rely=0.3, width=35, height=25)
 
             self.treeviewParcelasAtendimento = ttk.Treeview(self.modalAddParcela, columns=("Nº Parcelas", "Protocolo", "Procedimento", "Valor", "Taxa"), show='headings')
@@ -3203,52 +3203,39 @@ class App:
             self.modalAddParcela.mainloop()
 
     def insertParcelasAtendimento(self):
-        contador = self.contParcela.get()
-        valor = self.valorPrcParcela.get()
+        contador = int(self.contParcela.get())
+        valor = float(self.valorPrcParcela.get()) / contador
         procedimento = self.prcParcela.get()
         protocolo = self.protocoloAgenda
 
-        listParcelas = dict()
-        rows = self.dao.parcelas()
+        listParcelas = []
+        rows = self.dao.parcelasId()
         for row in rows[0:contador]:
             parcela = row[0]
-            taxa = row[2]
-            listParcelas.update({parcela:taxa})
+            listParcelas.append(parcela)
 
         erro = False
-        for k, v in zip(listParcelas.keys(), listParcelas.values()):
-            resultado = self.dao.insertParcelasAtendimento(k, procedimento, valor)
+        for k in listParcelas:
+            resultado = self.dao.insertParcelasAtendimento(k, procedimento, protocolo, valor)
 
             if isinstance(resultado, str):
                 erro = True
                 break
             else:
-                erro = False           
-        # else:
-        #     erro = False
-        #     for k, v in zip(clienteUpgrade.keys(), clienteUpgrade.values()):
-                
-        #         resultado = self.dao.atualizaCliente(self.ClienteId, v, k)
-        #         if isinstance(resultado, str):
-        #             erro = True
-        #             break
-        #         else:
-        #             erro = False
+                erro = False
                         
-        #     if erro == False:
-        #         self.atualizaTreeClient()
-        #         self.modalAtualizaCliente.destroy() 
-        #         self.exibir_sucesso("Alterações Realizadas", self.clientes)
-        #     else:
-        #         messagebox.showerror("Erro",resultado)
+        if erro == False:
+            self.atualizaTreeParcelaAtendimento()
+        else:
+            messagebox.showerror("Erro", resultado, parent=self.modalAddParcela)
 
 
-    # def atualizaTreeClient(self):
-    #     self.treeviewClientes.delete(*self.treeviewClientes.get_children())
+    def atualizaTreeParcelaAtendimento(self):
+        self.treeviewParcelasAtendimento.delete(*self.treeviewParcelasAtendimento.get_children())
 
-    #     self.rowsClientes = self.dao.clientesAll()        
-    #     for row in self.rowsClientes:
-    #         self.treeviewClientes.insert("", END, values=row)
+        self.rowsParcela = self.dao.parcelasAtendimento()        
+        for row in self.rowsParcela:
+            self.treeviewParcelasAtendimento.insert("", END, values=row)
 
 
 

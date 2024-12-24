@@ -86,20 +86,14 @@ from conection.objects import Dao
       
 # indices.clear()
 # funcionarioUpgrade.clear()
-cont = 5
+cont = 3
 dao = Dao("admin", "SysteM98")
-rows = dao.parcelas()
-# for row in rows[0:cont]:
-#     # print(row)
-#     print(row[0])
-#     print(row[2])
-
-listParcelas = dict()
+rows = dao.parcelasId()
 
 for row in rows[0:cont]:
-    listParcelas.update({row[0]:row[2]})
+    print(row[0])
+    # print(row[0])
 
-print(listParcelas)
 
 # rows = dao.especialidadeView()
 
