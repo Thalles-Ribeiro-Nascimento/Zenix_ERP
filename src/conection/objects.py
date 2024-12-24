@@ -475,4 +475,14 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado   
 
+    def parcelasAtendimento(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT * FROM Vw_ParcelasAtendimento'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows 
+
 # CURDATE()

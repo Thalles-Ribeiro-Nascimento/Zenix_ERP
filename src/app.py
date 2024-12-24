@@ -3078,7 +3078,7 @@ class App:
         self.taxaAtd.delete(0, END)
 
         if "PARCELADO" in self.opcoesformaPagamentoAtd.get():
-            btn = tk.Button(self.modalAtendimentoAdd, text='PARCELAS', command=self.adicionarParcela, 
+            btn = tk.Button(self.modalAtendimentoAdd, text='PARCELAS', command=self.addParcelas, 
                             relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
             btn.place(relx= 0.37, rely=0.33)
 
@@ -3127,6 +3127,67 @@ class App:
             self.modalAtendimentoAdd.destroy()
             msn = f'Atendimento marcado'
             self.exibir_sucesso(msn, self.agendaRoot) 
+
+    def setIdParcelasAtendimento(self, *args):
+        self.selecaoIdParcelaAtd = self.opcoesParcelasAtendimento.get()
+        self.idSelecaoParcelaAtendimento = self.parcelasAtendimentoMap.get(self.selecaoIdParcelaAtd)
+
+    def addParcelas(self):
+        self.modalAddParcela = tk.Toplevel()
+        self.modalAddParcela.transient(self.modalAtendimentoAdd)
+        self.modalAddParcela.grab_set()
+        self.modalAddParcela.lift()
+        self.modalAddParcela.title('Parcelas')
+        self.modalAddParcela.geometry('520x420')
+        self.modalAddParcela.configure(background='#D3D3D3')
+        self.modalAddParcela.resizable(False,False)
+        self.modalAddParcela.colormapwindows(self.modalAddParcela)
+
+        txtNome = tk.Label(self.modalAddParcela, text='Nº PARCELAS:', font=('Arial', 10, 'bold'))
+        txtNome.place(relx= 0.05, rely=0.05)
+        txtNome.configure(background='#D3D3D3', fg='black')
+
+        rows = self.dao.parcelasPagamento(self.opcoesformaPagamentoAtd.get())
+        self.parcelasAtendimentoTaxa = [item[2] for item in rows]
+        self.parcelasAtendimentoNum = [item[0] for item in rows]
+        self.parcelasAtendimentoMap = dict(zip(self.parcelasAtendimentoTaxa, self.parcelasAtendimentoNum))
+        
+        self.opcoesParcelasAtendimento = StringVar(self.modalAddParcela)
+        self.opcoesParcelasAtendimento.set("Parcelas")
+        self.dropdownParcelasAtendimento = tk.OptionMenu(self.modalAddParcela, self.opcoesParcelasAtendimento, *self.parcelasAtendimentoNum)
+        self.dropdownParcelasAtendimento.configure(background='white', fg='black', activebackground='gray')
+        self.dropdownParcelasAtendimento.place(relx= 0.05, rely=0.1)
+
+        self.opcoesParcelasAtendimento.trace_add('write', self.setIdParcelasAtendimento)
+
+        buttonAdd = tk.Button(self.modalAddParcela, text='Ok' , command=self.insertParcela, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdd.place(relx= 0.03, rely=0.3, width=30, height=25)
+
+        self.treeviewParcelasAtendimento = ttk.Treeview(self.modalAddParcela, columns=("Nº Parcelas", "Protocolo", "Procedimento", "Valor", "Taxa"), show='headings')
+        self.treeviewParcelasAtendimento.heading("Nº Parcelas", text="Parcela")
+        self.treeviewParcelasAtendimento.heading("Protocolo", text="Protocolo")
+        self.treeviewParcelasAtendimento.heading("Procedimento", text="Procedimento")
+        self.treeviewParcelasAtendimento.heading("Valor", text="Valor")
+        self.treeviewParcelasAtendimento.heading("Taxa", text="Taxa")
+        
+        verticalBar = ttk.Scrollbar(self.modalAddParcela, orient='vertical', command=self.treeviewParcelasAtendimento.yview)
+        horizontalBar = ttk.Scrollbar(self.modalAddParcela, orient='horizontal', command=self.treeviewParcelasAtendimento.xview)
+        self.treeviewParcelasAtendimento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeviewParcelasAtendimento)
+        style.theme_use('clam')
+        style.configure("self.treeviewParcelasAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        self.treeviewParcelasAtendimento.place(relx=0, rely=0.4, relheight=0.6, relwidth=1)
+
+        verticalBar.place(relx=0.978, rely=0.4, relheight=0.89)
+        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+
+        # rows = self.dao.parcelasAtendimento()
+        # for row in rows:
+        #     self.treeviewParcelasAtendimento.insert("", END, values=row)
+        
+        self.modalAddParcela.mainloop()
 
     # def atualizaTreeClient(self):
     #     self.treeviewClientes.delete(*self.treeviewClientes.get_children())
