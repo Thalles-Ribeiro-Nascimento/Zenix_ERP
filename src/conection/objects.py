@@ -418,6 +418,16 @@ class Dao:
 
         return rows        
 
+    def formaPagamento(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT `Forma de Pagamento`, `Tipo de Pagamento`, Taxa FROM Vw_FormaPagamento'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows  
+
     def formaPagamentoNome(self, nome):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -427,5 +437,25 @@ class Dao:
         rows = self.cursor.fetchall()
 
         return rows   
+
+    def parcelas(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = 'SELECT * FROM Vw_Parcelas'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows  
+
+    def insertParcelas(self, parcelas, formaPagamento, taxa):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"INSERT INTO parcelas (parcela, idFormaPagamento, taxa) VALUES ({parcelas}, {formaPagamento}, {taxa})"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows  
 
 # CURDATE()
