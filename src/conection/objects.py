@@ -448,14 +448,31 @@ class Dao:
 
         return rows  
 
-    def insertParcelas(self, parcelas, formaPagamento, taxa):
+    def parcelasPagamento(self, pagamento):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"INSERT INTO parcelas (parcela, idFormaPagamento, taxa) VALUES ({parcelas}, {formaPagamento}, {taxa})"
+        sql = f"SELECT * FROM Vw_Parcelas WHERE Pagamento = '{pagamento}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows  
+
+    def insertParcelas(self, parcelas, formaPagamento, taxa):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        try:
+            sql = f"INSERT INTO parcelas (parcela, idFormaPagamento, taxa) VALUES (%s, %s, %s)"
+            self.cursor.execute(sql, (parcelas, formaPagamento, taxa))
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print(e)
+            
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado   
 
 # CURDATE()

@@ -27,7 +27,9 @@ class App:
         self.idSelecao = ""
         self.item_idCliente = ""
         self.item_idAgenda = ""
-               
+        self.item_idFormaPagamento = ""
+        self.formaPagamentoDsc = ""
+
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
         txt.configure(background='#D3D3D3', fg='black')
@@ -2264,7 +2266,7 @@ class App:
         menu_bar = tk.Menu(self.formaPagamento, background='#808080')
         
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Parcelas',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_command(label='Parcelas',command=self.adicionarParcela, font=('Arial', 10, 'bold'), foreground='black')
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
         self.formaPagamento.config(menu=menu_bar)
         
@@ -2279,7 +2281,8 @@ class App:
         button = tk.Button(self.formaPagamento, text='ADICIONAR', command=self.adicionarFormaPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         button.place(relx=0.15, rely=0.28)   
         
-        self.treeviewFormaPagamento = ttk.Treeview(self.formaPagamento, columns=("Forma de Pagamento", "Tipo de Pagamento", "Taxa"), show='headings')
+        self.treeviewFormaPagamento = ttk.Treeview(self.formaPagamento, columns=("Id", "Forma de Pagamento", "Tipo de Pagamento", "Taxa"), show='headings')
+        self.treeviewFormaPagamento.heading("Id", text="Cód.Pagamento")
         self.treeviewFormaPagamento.heading("Forma de Pagamento", text="Forma de Pagamento")
         self.treeviewFormaPagamento.heading("Tipo de Pagamento", text="Tipo de Pagamento")
         self.treeviewFormaPagamento.heading("Taxa", text="Taxa")
@@ -2297,7 +2300,7 @@ class App:
         verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
         horizontalBar.place(rely=0.968, relx=0, relwidth=1)
 
-        rows = self.dao.formaPagamento()
+        rows = self.dao.formaPagamentoAll()
         for row in rows:
             self.treeviewFormaPagamento.insert("", END, values=row)
         
@@ -2358,56 +2361,88 @@ class App:
         self.modalNovaFormaPagamento.mainloop()
 
     def adicionarParcela(self):
-        self.modalNovaParcela = tk.Toplevel()
-        self.modalNovaParcela.transient(self.modalAtendimentoAdd)
-        self.modalNovaParcela.grab_set()
-        self.modalNovaParcela.lift()
-        self.modalNovaParcela.title('Nova Forma de Pagamento')
-        self.modalNovaParcela.geometry('520x200')
-        self.modalNovaParcela.configure(background='#D3D3D3')
-        self.modalNovaParcela.resizable(False,False)
-        self.modalNovaParcela.colormapwindows(self.modalNovaParcela)
-        
-        titulo = tk.Label(self.modalNovaParcela, text='PARCELAS', font=('Arial', 14, 'bold'), background='#D3D3D3', fg='black')
-        titulo.place(relx= 0.2, rely=0.07)
+        if self.item_idFormaPagamento == "" or "A VISTA" in self.formaPagamentoDsc or self.formaPagamentoDsc == "DINHEIRO":
+            messagebox.showerror("Erro", "Forma de pagamento incorreta", parent=self.formaPagamento)
+            return
+        else:
+            self.modalNovaParcela = tk.Toplevel()
+            self.modalNovaParcela.transient(self.formaPagamento)
+            self.modalNovaParcela.grab_set()
+            self.modalNovaParcela.lift()
+            self.modalNovaParcela.title('Parcelas')
+            self.modalNovaParcela.geometry('520x420')
+            self.modalNovaParcela.configure(background='#D3D3D3')
+            self.modalNovaParcela.resizable(False,False)
+            self.modalNovaParcela.colormapwindows(self.modalNovaParcela)
 
-        txtNome = tk.Label(self.modalNovaParcela, text='Nº PARCELAS:', font=('Arial', 10, 'bold'))
-        txtNome.place(relx= 0.05, rely=0.25)
-        txtNome.configure(background='#D3D3D3', fg='black')
+            txtNome = tk.Label(self.modalNovaParcela, text='Nº PARCELAS:', font=('Arial', 10, 'bold'))
+            txtNome.place(relx= 0.05, rely=0.05)
+            txtNome.configure(background='#D3D3D3', fg='black')
 
-        self.numParcelas = tk.Entry(self.modalNovaParcela,width=25)
-        self.numParcelas.configure(background='white', fg='black')
-        self.numParcelas.place(relx= 0.05, rely=0.35)
-                
-        txtTipo = tk.Label(self.modalNovaParcela, text='FORMA DE PAGAMENTO:', font=('Arial', 10, 'bold'))
-        txtTipo.place(relx= 0.05, rely=0.55)
-        txtTipo.configure(background='#D3D3D3', fg='black')
+            self.numParcelas = tk.Entry(self.modalNovaParcela,width=5)
+            self.numParcelas.configure(background='white', fg='black')
+            self.numParcelas.place(relx= 0.05, rely=0.1)
+                    
+            # txtTipo = tk.Label(self.modalNovaParcela, text='FORMA DE PAGAMENTO:', font=('Arial', 10, 'bold'))
+            # txtTipo.place(relx= 0.05, rely=0.55)
+            # txtTipo.configure(background='#D3D3D3', fg='black')
 
-        self.formaPagParcela = self.dao.formaPagamentoAll()
-        self.formaPagParcelaName = [item[1] for item in self.formaPagParcela]
-        self.formaPagParcelaId = [item[0] for item in self.formaPagParcela]
-        self.formaPagParcelaMap = dict(zip(self.formaPagParcelaName, self.formaPagParcelaId))
-        
-        self.opcoesPagamentoParcela = StringVar(self.modalNovaParcela)
-        self.opcoesPagamentoParcela.set("Pagamento")
-        self.dropdownPgParcela = tk.OptionMenu(self.modalNovaParcela, self.opcoesPagamentoParcela, *self.formaPagParcelaName)
-        self.dropdownPgParcela.configure(background='white', fg='black', activebackground='gray')
-        self.dropdownPgParcela.place(relx= 0.05, rely=0.6)
+            # self.formaPagParcela = self.dao.formaPagamentoAll()
+            # self.formaPagParcelaName = [item[1] for item in self.formaPagParcela]
+            # self.formaPagParcelaId = [item[0] for item in self.formaPagParcela]
+            # self.formaPagParcelaMap = dict(zip(self.formaPagParcelaName, self.formaPagParcelaId))
+            
+            # self.opcoesPagamentoParcela = StringVar(self.modalNovaParcela)
+            # self.opcoesPagamentoParcela.set("Pagamento")
+            # self.dropdownPgParcela = tk.OptionMenu(self.modalNovaParcela, self.opcoesPagamentoParcela, *self.formaPagParcelaName)
+            # self.dropdownPgParcela.configure(background='white', fg='black', activebackground='gray')
+            # self.dropdownPgParcela.place(relx= 0.05, rely=0.6)
 
-        self.opcoesPagamentoParcela.trace_add('write', self.setIdPgParcela)
+            # self.opcoesPagamentoParcela.trace_add('write', self.setIdPgParcela)
 
-        txtTaxa = tk.Label(self.modalNovaParcela, text='TAXA:', font=('Arial', 10, 'bold'))
-        txtTaxa.place(relx= 0.7, rely=0.25)
-        txtTaxa.configure(background='#D3D3D3', fg='black')
+            txtForma = tk.Label(self.modalNovaParcela, text='Pagamento:', font=('Arial', 10, 'bold'))
+            txtForma.place(relx= 0.05, rely=0.25)
+            txtForma.configure(background='#D3D3D3', fg='black')
 
-        self.taxaParcelamento = tk.Entry(self.modalNovaParcela, width=5)
-        self.taxaParcelamento.place(relx= 0.7, rely=0.35)
-        self.taxaParcelamento.configure(background='white', fg='black')
+            self.PagamentoPrc = tk.Entry(self.modalNovaParcela, width=25)
+            self.PagamentoPrc.insert(0, self.formaPagamentoDsc)
+            self.PagamentoPrc.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
+            self.PagamentoPrc.place(relx= 0.05, rely=0.3)
 
-        buttonAdd = tk.Button(self.modalNovaParcela, text='ADICIONAR' , command=self.insertPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAdd.place(relx= 0.7, rely=0.65)
-        
-        self.modalNovaParcela.mainloop()
+            txtTaxa = tk.Label(self.modalNovaParcela, text='TAXA:', font=('Arial', 10, 'bold'))
+            txtTaxa.place(relx= 0.5, rely=0.05)
+            txtTaxa.configure(background='#D3D3D3', fg='black')
+
+            self.taxaParcelamento = tk.Entry(self.modalNovaParcela, width=5)
+            self.taxaParcelamento.place(relx= 0.5, rely=0.1)
+            self.taxaParcelamento.configure(background='white', fg='black')
+
+            buttonAdd = tk.Button(self.modalNovaParcela, text='ADICIONAR' , command=self.insertParcela, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+            buttonAdd.place(relx= 0.03, rely=0.4)
+
+            self.treeviewParcelas = ttk.Treeview(self.modalNovaParcela, columns=("Nº Parcelas", "Pagamento", "Taxa"), show='headings')
+            self.treeviewParcelas.heading("Nº Parcelas", text="Parcela")
+            self.treeviewParcelas.heading("Pagamento", text="Forma de Pagamento")
+            self.treeviewParcelas.heading("Taxa", text="Taxa")
+            
+            verticalBar = ttk.Scrollbar(self.modalNovaParcela, orient='vertical', command=self.treeviewParcelas.yview)
+            horizontalBar = ttk.Scrollbar(self.modalNovaParcela, orient='horizontal', command=self.treeviewParcelas.xview)
+            self.treeviewParcelas.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+            style = ttk.Style(self.treeviewParcelas)
+            style.theme_use('clam')
+            style.configure("self.treeviewParcelas", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+            
+            self.treeviewParcelas.place(relx=0, rely=0.5, relheight=0.62, relwidth=1)
+
+            verticalBar.place(relx=0.98 , rely=0.6, relheight=0.52)
+            horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+
+            rows = self.dao.parcelasPagamento(self.formaPagamentoDsc)
+            for row in rows:
+                self.treeviewParcelas.insert("", END, values=row)
+            
+            self.modalNovaParcela.mainloop()
 
     def setIdPgParcela(self, *args):
         self.selecaoIdpgParcela = self.opcoesPagamentoParcela.get()
@@ -2415,7 +2450,7 @@ class App:
 
     def insertParcela(self):
         numParcela = self.numParcelas.get().upper()
-        tipoPagamento = self.opcoesPagamentoParcela
+        tipoPagamento = self.idFormaPagamento
         taxa = self.taxaParcelamento.get()
 
         if numParcela == "":
@@ -2432,12 +2467,9 @@ class App:
 
         dao = self.dao.insertParcelas(numParcela, tipoPagamento, taxa)
         if isinstance(dao, str):
-            self.modalNovaParcela.destroy()
-            messagebox.showerror("Erro",dao, parent=self.formaPagamento)
-            
+            messagebox.showerror("Erro",dao, parent=self.formaPagamento)           
         else:
             self.atualizaTreeFormaPagamento()
-            self.modalNovaParcela.destroy()
             msn = f'Parcela inserida com sucesso'
             self.exibir_sucesso(msn, self.formaPagamento) 
 
@@ -2470,11 +2502,11 @@ class App:
             self.exibir_sucesso(msn, self.formaPagamento) 
 
     def atualizaTreeFormaPagamento(self):
-        self.treeviewFormaPagamento.delete(*self.treeviewFormaPagamento.get_children())
+        self.treeviewParcelas.delete(*self.treeviewParcelas.get_children())
 
-        rowsFormaPagamento = self.dao.formaPagamentoAll()        
+        rowsFormaPagamento = self.dao.parcelasPagamento(self.formaPagamentoDsc)        
         for row in rowsFormaPagamento:
-            self.treeviewFormaPagamento.insert("", END, values=row)
+            self.treeviewParcelas.insert("", END, values=row)
 
     def selectFormaPagamento(self, event):
         try:
@@ -2485,13 +2517,16 @@ class App:
             self.listaFormaPagamento = self.treeviewFormaPagamento.item(self.item_idFormaPagamento, 'values')
             
             # Forma de Pagamento
-            self.FormaDePagamento = self.listaFormaPagamento[0]
+            self.idFormaPagamento = self.listaFormaPagamento[0]
             
+            # Forma de Pagamento
+            self.formaPagamentoDsc = self.listaFormaPagamento[1]
+
             # Tipo de Pagamento
-            self.tipoDePagamento = self.listaFormaPagamento[1]
+            self.tipoPagamentoSelect = self.listaFormaPagamento[2]
 
             # Taxa
-            self.taxaPagamento = self.listaFormaPagamento[2]
+            self.taxaPagamentoSelect = self.listaFormaPagamento[3]
             
             
         except IndexError as e:
@@ -2920,102 +2955,103 @@ class App:
         self.inserirCampoPagamento()
 
     def adicionarAtendimento(self):
-            self.modalAtendimentoAdd = tk.Toplevel()
-            self.modalAtendimentoAdd.transient(self.agendaRoot)
-            self.modalAtendimentoAdd.lift()
-            self.modalAtendimentoAdd.title('Atendimento')
-            self.modalAtendimentoAdd.geometry('650x450')
-            self.modalAtendimentoAdd.configure(background='#D3D3D3')
-            self.modalAtendimentoAdd.resizable(False,False)
-             
-            menu_bar = tk.Menu(self.modalAtendimentoAdd, background='#808080')
+        self.modalAtendimentoAdd = tk.Toplevel()
+        self.modalAtendimentoAdd.transient(self.agendaRoot)
+        self.modalAtendimentoAdd.lift()
+        self.modalAtendimentoAdd.title('Atendimento')
+        self.modalAtendimentoAdd.geometry('650x450')
+        self.modalAtendimentoAdd.configure(background='#D3D3D3')
+        self.modalAtendimentoAdd.resizable(False,False)
             
-            menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-            menuAuxiliar.add_command(label='Parcelas',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
-            menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-            self.modalAtendimentoAdd.config(menu=menu_bar)
+        menu_bar = tk.Menu(self.modalAtendimentoAdd, background='#808080')
+        
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Parcelas',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+        self.modalAtendimentoAdd.config(menu=menu_bar)
 
-            titleHora = tk.Label(self.modalAtendimentoAdd, text='HORA:', font='bold')
-            titleHora.configure(background='#D3D3D3', fg='black')
-            titleHora.place(relx= 0.03, rely=0.05)
+        titleHora = tk.Label(self.modalAtendimentoAdd, text='HORA:', font='bold')
+        titleHora.configure(background='#D3D3D3', fg='black')
+        titleHora.place(relx= 0.03, rely=0.05)
 
-            self.horaAtendimento = tk.Entry(self.modalAtendimentoAdd)
-            self.horaAtendimento.configure(background='white', fg='black', width=10)
-            self.horaAtendimento.place(relx= 0.032, rely=0.1)
-            self.horaAtendimento.bind("<KeyRelease>", self.formatar_hora)
+        self.horaAtendimento = tk.Entry(self.modalAtendimentoAdd)
+        self.horaAtendimento.configure(background='white', fg='black', width=10)
+        self.horaAtendimento.place(relx= 0.032, rely=0.1)
+        self.horaAtendimento.bind("<KeyRelease>", self.formatar_hora)
 
-            titleProcedimento = tk.Label(self.modalAtendimentoAdd, text='PROCEDIMENTO:', font='bold')
-            titleProcedimento.place(relx= 0.37, rely=0.05)
-            titleProcedimento.configure(background='#D3D3D3', fg='black')
-            
-            self.prcAtendimento = self.dao.procedimentosAtivos()
-            self.prcAtendimentoName = [item[1] for item in self.prcAtendimento]
-            self.prcAtendimentoId = [item[0] for item in self.prcAtendimento]
-            self.prcAtendimentoMap = dict(zip(self.prcAtendimentoName, self.prcAtendimentoId))
-            
-            self.opcoesPrcAtendimento = StringVar(self.modalAtendimentoAdd)
-            self.opcoesPrcAtendimento.set("Procedimentos")
-            self.dropdownPrcAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesPrcAtendimento, *self.prcAtendimentoName)
-            self.dropdownPrcAtd.configure(background='white', fg='black', activebackground='gray')
-            self.dropdownPrcAtd.place(relx= 0.37, rely=0.1)
+        titleProcedimento = tk.Label(self.modalAtendimentoAdd, text='PROCEDIMENTO:', font='bold')
+        titleProcedimento.place(relx= 0.37, rely=0.05)
+        titleProcedimento.configure(background='#D3D3D3', fg='black')
+        
+        self.prcAtendimento = self.dao.procedimentosAtivos()
+        self.prcAtendimentoName = [item[1] for item in self.prcAtendimento]
+        self.prcAtendimentoId = [item[0] for item in self.prcAtendimento]
+        self.prcAtendimentoMap = dict(zip(self.prcAtendimentoName, self.prcAtendimentoId))
+        
+        self.opcoesPrcAtendimento = StringVar(self.modalAtendimentoAdd)
+        self.opcoesPrcAtendimento.set("Procedimentos")
+        self.dropdownPrcAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesPrcAtendimento, *self.prcAtendimentoName)
+        self.dropdownPrcAtd.configure(background='white', fg='black', activebackground='gray')
+        self.dropdownPrcAtd.place(relx= 0.37, rely=0.1)
 
-            self.opcoesPrcAtendimento.trace_add('write', self.setIdPrcAtendimento)
+        self.opcoesPrcAtendimento.trace_add('write', self.setIdPrcAtendimento)
 
-            titleValor = tk.Label(self.modalAtendimentoAdd, text='VALOR:', font='bold')
-            titleValor.configure(background='#D3D3D3', fg='black')
-            titleValor.place(relx= 0.8, rely=0.05)
+        titleValor = tk.Label(self.modalAtendimentoAdd, text='VALOR:', font='bold')
+        titleValor.configure(background='#D3D3D3', fg='black')
+        titleValor.place(relx= 0.8, rely=0.05)
 
-            titleRSifrao = tk.Label(self.modalAtendimentoAdd, text='R$', font='bold')
-            titleRSifrao.configure(background='#D3D3D3', fg='black')
-            titleRSifrao.place(relx= 0.75, rely=0.1)            
+        titleRSifrao = tk.Label(self.modalAtendimentoAdd, text='R$', font='bold')
+        titleRSifrao.configure(background='#D3D3D3', fg='black')
+        titleRSifrao.place(relx= 0.75, rely=0.1)            
 
-            self.valorPrc = tk.Entry(self.modalAtendimentoAdd)
-            self.valorPrc.configure(background='white', fg='black', width=10)
-            self.valorPrc.place(relx= 0.8, rely=0.1)
-            
-            titleFormaPagamento = tk.Label(self.modalAtendimentoAdd, text='Pagamento:', font='bold')
-            titleFormaPagamento.configure(background='#D3D3D3', fg='black')
-            titleFormaPagamento.place(relx= 0.03, rely=0.2)
-            
-            self.formaPagamentoAtd = self.dao.formaPagamentoAll()
-            self.formaPagamentoAtdName = [item[1] for item in self.formaPagamentoAtd]
-            self.formaPagamentoAtdId = [item[0] for item in self.formaPagamentoAtd]
-            self.formaPagamentoAtdMap = dict(zip(self.formaPagamentoAtdName, self.formaPagamentoAtdId))
-            
-            self.opcoesformaPagamentoAtd = StringVar(self.modalAtendimentoAdd)
-            self.opcoesformaPagamentoAtd.set("Pagamento")
-            self.dropdownFormaAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesformaPagamentoAtd, *self.formaPagamentoAtdName)
-            self.dropdownFormaAtd.configure(background='white', fg='black', activebackground='gray')
-            self.dropdownFormaAtd.place(relx= 0.03, rely=0.25)
+        self.valorPrc = tk.Entry(self.modalAtendimentoAdd)
+        self.valorPrc.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
+        self.valorPrc.place(relx= 0.8, rely=0.1)
+        
+        
+        titleFormaPagamento = tk.Label(self.modalAtendimentoAdd, text='Pagamento:', font='bold')
+        titleFormaPagamento.configure(background='#D3D3D3', fg='black')
+        titleFormaPagamento.place(relx= 0.03, rely=0.2)
+        
+        self.formaPagamentoAtd = self.dao.formaPagamentoAll()
+        self.formaPagamentoAtdName = [item[1] for item in self.formaPagamentoAtd]
+        self.formaPagamentoAtdId = [item[0] for item in self.formaPagamentoAtd]
+        self.formaPagamentoAtdMap = dict(zip(self.formaPagamentoAtdName, self.formaPagamentoAtdId))
+        
+        self.opcoesformaPagamentoAtd = StringVar(self.modalAtendimentoAdd)
+        self.opcoesformaPagamentoAtd.set("Pagamento")
+        self.dropdownFormaAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesformaPagamentoAtd, *self.formaPagamentoAtdName)
+        self.dropdownFormaAtd.configure(background='white', fg='black', activebackground='gray')
+        self.dropdownFormaAtd.place(relx= 0.03, rely=0.25)
 
-            self.opcoesformaPagamentoAtd.trace_add('write', self.setIdFormaPagamentoAtd)
-            
-            titleTipo = tk.Label(self.modalAtendimentoAdd, text='TIPO:', font='bold')
-            titleTipo.configure(background='#D3D3D3', fg='black')
-            titleTipo.place(relx= 0.37, rely=0.2)
+        self.opcoesformaPagamentoAtd.trace_add('write', self.setIdFormaPagamentoAtd)
+        
+        titleTipo = tk.Label(self.modalAtendimentoAdd, text='TIPO:', font='bold')
+        titleTipo.configure(background='#D3D3D3', fg='black')
+        titleTipo.place(relx= 0.37, rely=0.2)
 
-            self.tipoAtd = tk.Entry(self.modalAtendimentoAdd)
-            self.tipoAtd.configure(background='white', fg='black', width=10)
-            self.tipoAtd.place(relx= 0.37, rely=0.25)
+        self.tipoAtd = tk.Entry(self.modalAtendimentoAdd)
+        self.tipoAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
+        self.tipoAtd.place(relx= 0.37, rely=0.25)
 
-            titleTaxa = tk.Label(self.modalAtendimentoAdd, text='TAXA:', font='bold')
-            titleTaxa.configure(background='#D3D3D3', fg='black')
-            titleTaxa.place(relx= 0.5, rely=0.2)
+        titleTaxa = tk.Label(self.modalAtendimentoAdd, text='TAXA:', font='bold')
+        titleTaxa.configure(background='#D3D3D3', fg='black')
+        titleTaxa.place(relx= 0.5, rely=0.2)
 
-            titlePorcentagem = tk.Label(self.modalAtendimentoAdd, text='%', font='bold')
-            titlePorcentagem.configure(background='#D3D3D3', fg='black')
-            titlePorcentagem.place(relx= 0.63, rely=0.25) 
+        titlePorcentagem = tk.Label(self.modalAtendimentoAdd, text='%', font='bold')
+        titlePorcentagem.configure(background='#D3D3D3', fg='black')
+        titlePorcentagem.place(relx= 0.63, rely=0.25) 
 
-            self.taxaAtd = tk.Entry(self.modalAtendimentoAdd)
-            self.taxaAtd.configure(background='white', fg='black', width=10)
-            self.taxaAtd.place(relx= 0.5, rely=0.25)
+        self.taxaAtd = tk.Entry(self.modalAtendimentoAdd)
+        self.taxaAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
+        self.taxaAtd.place(relx= 0.5, rely=0.25)
 
-            buttonBuscar = tk.Button(self.modalAtendimentoAdd, text='ADICIONAR', command=self.insertAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
-            buttonBuscar.place(relx=0.8, rely=0.2)
+        buttonBuscar = tk.Button(self.modalAtendimentoAdd, text='ADICIONAR', command=self.insertAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+        buttonBuscar.place(relx=0.8, rely=0.2)
 
-            self.modalAtendimentoAdd.bind('<Return>', lambda event: buttonBuscar.invoke())
-            
-            self.modalAtendimentoAdd.mainloop()
+        self.modalAtendimentoAdd.bind('<Return>', lambda event: buttonBuscar.invoke())
+        
+        self.modalAtendimentoAdd.mainloop()
 
     def formatar_hora(self, event=None):
         hora = self.horaAtendimento.get()
