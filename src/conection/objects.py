@@ -418,4 +418,14 @@ class Dao:
 
         return rows        
 
+    def formaPagamentoNome(self, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_FormaPagamento WHERE `Forma de Pagamento` LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows   
+
 # CURDATE()
