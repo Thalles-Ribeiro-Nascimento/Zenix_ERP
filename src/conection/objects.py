@@ -485,4 +485,23 @@ class Dao:
 
         return rows 
 
+
+    def insertParcelasAtendimento(self, idParcela, procedimento, valor):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        try:
+            sql = f"INSERT INTO atendimento_parcelado (idParcela, procedimento, valor) VALUES (%s, %s, %s)"
+            self.cursor.execute(sql, (idParcela, procedimento, valor))
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print(e)
+            
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado   
+
+
 # CURDATE()
