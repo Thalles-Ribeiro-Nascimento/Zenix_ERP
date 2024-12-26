@@ -270,6 +270,17 @@ class Dao:
         rows = self.cursor.fetchall()
 
         return rows
+# SELECT * FROM Vw_ProcedimentosAtivos WHERE Especialidade LIKE '{especialidade}%'
+
+    def procedimentoNomeEspecialidade(self, especialidade):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_ProcedimentosAtivos WHERE Especialidade LIKE '{especialidade}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
 
     def procedimentoNome(self, nome):
         if self.erro:
@@ -376,21 +387,31 @@ class Dao:
 
         return rows
 
-    def addAgendamento(self, dataAgendamento, cliente, funcionario):
+    def addAgendamento(self, dataAgendamento, cliente):
         try:
-            sql = f"INSERT INTO agendamento (data_agenda, idCliente, idFuncionario) VALUES ('{dataAgendamento}', {cliente}, {funcionario})"
+            sql = f"INSERT INTO agendamento (data_agenda, idCliente) VALUES ('{dataAgendamento}', {cliente})"
             self.cursor.execute(sql)
             self.conecta.commit()
         except mysql.connector.Error as e:
             print(e)
 
-    def addAtendimento(self, horaAtendimento, procedimento, agenda, formaPagamento):
+    def addAtendimento(self, horaAtendimento, procedimento, agenda, formaPagamento, idFunc):
         try:
-            sql = f"INSERT INTO atendimentos (hora, idProcedimento, idAgenda, forma_pagamento) VALUES ('{horaAtendimento}', {procedimento}, {agenda}, {formaPagamento})"
+            sql = f"INSERT INTO atendimentos (hora, idProcedimento, idAgenda, forma_pagamento) VALUES ('{horaAtendimento}', {procedimento}, {agenda}, {formaPagamento}, {idFunc})"
             self.cursor.execute(sql)
             self.conecta.commit()
         except mysql.connector.Error as e:
             print(e)
+
+    def clienteNomeAtendimento(self, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Clientes WHERE `Nome do Cliente` LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
 
     def insertFormaPagamento(self, formaPagamento, tipoPagamento, taxa):
         if self.erro:

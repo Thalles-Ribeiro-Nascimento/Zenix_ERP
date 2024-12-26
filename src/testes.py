@@ -86,13 +86,11 @@ from conection.objects import Dao
       
 # indices.clear()
 # funcionarioUpgrade.clear()
-cont = 3
 dao = Dao("admin", "SysteM98")
-rows = dao.parcelasId()
+rows = dao.clienteNomeAtendimento("Zenilda ")
 
-for row in rows[0:cont]:
-    # print(row)
-    print(row[0])
+for row in rows:
+    print(row)
 
 
 # rows = dao.especialidadeView()

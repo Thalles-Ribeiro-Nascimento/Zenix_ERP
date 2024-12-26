@@ -10,8 +10,7 @@ class Conexao:
                 database='projeto_verao'
                 )
             
-            print("Conexão estabelecida!\n"
-                  "Usuário:", login)
+            print("Usuário:", login.upper())
             
             return self.conn
         
@@ -24,9 +23,6 @@ class Conexao:
                 return f"Access denied for user '{infoUser}'"
             else:
                 return str(e.msg)
-
-    def closeConexao(self):
-        return self.conn.close()
 
 
         

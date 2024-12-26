@@ -2601,9 +2601,6 @@ class App:
         
         buttonPesquisar = tk.Button(self.frameAgenda, text='Buscar', command=self.buscarAgenda, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonPesquisar.place(relx=0, rely=0.62)
-                     
-        buttonAdicionar = tk.Button(self.frameAgenda, text='Inserir Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAdicionar.place(relx=0.058, rely=0.62)
         
         titleDataInicio = tk.Label(self.frameAgenda, text='De:', background='#A9A9A9', fg='black', font='bold')
         titleDataInicio.place(relx=0.2 , rely=0.07)
@@ -2686,9 +2683,9 @@ class App:
             self.treeviewAgenda.insert("", tk.END, values=row)
             
         self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAgendamento)
-        
-        titleTreview2 = tk.Label(self.agendaRoot, text='Atendimentos', background='#A9A9A9', fg='black', font='bold')
-        titleTreview2.place(relx=0.767, rely=0.2)
+
+        buttonAdicionar = tk.Button(self.frameAgenda, text='Inserir Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdicionar.place(relx=0.767, rely=0.2)
         
         self.treeviewClientAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
         
@@ -2876,51 +2873,34 @@ class App:
         self.dataAgendamentoEntry.configure(background='white', fg='black')
         self.dataAgendamentoEntry.place(relx= 0.06, rely=0.27)
         # self.dataCliente.bind('<KeyRelease>', self.formatar_dataCliente)
-        
-        funcionario = tk.Label(self.modalNovaAgenda, text='FUNCIONARIO:', font='bold')
-        funcionario.place(relx= 0.37, rely=0.1)
-        funcionario.configure(background='#D3D3D3', fg='black')
-
-        self.funcAgendamento = self.dao.funcionarioAllAtivos()
-        self.funcAgendamentoList = [item[1] for item in self.funcAgendamento]
-        self.funcAgendamentoId = [item[0] for item in self.funcAgendamento]
-        self.funcionarioMapAgenda = dict(zip(self.funcAgendamentoList, self.funcAgendamentoId))
-        
-        self.opcoesFuncAgenda = StringVar(self.modalNovaAgenda)
-        self.opcoesFuncAgenda.set("Funcionarios")
-        self.dropdownAgenda = tk.OptionMenu(self.modalNovaAgenda, self.opcoesFuncAgenda, *self.funcAgendamentoList)
-        self.dropdownAgenda.configure(background='white', fg='black', activebackground='gray')
-        self.dropdownAgenda.place(relx= 0.37, rely=0.145, relheight=0.05, relwidth=0.286)
-
-        self.opcoesFuncAgenda.trace_add('write', self.setIdFuncionarioAgenda)
 
         txtTelefone = tk.Label(self.modalNovaAgenda, text='TELEFONE:', font='bold')
-        txtTelefone.place(relx= 0.4, rely=0.23)
+        txtTelefone.place(relx= 0.4, rely=0.1)
         txtTelefone.configure(background='#D3D3D3', fg='black')
 
         self.telefoneClienteAgendamento = tk.Entry(self.modalNovaAgenda, width=20)
         self.telefoneClienteAgendamento.configure(background='white', fg='black')
-        self.telefoneClienteAgendamento.place(relx= 0.4, rely=0.27)
+        self.telefoneClienteAgendamento.place(relx= 0.4, rely=0.145)
         
         # self.telefoneCliente.bind('<KeyRelease>', self.formatar_telefoneCliente)
 
         txtCelular = tk.Label(self.modalNovaAgenda, text='*CELULAR:', font='bold')
-        txtCelular.place(relx= 0.7, rely=0.23)
+        txtCelular.place(relx= 0.4, rely=0.23)
         txtCelular.configure(background='#D3D3D3', fg='black')
 
         self.celularClienteAgendamento = tk.Entry(self.modalNovaAgenda, width=20)
         self.celularClienteAgendamento.configure(background='white', fg='black')
-        self.celularClienteAgendamento.place(relx= 0.7, rely=0.27)
+        self.celularClienteAgendamento.place(relx= 0.4, rely=0.27)
         
         # self.celularCliente.bind('<KeyRelease>', self.formatar_celularCliente)
 
         txtEmail = tk.Label(self.modalNovaAgenda, text='*Email:', font='bold')
-        txtEmail.place(relx= 0.06, rely=0.35)
+        txtEmail.place(relx= 0.7, rely=0.23)
         txtEmail.configure(background='#D3D3D3', fg='black')
 
-        self.EmailClienteAgendamento = tk.Entry(self.modalNovaAgenda,width=30)
+        self.EmailClienteAgendamento = tk.Entry(self.modalNovaAgenda,width=25)
         self.EmailClienteAgendamento.configure(background='white', fg='black')
-        self.EmailClienteAgendamento.place(relx= 0.06, rely=0.395)
+        self.EmailClienteAgendamento.place(relx= 0.7, rely=0.27)
 
         self.treeviewAtendimento2 = ttk.Treeview(self.modalNovaAgenda, columns=('Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento',
                                                                                     'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
@@ -2965,14 +2945,41 @@ class App:
         
         self.modalNovaAgenda.mainloop()
 
-    def setIdFuncionarioAgenda(self, *args):
-        self.selecaoIdFunc = self.opcoesFuncAgenda.get()
-        self.idSelecaoAgendaFunc = self.funcionarioMapAgenda.get(self.selecaoIdFunc)
+    def setIdFuncionarioAtendimento(self, *args):
+        self.selecaoIdFuncAtd = self.opcoesfuncAtendimento.get()
+        self.idSelecaoFuncAtendimento = self.funcAtendimentoMap.get(self.selecaoIdFuncAtd)
+        self.inserirEspecialidadeAtd(self.selecaoIdFuncAtd)
+
+    def prcFuncionario(self, especialidade):
+        self.prcAtendimento = self.dao.procedimentoNomeEspecialidade(especialidade)
+        self.prcAtendimentoName = [item[1] for item in self.prcAtendimento]
+        self.prcAtendimentoId = [item[0] for item in self.prcAtendimento]
+        self.prcAtendimentoMap = dict(zip(self.prcAtendimentoName, self.prcAtendimentoId))
+
+        self.opcoesPrcAtendimento = StringVar(self.modalAtendimentoAdd)
+        self.opcoesPrcAtendimento.set("Procedimentos")
+        self.dropdownPrcAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesPrcAtendimento, *self.prcAtendimentoName)
+        self.dropdownPrcAtd.configure(background='white', fg='black', activebackground='gray')
+        self.dropdownPrcAtd.place(relx= 0.03, rely=0.25, width=222, height=30)
+
+        self.opcoesPrcAtendimento.trace_add('write', self.setIdPrcAtendimento)
+
+    def inserirEspecialidadeAtd(self, nome):
+        self.espAtendimento.configure(state='normal')
+        self.espAtendimento.delete(0, END)
+
+        rows = self.dao.funcionarioNome(nome)
+
+        for row in rows:
+            self.espAtendimento.insert(0, row[2])
+
+        self.prcFuncionario(self.espAtendimento.get())
+        self.espAtendimento.configure(state='disabled', disabledbackground='white', disabledforeground='black')
 
     def setIdPrcAtendimento(self, *args):
         self.selecaoIdPrc = self.opcoesPrcAtendimento.get()
         self.idSelecaoPrcAtendimento = self.prcAtendimentoMap.get(self.selecaoIdPrc)
-        self.inserirCampoValor()
+        self.inserirCampoValor(self.selecaoIdPrc)
 
     def setIdFormaPagamentoAtd(self, *args):
         self.selecaoIdFormaAtd = self.opcoesformaPagamentoAtd.get()
@@ -3007,66 +3014,89 @@ class App:
         self.horaAtendimento.place(relx= 0.032, rely=0.1)
         self.horaAtendimento.bind("<KeyRelease>", self.formatar_hora)
 
+        titleFuncionarioAtd = tk.Label(self.modalAtendimentoAdd, text='FUNCIONARIO:', font='bold')
+        titleFuncionarioAtd.place(relx= 0.2, rely=0.05)
+        titleFuncionarioAtd.configure(background='#D3D3D3', fg='black')
+
+        self.funcAtendimento = self.dao.funcionarioAllAtivos()
+        self.funcAtendimentoName = [item[1] for item in self.funcAtendimento]
+        self.funcAtendimentoId = [item[0] for item in self.funcAtendimento]
+        self.funcAtendimentoEspecialidade = [item[2] for item in self.funcAtendimento]
+        self.funcAtendimentoMap = dict(zip(self.funcAtendimentoName, self.funcAtendimentoId))
+        
+        self.opcoesfuncAtendimento = StringVar(self.modalAtendimentoAdd)
+        self.opcoesfuncAtendimento.set("Funcionario")
+        self.dropdownFuncAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesfuncAtendimento, *self.funcAtendimentoName)
+        self.dropdownFuncAtd.configure(background='white', fg='black', activebackground='gray')
+        self.dropdownFuncAtd.place(relx= 0.2, rely=0.1)
+
+        self.opcoesfuncAtendimento.trace_add('write', self.setIdFuncionarioAtendimento)
+
+        titleEspecialidade = tk.Label(self.modalAtendimentoAdd, text='ESPECIALIDADE:', font='bold')
+        titleEspecialidade.configure(background='#D3D3D3', fg='black')
+        titleEspecialidade.place(relx= 0.45, rely=0.05)
+
+        self.espAtendimento = tk.Entry(self.modalAtendimentoAdd)
+        self.espAtendimento.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
+        self.espAtendimento.place(relx= 0.45, rely=0.1)
+
         titleProcedimento = tk.Label(self.modalAtendimentoAdd, text='PROCEDIMENTO:', font='bold')
-        titleProcedimento.place(relx= 0.37, rely=0.05)
+        titleProcedimento.place(relx= 0.03, rely=0.2)
         titleProcedimento.configure(background='#D3D3D3', fg='black')
 
-        self.prcAtendimento = self.dao.procedimentosAtivos()
-        self.prcAtendimentoName = [item[1] for item in self.prcAtendimento]
-        self.prcAtendimentoId = [item[0] for item in self.prcAtendimento]
-        self.prcAtendimentoMap = dict(zip(self.prcAtendimentoName, self.prcAtendimentoId))
-        
         self.opcoesPrcAtendimento = StringVar(self.modalAtendimentoAdd)
-        self.opcoesPrcAtendimento.set("Procedimentos")
-        self.dropdownPrcAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesPrcAtendimento, *self.prcAtendimentoName)
+        self.opcoesPrcAtendimento.set('Procedimentos')
+        listaPrc = [' ', ' ']
+        self.dropdownPrcAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesPrcAtendimento, *listaPrc)
         self.dropdownPrcAtd.configure(background='white', fg='black', activebackground='gray')
-        self.dropdownPrcAtd.place(relx= 0.37, rely=0.1)
-
-        self.opcoesPrcAtendimento.trace_add('write', self.setIdPrcAtendimento)
+        self.dropdownPrcAtd.place(relx= 0.03, rely=0.25, width=222, height=30)
 
         titleValor = tk.Label(self.modalAtendimentoAdd, text='VALOR:', font='bold')
         titleValor.configure(background='#D3D3D3', fg='black')
-        titleValor.place(relx= 0.8, rely=0.05)
+        titleValor.place(relx= 0.45, rely=0.2)
 
         self.valorPrc = tk.Entry(self.modalAtendimentoAdd)
         self.valorPrc.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
-        self.valorPrc.place(relx= 0.8, rely=0.1)
-        
-        titleFormaPagamento = tk.Label(self.modalAtendimentoAdd, text='Pagamento:', font='bold')
-        titleFormaPagamento.configure(background='#D3D3D3', fg='black')
-        titleFormaPagamento.place(relx= 0.03, rely=0.2)
-        
-        self.formaPagamentoAtd = self.dao.formaPagamentoAll()
-        self.formaPagamentoAtdName = [item[1] for item in self.formaPagamentoAtd]
-        self.formaPagamentoAtdId = [item[0] for item in self.formaPagamentoAtd]
-        self.formaPagamentoAtdMap = dict(zip(self.formaPagamentoAtdName, self.formaPagamentoAtdId))
-        
-        self.opcoesformaPagamentoAtd = StringVar(self.modalAtendimentoAdd)
-        self.opcoesformaPagamentoAtd.set("Pagamento")
-        self.dropdownFormaAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesformaPagamentoAtd, *self.formaPagamentoAtdName)
-        self.dropdownFormaAtd.configure(background='white', fg='black', activebackground='gray')
-        self.dropdownFormaAtd.place(relx= 0.03, rely=0.25)
-
-        self.opcoesformaPagamentoAtd.trace_add('write', self.setIdFormaPagamentoAtd)
-        
-        titleTipo = tk.Label(self.modalAtendimentoAdd, text='TIPO:', font='bold')
-        titleTipo.configure(background='#D3D3D3', fg='black')
-        titleTipo.place(relx= 0.37, rely=0.2)
-
-        self.tipoAtd = tk.Entry(self.modalAtendimentoAdd)
-        self.tipoAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
-        self.tipoAtd.place(relx= 0.37, rely=0.25)
-
-        titleTaxa = tk.Label(self.modalAtendimentoAdd, text='TAXA:', font='bold')
-        titleTaxa.configure(background='#D3D3D3', fg='black')
-        titleTaxa.place(relx= 0.5, rely=0.2)
-
-        self.taxaAtd = tk.Entry(self.modalAtendimentoAdd)
-        self.taxaAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
-        self.taxaAtd.place(relx= 0.5, rely=0.25)
+        self.valorPrc.place(relx= 0.45, rely=0.25)
 
         buttonBuscar = tk.Button(self.modalAtendimentoAdd, text='ADICIONAR', command=self.insertAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
         buttonBuscar.place(relx=0.8, rely=0.2)
+
+        self.treeviewAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
+        
+        self.treeviewAtendimento.heading('Data', text='Data')
+        self.treeviewAtendimento.heading('Hora', text='Hora')
+        self.treeviewAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
+        self.treeviewAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
+        self.treeviewAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
+        self.treeviewAtendimento.heading('Funcionario', text='Funcionario')
+        self.treeviewAtendimento.heading('Procedimento', text='Procedimento')
+        self.treeviewAtendimento.heading('Valor', text='Valor')
+        self.treeviewAtendimento.heading('Status', text='Status')
+        
+        self.treeviewAtendimento.column('Data', stretch=False, width=100)
+        self.treeviewAtendimento.column('Hora', stretch=False, width=100)
+        self.treeviewAtendimento.column('Cod.Cliente', stretch=False, width=92)
+        self.treeviewAtendimento.column('Cod.Atendimento', stretch=False, width=92)
+        self.treeviewAtendimento.column('Nome do Cliente', stretch=False, width=100)
+        self.treeviewAtendimento.column('Funcionario', stretch=False, width=100)
+        self.treeviewAtendimento.column('Procedimento', stretch=False, width=100)
+        self.treeviewAtendimento.column('Valor', stretch=False, width=100)
+        self.treeviewAtendimento.column('Status', stretch=False, width=90)
+        
+        verticalBarTreeview2 = ttk.Scrollbar(self.agendaRoot, orient='vertical', command=self.treeviewAtendimento.yview)
+        horizontalBarTreeview2 = ttk.Scrollbar(self.agendaRoot, orient='horizontal', command=self.treeviewAtendimento.xview)
+        self.treeviewAtendimento.configure(yscrollcommand=verticalBarTreeview2.set, xscrollcommand=horizontalBarTreeview2.set)
+        
+        self.treeviewAtendimento.place(relx=0.767, rely=0.226, relheight=0.35, relwidth=0.223)
+        verticalBarTreeview2.place(relx=0.981 , rely=0.226, relheight=0.34)
+        horizontalBarTreeview2.place(relx=0.767, rely=0.565, relwidth=0.223)
+        
+        styleTreeview2 = ttk.Style()
+        styleTreeview2.theme_use('clam')
+        styleTreeview2.configure("self.treeviewAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        self.treeviewAtendimento.bind('<<TreeviewSelect>>', self.selectAtendimento)
 
         self.modalAtendimentoAdd.bind('<Return>', lambda event: buttonBuscar.invoke())
         
@@ -3090,37 +3120,14 @@ class App:
         self.idSelecaoAgenda = self.agendaMap.get(self.selecaoAgenda)
         print(f"Nome: {self.selecaoAgenda}\nId: {self.idSelecaoAgenda}")
 
-    def inserirCampoPagamento(self):
-        self.tipoAtd.configure(state='normal')
-        self.taxaAtd.configure(state='normal')
-        self.tipoAtd.delete(0, END)
-        self.taxaAtd.delete(0, END)
-
-        if "PARCELADO" in self.opcoesformaPagamentoAtd.get():
-            btn = tk.Button(self.modalAtendimentoAdd, text='PARCELAS', command=self.addParcelas, 
-                            relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
-            btn.place(relx= 0.37, rely=0.33)
-
-        rows = self.dao.formaPagamentoNome(self.opcoesformaPagamentoAtd.get())
-
-        for row in rows:
-            self.tipoAtd.insert(0, row[2])
-            self.taxaAtd.insert(0, row[3])
-            self.taxaAtd.insert(4, "%")
-
-        self.tipoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
-        self.taxaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
-
-    def inserirCampoValor(self):
+    def inserirCampoValor(self, nome):
         self.valorPrc.configure(state='normal')
         self.valorPrc.delete(0, END)
-        self.valorPrc.delete(0, END)
 
-        rows = self.dao.procedimentoNome(self.opcoesPrcAtendimento.get())
+        rows = self.dao.procedimentoNome(nome)
 
         for row in rows:
-            self.valorPrc.insert(0, "R$ ")
-            self.valorPrc.insert(3, row[3])
+            self.valorPrc.insert(0, row[3])
 
         self.valorPrc.configure(state='disabled', disabledbackground='white', disabledforeground='black')
 
@@ -3194,8 +3201,7 @@ class App:
             titleValor.place(relx= 0.3, rely=0.05)
 
             self.valorPrcParcela = tk.Entry(self.modalAddParcela)
-            self.valorPrcParcela.insert(0, "R$ ")
-            self.valorPrcParcela.insert(3, self.valorPrc.get())
+            self.valorPrcParcela.insert(0, self.valorPrc.get())
             self.valorPrcParcela.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
             self.valorPrcParcela.place(relx= 0.3, rely=0.1)
 
@@ -3293,16 +3299,14 @@ class App:
             messagebox.showinfo("Aviso","Preencha o campo Nome!")
             return
         else:
-            print(self.nomeClienteAgendamento.get())
-            self.nomeClienteAgendamento.delete(0, END)
-            self.cpfClienteAgendamento.delete(0, END)
-            self.telefoneClienteAgendamento.delete(0, END)
-            self.celularClienteAgendamento.delete(0, END)
-            self.EmailClienteAgendamento.delete(0, END)
+            
+            # self.cpfClienteAgendamento.delete(0, END)
+            # self.telefoneClienteAgendamento.delete(0, END)
+            # self.celularClienteAgendamento.delete(0, END)
+            # self.EmailClienteAgendamento.delete(0, END)
 
-            rows = self.dao.clienteNome(self.nomeClienteAgendamento.get())
+            rows = self.dao.clienteNomeAtendimento(self.nomeClienteAgendamento.get())
             for row in rows:
-                print(row)
                 self.nomeClienteAgendamento.insert(0, row[1])
                 self.cpfClienteAgendamento.insert(0, row[2])
                 self.telefoneClienteAgendamento.insert(0, row[5])
@@ -3611,6 +3615,9 @@ class App:
                 messagebox.showerror("Erro ao cadastrar", resultado)
             else:
                 self.atualizaTreeProcedimento()
+                self.opcoesEspecialidadeProcedimento.set("Especialidade")
+                self.valorProcedimento.delete(0, END)
+                self.clearFieldProcedimento()
                 msn = "Procedimento inserido!"
                 self.exibir_sucesso(msn, self.modalProcedimentos)
 
