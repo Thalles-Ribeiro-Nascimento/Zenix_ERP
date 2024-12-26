@@ -132,6 +132,7 @@ class App:
             self.resultado = self.dao.erro
 
             if isinstance(self.resultado, str):
+                self.senha.delete(0,END)
                 messagebox.showerror("Acesso Negado", self.resultado)
 
             else:
@@ -2723,8 +2724,35 @@ class App:
         styleTreeview2.theme_use('clam')
         styleTreeview2.configure("self.treeviewClientAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
+        self.treeviewClientAtendimento.bind('<<TreeviewSelect>>', self.selectAtendimento)
+        
         
         self.agendaRoot.mainloop()
+
+    def selectAtendimento(self, event):
+        try:
+            # Id do item da Agenda selecionada
+            self.item_idAtendimento = self.treeviewClientAtendimento.selection()[0]
+            
+            # Lista Informações da Agenda Selecionada
+            self.listaAtendimento = self.treeviewClientAtendimento.item(self.item_idAtendimento, 'values')
+                        
+            # Data agendamento
+            self.dataAtendimento2 = self.listaAtendimento[0]
+
+            # Protocolo Atendimentomento
+            self.horaAtendimento_2 = self.listaAtendimento[1]
+            
+            # Id do Cliente
+            self.nameClientAtd = self.listaAtendimento[2]
+            
+            # Nome do Cliente
+            self.codClienteAtd = self.listaAtendimento[3]
+
+            self.idAtendimentoAg = self.listaAtendimento[4]
+            
+        except IndexError as e:
+            return
 
     def selectAgendamento(self, event):
         self.treeviewClientAtendimento.delete(*self.treeviewClientAtendimento.get_children())
@@ -2982,19 +3010,10 @@ class App:
         titleProcedimento = tk.Label(self.modalAtendimentoAdd, text='PROCEDIMENTO:', font='bold')
         titleProcedimento.place(relx= 0.37, rely=0.05)
         titleProcedimento.configure(background='#D3D3D3', fg='black')
-        
-        self.prcAtendimento = self.dao.procedimentosAtivos()
-        self.prcAtendimentoName = [item[1] for item in self.prcAtendimento]
-        self.prcAtendimentoId = [item[0] for item in self.prcAtendimento]
-        self.prcAtendimentoMap = dict(zip(self.prcAtendimentoName, self.prcAtendimentoId))
-        
-        self.opcoesPrcAtendimento = StringVar(self.modalAtendimentoAdd)
-        self.opcoesPrcAtendimento.set("Procedimentos")
-        self.dropdownPrcAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesPrcAtendimento, *self.prcAtendimentoName)
-        self.dropdownPrcAtd.configure(background='white', fg='black', activebackground='gray')
-        self.dropdownPrcAtd.place(relx= 0.37, rely=0.1)
 
-        self.opcoesPrcAtendimento.trace_add('write', self.setIdPrcAtendimento)
+        self.procedimentoAtd = tk.Entry(self.modalAtendimentoAdd)
+        self.procedimentoAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
+        self.procedimentoAtd.place(relx= 0.37, rely=0.1)
 
         titleValor = tk.Label(self.modalAtendimentoAdd, text='VALOR:', font='bold')
         titleValor.configure(background='#D3D3D3', fg='black')
@@ -3102,6 +3121,18 @@ class App:
             self.valorPrc.insert(0, row[3])
 
         self.valorPrc.configure(state='disabled', disabledbackground='white', disabledforeground='black')
+
+    def inserirCampoProcedimento(self):
+        self.procedimentoAtd.configure(state='normal')
+        self.procedimentoAtd.delete(0, END)
+        self.procedimentoAtd.delete(0, END)
+
+        rows = self.dao.procedimentoNome(self.opcoesPrcAtendimento.get())
+
+        for row in rows:
+            self.procedimentoAtd.insert(0, row[3])
+
+        self.procedimentoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
 
     def insertAtendimento(self):
         hora = self.horaAtendimento.get()
@@ -3216,7 +3247,7 @@ class App:
 
         erro = False
         for k in listParcelas:
-            resultado = self.dao.insertParcelasAtendimento(k, procedimento, protocolo, valor)
+            resultado = self.dao.insertParcelasAtendimento(k, procedimento, protocolo, valor, self.idAtendimentoAg)
 
             if isinstance(resultado, str):
                 erro = True
@@ -3228,7 +3259,6 @@ class App:
             self.atualizaTreeParcelaAtendimento()
         else:
             messagebox.showerror("Erro", resultado, parent=self.modalAddParcela)
-
 
     def atualizaTreeParcelaAtendimento(self):
         self.treeviewParcelasAtendimento.delete(*self.treeviewParcelasAtendimento.get_children())

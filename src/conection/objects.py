@@ -489,19 +489,19 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = 'select idParcela from parcelas limit 1;'
+        sql = 'select idParcela from parcelas;'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows 
 
-    def insertParcelasAtendimento(self, idParcela, procedimento, protocolo,valor):
+    def insertParcelasAtendimento(self, idParcela, procedimento, protocolo, valor, atendimento):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
         try:
-            sql = f"INSERT INTO atendimento_parcelado (idParcela, procedimento, protocolo, valor) VALUES (%s, %s, %s, %s)"
-            self.cursor.execute(sql, (idParcela, procedimento, protocolo, valor))
+            sql = f"INSERT INTO atendimento_parcelado (idParcela, procedimento, protocolo, valor, idAtendimento) VALUES (%s, %s, %s, %s, %s)"
+            self.cursor.execute(sql, (idParcela, procedimento, protocolo, valor, atendimento))
             self.conecta.commit()
             return
         

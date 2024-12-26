@@ -91,13 +91,13 @@ dao = Dao("admin", "SysteM98")
 rows = dao.parcelasId()
 
 for row in rows[0:cont]:
+    # print(row)
     print(row[0])
-    # print(row[0])
 
 
 # rows = dao.especialidadeView()
 
-# for row in rows:
-#     print(row)
-#     print(len(row))
+# for i in range(cont):
+#     print(i+1)
+
 
