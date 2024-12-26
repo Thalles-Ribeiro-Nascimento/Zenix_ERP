@@ -2362,7 +2362,7 @@ class App:
         self.modalNovaFormaPagamento.mainloop()
 
     def adicionarParcela(self):
-        if self.item_idFormaPagamento == "" or "A VISTA" in self.formaPagamentoDsc or self.formaPagamentoDsc == "DINHEIRO":
+        if self.tipoPagamentoSelect == "À VISTA" or self.tipoPagamentoSelect == "A VISTA":
             messagebox.showerror("Erro", "Forma de pagamento incorreta", parent=self.formaPagamento)
             return
         else:
@@ -3011,22 +3011,26 @@ class App:
         titleProcedimento.place(relx= 0.37, rely=0.05)
         titleProcedimento.configure(background='#D3D3D3', fg='black')
 
-        self.procedimentoAtd = tk.Entry(self.modalAtendimentoAdd)
-        self.procedimentoAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
-        self.procedimentoAtd.place(relx= 0.37, rely=0.1)
+        self.prcAtendimento = self.dao.procedimentosAtivos()
+        self.prcAtendimentoName = [item[1] for item in self.prcAtendimento]
+        self.prcAtendimentoId = [item[0] for item in self.prcAtendimento]
+        self.prcAtendimentoMap = dict(zip(self.prcAtendimentoName, self.prcAtendimentoId))
+        
+        self.opcoesPrcAtendimento = StringVar(self.modalAtendimentoAdd)
+        self.opcoesPrcAtendimento.set("Procedimentos")
+        self.dropdownPrcAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesPrcAtendimento, *self.prcAtendimentoName)
+        self.dropdownPrcAtd.configure(background='white', fg='black', activebackground='gray')
+        self.dropdownPrcAtd.place(relx= 0.37, rely=0.1)
+
+        self.opcoesPrcAtendimento.trace_add('write', self.setIdPrcAtendimento)
 
         titleValor = tk.Label(self.modalAtendimentoAdd, text='VALOR:', font='bold')
         titleValor.configure(background='#D3D3D3', fg='black')
         titleValor.place(relx= 0.8, rely=0.05)
 
-        titleRSifrao = tk.Label(self.modalAtendimentoAdd, text='R$', font='bold')
-        titleRSifrao.configure(background='#D3D3D3', fg='black')
-        titleRSifrao.place(relx= 0.75, rely=0.1)            
-
         self.valorPrc = tk.Entry(self.modalAtendimentoAdd)
         self.valorPrc.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
         self.valorPrc.place(relx= 0.8, rely=0.1)
-        
         
         titleFormaPagamento = tk.Label(self.modalAtendimentoAdd, text='Pagamento:', font='bold')
         titleFormaPagamento.configure(background='#D3D3D3', fg='black')
@@ -3056,10 +3060,6 @@ class App:
         titleTaxa = tk.Label(self.modalAtendimentoAdd, text='TAXA:', font='bold')
         titleTaxa.configure(background='#D3D3D3', fg='black')
         titleTaxa.place(relx= 0.5, rely=0.2)
-
-        titlePorcentagem = tk.Label(self.modalAtendimentoAdd, text='%', font='bold')
-        titlePorcentagem.configure(background='#D3D3D3', fg='black')
-        titlePorcentagem.place(relx= 0.63, rely=0.25) 
 
         self.taxaAtd = tk.Entry(self.modalAtendimentoAdd)
         self.taxaAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
@@ -3106,6 +3106,7 @@ class App:
         for row in rows:
             self.tipoAtd.insert(0, row[2])
             self.taxaAtd.insert(0, row[3])
+            self.taxaAtd.insert(4, "%")
 
         self.tipoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
         self.taxaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
@@ -3118,21 +3119,23 @@ class App:
         rows = self.dao.procedimentoNome(self.opcoesPrcAtendimento.get())
 
         for row in rows:
-            self.valorPrc.insert(0, row[3])
+            self.valorPrc.insert(0, "R$ ")
+            self.valorPrc.insert(3, row[3])
 
         self.valorPrc.configure(state='disabled', disabledbackground='white', disabledforeground='black')
 
     def inserirCampoProcedimento(self):
-        self.procedimentoAtd.configure(state='normal')
-        self.procedimentoAtd.delete(0, END)
-        self.procedimentoAtd.delete(0, END)
+        # self.procedimentoAtd.configure(state='normal')
+        # self.procedimentoAtd.delete(0, END)
+        # self.procedimentoAtd.delete(0, END)
 
-        rows = self.dao.procedimentoNome(self.opcoesPrcAtendimento.get())
+        # rows = self.dao.procedimentoNome(self.opcoesPrcAtendimento.get())
 
-        for row in rows:
-            self.procedimentoAtd.insert(0, row[3])
+        # for row in rows:
+        #     self.procedimentoAtd.insert(0, row[3])
 
-        self.procedimentoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
+        # self.procedimentoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
+        pass
 
     def insertAtendimento(self):
         hora = self.horaAtendimento.get()
@@ -3191,7 +3194,8 @@ class App:
             titleValor.place(relx= 0.3, rely=0.05)
 
             self.valorPrcParcela = tk.Entry(self.modalAddParcela)
-            self.valorPrcParcela.insert(0, self.valorPrc.get())
+            self.valorPrcParcela.insert(0, "R$ ")
+            self.valorPrcParcela.insert(3, self.valorPrc.get())
             self.valorPrcParcela.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
             self.valorPrcParcela.place(relx= 0.3, rely=0.1)
 
@@ -3263,7 +3267,7 @@ class App:
     def atualizaTreeParcelaAtendimento(self):
         self.treeviewParcelasAtendimento.delete(*self.treeviewParcelasAtendimento.get_children())
 
-        self.rowsParcela = self.dao.parcelasAtendimento()        
+        self.rowsParcela = self.dao.parcelasAtendimento(self.protocoloAgenda)        
         for row in self.rowsParcela:
             self.treeviewParcelasAtendimento.insert("", END, values=row)
 

@@ -475,11 +475,11 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado   
 
-    def parcelasAtendimento(self):
+    def parcelasAtendimento(self, protocolo):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = 'SELECT * FROM Vw_ParcelasAtendimento'
+        sql = f'SELECT * FROM Vw_ParcelasAtendimento WHERE Protocolo = {protocolo}'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
