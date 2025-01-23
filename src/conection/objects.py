@@ -38,6 +38,16 @@ class Dao:
 
         return rows
 
+    def funcionarioAtdAll(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = "SELECT * FROM Vw_FuncionariosAtivos WHERE Especialidade <> 'Gerente'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def funcionarioAll(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -270,7 +280,6 @@ class Dao:
         rows = self.cursor.fetchall()
 
         return rows
-# SELECT * FROM Vw_ProcedimentosAtivos WHERE Especialidade LIKE '{especialidade}%'
 
     def procedimentoNomeEspecialidade(self, especialidade):
         if self.erro:
@@ -381,7 +390,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND STR_TO_DATE('{dataFim}','%d/%m/%Y')"
+        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by Data"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
