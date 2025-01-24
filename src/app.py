@@ -2685,16 +2685,17 @@ class App:
             
         self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAgendamento)
 
-        buttonAdicionar = tk.Button(self.frameAgenda, text='Inserir Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAdicionar = tk.Button(self.frameAgenda, text='Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonAdicionar.place(relx=0.78, rely=0.68)
         
-        self.treeviewClientAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
+        self.treeviewClientAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Cod.Atendimento', 'Protocolo','Cod.Cliente','Nome do Cliente','Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
         
         self.treeviewClientAtendimento.heading('Data', text='Data')
         self.treeviewClientAtendimento.heading('Hora', text='Hora')
-        self.treeviewClientAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
-        self.treeviewClientAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
         self.treeviewClientAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
+        self.treeviewClientAtendimento.heading('Protocolo', text='Protocolo')
+        self.treeviewClientAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
+        self.treeviewClientAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
         self.treeviewClientAtendimento.heading('Funcionario', text='Funcionario')
         self.treeviewClientAtendimento.heading('Procedimento', text='Procedimento')
         self.treeviewClientAtendimento.heading('Valor', text='Valor')
@@ -2703,6 +2704,7 @@ class App:
         self.treeviewClientAtendimento.column('Data', stretch=False, width=100)
         self.treeviewClientAtendimento.column('Hora', stretch=False, width=100)
         self.treeviewClientAtendimento.column('Cod.Cliente', stretch=False, width=92)
+        self.treeviewClientAtendimento.column('Protocolo', stretch=False, width=92)
         self.treeviewClientAtendimento.column('Cod.Atendimento', stretch=False, width=92)
         self.treeviewClientAtendimento.column('Nome do Cliente', stretch=False, width=100)
         self.treeviewClientAtendimento.column('Funcionario', stretch=False, width=100)
@@ -2920,44 +2922,6 @@ class App:
         self.EmailClienteAgendamento.configure(background='white', fg='black')
         self.EmailClienteAgendamento.place(relx= 0.7, rely=0.39)
 
-        # self.treeviewAtendimento2 = ttk.Treeview(self.modalNovaAgenda, columns=('Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento',
-        #                                                                             'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
-    
-        # self.treeviewAtendimento2.heading('Hora', text='Hora')
-        # self.treeviewAtendimento2.heading('Nome do Cliente', text='Nome do Cliente')
-        # self.treeviewAtendimento2.heading('Cod.Cliente', text='Cód.Cliente')
-        # self.treeviewAtendimento2.heading('Cod.Atendimento', text='Cód.Atendimento')
-        # self.treeviewAtendimento2.heading('Funcionario', text='Funcionario')
-        # self.treeviewAtendimento2.heading('Procedimento', text='Procedimento')
-        # self.treeviewAtendimento2.heading('Valor', text='Valor')
-        # self.treeviewAtendimento2.heading('Status', text='Status')
-        
-        # self.treeviewAtendimento2.column('Hora', stretch=False, width=100)
-        # self.treeviewAtendimento2.column('Cod.Cliente', stretch=False, width=92)
-        # self.treeviewAtendimento2.column('Cod.Atendimento', stretch=False, width=92)
-        # self.treeviewAtendimento2.column('Nome do Cliente', stretch=False, width=100)
-        # self.treeviewAtendimento2.column('Funcionario', stretch=False, width=100)
-        # self.treeviewAtendimento2.column('Procedimento', stretch=False, width=100)
-        # self.treeviewAtendimento2.column('Valor', stretch=False, width=100)
-        # self.treeviewAtendimento2.column('Status', stretch=False, width=90)
-        
-        # verticalBar = ttk.Scrollbar(self.modalNovaAgenda, orient='vertical', command=self.treeviewAtendimento2.yview)
-        # horizontalBar = ttk.Scrollbar(self.modalNovaAgenda, orient='horizontal', command=self.treeviewAtendimento2.xview)
-        # self.treeviewAtendimento2.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
-
-        # style = ttk.Style(self.treeviewAtendimento2)
-        # style.theme_use('clam')
-        # style.configure("self.treeviewAtendimento2", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
-        
-        # self.treeviewAtendimento2.place(relx=0, rely=0.5, relheight=0.5, relwidth=0.98)
-
-        # verticalBar.place(relx=0.98 , rely=0.5, relheight=0.48)
-        # horizontalBar.place(rely=0.978, relx=0, relwidth=1)
-                
-        # # rows = self.dao.atendimentoCliente(self.nomeClienteAgendamento)
-        # # for row in rows:
-        # #     self.treeviewAtendimento2.insert("", END, values=row)
-
         self.buttonClienteAgendamento = tk.Button(self.modalNovaAgenda, text='AGENDAR' , command=self.insertAgendamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buttonClienteAgendamento.place(relx= 0.7, rely=0.552)
         
@@ -3149,13 +3113,14 @@ class App:
             buttonAdd = tk.Button(self.modalAtendimentoAdd, text='ADICIONAR', command=self.insertAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
             buttonAdd.place(relx=0.8, rely=0.25)
 
-            self.treeviewAtendimento = ttk.Treeview(self.modalAtendimentoAdd, columns=('Data', 'Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
+            self.treeviewAtendimento = ttk.Treeview(self.modalAtendimentoAdd, columns=('Data', 'Hora', 'Cod.Atendimento', 'Protocolo', 'Cod.Cliente', 'Nome do Cliente', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
             
             self.treeviewAtendimento.heading('Data', text='Data')
             self.treeviewAtendimento.heading('Hora', text='Hora')
-            self.treeviewAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
-            self.treeviewAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
             self.treeviewAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
+            self.treeviewAtendimento.heading('Protocolo', text='Protocolo')
+            self.treeviewAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
+            self.treeviewAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
             self.treeviewAtendimento.heading('Funcionario', text='Funcionario')
             self.treeviewAtendimento.heading('Procedimento', text='Procedimento')
             self.treeviewAtendimento.heading('Valor', text='Valor')
@@ -3164,6 +3129,7 @@ class App:
             self.treeviewAtendimento.column('Data', stretch=False, width=100)
             self.treeviewAtendimento.column('Hora', stretch=False, width=100)
             self.treeviewAtendimento.column('Cod.Cliente', stretch=False, width=92)
+            self.treeviewAtendimento.column('Protocolo', stretch=False, width=92)
             self.treeviewAtendimento.column('Cod.Atendimento', stretch=False, width=92)
             self.treeviewAtendimento.column('Nome do Cliente', stretch=False, width=100)
             self.treeviewAtendimento.column('Funcionario', stretch=False, width=100)
@@ -3183,6 +3149,10 @@ class App:
             styleTreeview2.theme_use('clam')
             styleTreeview2.configure("self.treeviewAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
+            rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
+            for row in rows:
+                self.treeviewAtendimento.insert("", END, values=row)
+
             self.treeviewAtendimento.bind('<<TreeviewSelect>>', self.selectAtendimento)
             
             self.modalAtendimentoAdd.mainloop()
@@ -3204,19 +3174,25 @@ class App:
         elif idFormaPagamento == "":
             messagebox.showerror("Aviso","A Forma de pagamento está vazia")
         
+        elif numParcelas == "":
+            numParcelas = 0
+
         dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFormaPagamento, idFuncionario, numParcelas)
         if isinstance(dao, str):
             messagebox.showerror("Erro",dao , parent=self.modalAtendimentoAdd)
             
         else:
+            self.atualizaTreeAtendimento()
             self.exibir_sucesso("Atendimento marcado", self.modalAtendimentoAdd)
 
     def atualizaTreeAtendimento(self):
         self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+        self.treeviewClientAtendimento.delete(*self.treeviewClientAtendimento.get_children())
 
         rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)        
         for row in rows:
             self.treeviewAtendimento.insert("", END, values=row)
+            self.treeviewClientAtendimento.insert("", END, values=row)
 
     def formatar_hora(self, event=None):
         hora = self.horaAtendimento.get()
@@ -3637,6 +3613,8 @@ class App:
         menu_bar = tk.Menu(self.modalProcedimentos, background='#808080')
         
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Editar',command=self.atualizarProcedimentoModal, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Excluir',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
         self.modalProcedimentos.config(menu=menu_bar)
@@ -3813,7 +3791,7 @@ class App:
                     self.exibir_sucesso("Procedimento Excluído!", self.modalProcedimentos)
 
     def atualizarProcedimentoModal(self):
-        if self.selecao_itemEspecialidade  == "":
+        if self.ItemSelecionadoProcedimento  == "":
             messagebox.showinfo("Aviso","Selecione um procedimento!", parent=self.modalProcedimentos)
 
         else:

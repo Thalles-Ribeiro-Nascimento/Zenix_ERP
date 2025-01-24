@@ -406,11 +406,15 @@ class Dao:
 
     def addAtendimento(self, horaAtendimento, procedimento, agenda, formaPagamento, idFunc, parcelas):
         try:
-            sql = f"INSERT INTO atendimentos (hora, idProcedimento, idAgenda, forma_pagamento, parcelas) VALUES ('{horaAtendimento}', {procedimento}, {agenda}, {formaPagamento}, {idFunc}, {parcelas})"
+            sql = f"INSERT INTO atendimentos (hora, idProcedimento, idAgenda, forma_pagamento, idFuncionario, parcelas) VALUES ('{horaAtendimento}', {procedimento}, {agenda}, {formaPagamento}, {idFunc}, {parcelas})"
             self.cursor.execute(sql)
             self.conecta.commit()
         except mysql.connector.Error as e:
             print(e)
+
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado            
 
     def clienteNomeAtendimento(self, nome):
         if self.erro:
