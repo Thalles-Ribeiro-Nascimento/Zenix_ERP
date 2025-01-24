@@ -87,7 +87,7 @@ from conection.objects import Dao
 # indices.clear()
 # funcionarioUpgrade.clear()
 dao = Dao("admin", "SysteM98")
-rows = dao.clienteNomeAtendimento("Zenilda ")
+rows = dao.formaPagamentoAll()
 
 for row in rows:
     print(row)
