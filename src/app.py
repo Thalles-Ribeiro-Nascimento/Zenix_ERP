@@ -3578,20 +3578,22 @@ class App:
             self.modalAtualizaEspecialidade.grab_set()
             self.modalAtualizaEspecialidade.lift()
             self.modalAtualizaEspecialidade.title('ESPECIALIDADE')
-            self.modalAtualizaEspecialidade.geometry('520x250')
+            self.modalAtualizaEspecialidade.geometry('350x250')
             self.modalAtualizaEspecialidade.configure(background='#D3D3D3')
             self.modalAtualizaEspecialidade.resizable(False,False)
             self.modalAtualizaEspecialidade.colormapwindows(self.modalAtualizaEspecialidade)
             
             txtNome = tk.Label(self.modalAtualizaEspecialidade, text='ESPECIALIDADE:', font='bold')
-            txtNome.place(relx= 0.06, rely=0.2)
+            txtNome.place(relx= 0.1, rely=0.2)
             txtNome.configure(background='#D3D3D3', fg='black')
 
             self.nomeAtualizaEspecialidade = tk.Entry(self.modalAtualizaEspecialidade,width=25)
             self.nomeAtualizaEspecialidade.configure(background='white', fg='black')
-            self.nomeAtualizaEspecialidade.place(relx= 0.06, rely=0.245)
+            self.nomeAtualizaEspecialidade.place(relx= 0.1, rely=0.3)
             self.nomeAtualizaEspecialidade.insert(0, self.nomeEspecialidadeSelecionado)
 
+            buttonEdit = tk.Button(self.modalAtualizaEspecialidade, text='EDITAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            buttonEdit.place(relx=0.1, rely=0.4)
             self.modalAtualizaEspecialidade.mainloop()
 
 # Fim Especialidade --------------------------------
