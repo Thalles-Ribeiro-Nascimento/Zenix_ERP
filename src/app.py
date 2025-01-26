@@ -6,17 +6,13 @@ from conection.objects import Dao
 from tkcalendar import Calendar
 from datetime import datetime
 
-class App:
+class Zenix:
+
     def __init__(self):
-        self.root_login = tk.Tk(sync=True)
-        # self.modalNovoFuncionario()
         self.tela_login()
-        # self.telaAgenda()
-        # # self.telaRoot()
-        
-        self.root_login.mainloop()
 
     def tela_login(self):
+        self.root_login = tk.Tk()
         self.root_login.title('Zenix')
         self.root_login.geometry('550x350')
         self.root_login.configure(background='#D3D3D3')
@@ -60,9 +56,6 @@ class App:
         self.root_login.bind('<Return>', lambda event: botao.invoke())
         
         self.root_login.mainloop()
-
-    def carregandoLogin(self):
-        pass
 
     def trocaSenha(self):
         self.modalTrocaSenha = tk.Toplevel()
@@ -124,11 +117,14 @@ class App:
                 self.exibir_sucesso(f"Senha alterada do usuário: {self.usuarioTrocaSenha}", self.main)
 
     def conectar(self):
+        login = self.login.get()
+        senha = self.senha.get()
+
         if self.login.get() == "":
             messagebox.showinfo("Aviso","Insira um usuário", parent=self.root_login)
             
         else:
-            self.dao = Dao(self.login.get(), self.senha.get())
+            self.dao = Dao(login, senha)
             self.resultado = self.dao.erro
 
             if isinstance(self.resultado, str):
@@ -139,21 +135,21 @@ class App:
                 with open("zenix.txt", "w") as arquivo:
                     arquivo.write("[LOGIN]\n")
                     arquivo.write("usuario:")
-                    arquivo.write(self.login.get())
+                    arquivo.write(login)
 
                 self.root_login.destroy()
                 
                 self.telaRoot()
             
     def telaRoot(self):
+        user = self.usuario.upper()
         # Criando a janela principal
         self.main = tk.Tk()
         self.main.attributes('-zoomed',True)
-        self.main.title(f"Zenix - {self.usuario.upper()}")
+        self.main.title(f"Zenix - {user}")
         self.main.minsize(1024,720)
         self.main.configure(background='#A9A9A9')
         self.main.geometry('1024x720')
-        # self.main.resizable(False,False)
     
         # self.main.minsize(width=1920, height=1450)
         menu_bar = tk.Menu(self.main, background='#808080')
@@ -205,69 +201,9 @@ class App:
         buttonFinanceiro.grid(row=2, column=3, sticky="nsew", padx=20, pady=10)
 
         buttonFatura = tk.Button(self.main, text='FATURAMENTO', command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonFatura.grid(row=2, column=4, sticky="nsew", padx=20, pady=10)
-
-
-
-
-        # self.frameTvRoot()
-        
-        # treeview1 = ttk.Treeview(self.frame2, columns=(
-        #     'Data', 'Hora', 'Cod.Cliente', 'Protocolo', 'Cod.Atendimento',
-        #     'Nome do Cliente','Data de Nascimento','Procedimento', 'Valor','Nome do Funcionario','Especialidade',
-        #     'CPF', 'Sexo', 'Telefone', 'Celular', 'Email',
-        #     'Rua', 'Bairro',
-        #     'Nº', 'UF','Comp', 'Status' 
-        #     ), show='headings')
-
-        # treeview1.heading('Data', text='Data')
-        # treeview1.heading('Hora', text='Hora')
-        # treeview1.heading('Cod.Cliente', text='Cód.Cliente')
-        # treeview1.heading('Protocolo', text='Protocolo')
-        # treeview1.heading('Cod.Atendimento', text='Cód.Atendimento')
-        # treeview1.heading('Nome do Cliente', text='Nome do Cliente')
-        # treeview1.heading('Data de Nascimento', text='Data de Nascimento')
-        # treeview1.heading('Procedimento', text='Procedimento')
-        # treeview1.heading('Valor', text='Valor')
-        # treeview1.heading('Nome do Funcionario', text='Funcionário')
-        # treeview1.heading('Especialidade', text='Especialidade')
-        # treeview1.heading('CPF', text='CPF')
-        # treeview1.heading('Sexo', text='Sexo')
-        # treeview1.heading('Telefone', text='Telefone')
-        # treeview1.heading('Celular', text='Celular')
-        # treeview1.heading('Email', text='Email')
-        # treeview1.heading('Rua', text='Rua')
-        # treeview1.heading('Bairro', text='Bairro')
-        # treeview1.heading('Nº', text='Nº')
-        # treeview1.heading('UF', text='Estado')
-        # treeview1.heading('Comp', text='Complemento')
-        # treeview1.heading('Status', text='Status')
-
-        # verticalBar = ttk.Scrollbar(self.frame2, orient='vertical', command=treeview1.yview)
-        # horizontalBar = ttk.Scrollbar(self.frame2, orient='horizontal', command=treeview1.xview)
-        # treeview1.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
-
-        # style = ttk.Style()
-        # style.theme_use('clam')
-        # style.configure("treeview1", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
-        
-        # treeview1.place(relx=0.01, rely=0.01, relheight=0.96, relwidth=0.978)
-        # verticalBar.place(relx=0.98 , rely=0.01, relheight=0.96)
-        # horizontalBar.place(rely=0.958, relx=0.01, relwidth=0.971)
-        # treelist = self.dao.atendimentoDoDia()
-        
-
-        # for row in treelist:
-        #     treeview1.insert("", tk.END, values=row)
-        
-        
+        buttonFatura.grid(row=2, column=4, sticky="nsew", padx=20, pady=10)       
 
         self.main.mainloop()
-
-
-    # def frameTvRoot(self):
-    #     self.frame2 = tk.Frame(self.main, background='#A9A9A9')
-    #     self.frame2.place(relx=0.02, rely=0.2, relheight=0.75, relwidth=0.96)
 
     def frameFuncionario(self):
         self.framefuncionarios = tk.Frame(self.funcionarios, background='#A9A9A9')
@@ -290,7 +226,6 @@ class App:
     def telaFuncionario(self):
         self.funcionarios = tk.Toplevel()
         self.funcionarios.transient(self.main)
-        # self.funcionarios.grab_set()
         self.funcionarios.lift()
         self.funcionarios.title('Funcionarios')
         self.funcionarios.configure(background='#A9A9A9')
@@ -312,7 +247,6 @@ class App:
         menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
-        # menuFunCli.add_command(label='Ocultar Tela', command=self.funcionarios.withdraw, font=('Arial', 10, 'bold'), foreground='black')
         menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
 
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -391,7 +325,6 @@ class App:
         horizontalBar.place(rely=0.976, relx=0, relwidth=1)
 
         self.rows = self.dao.funcionarioAllAtivos()
-        # self.treeviewFunc.tag_configure("Vermelho", foreground='red')
         
         for row in self.rows:
             self.treeviewFunc.insert("", END, values=row)
@@ -530,12 +463,6 @@ class App:
             self.EstadoAtualizaFunc = tk.OptionMenu(self.modalAtualizaFunc, self.ufAtualizaFunc, *listUf)
             self.EstadoAtualizaFunc.configure(background='white', fg='black', activebackground='gray')
             self.EstadoAtualizaFunc.place(relx= 0.65, rely=0.595, relwidth=0.09, relheight=0.05)
-            
-            # valor_status = IntVar()
-            # # valor_status.set(self.statusFuncionario)
-            # checkButtonAtivo = tk.Checkbutton(self.modalAtualizaFunc, text="Ativo?", variable=valor_status, command=lambda: print(valor_status.get()))
-            # # , variable=valor_status, command=lambda: print(valor_status.get()), onvalue=1
-            # checkButtonAtivo.place(relx= 0.74, rely=0.7)
 
             txtNumero = tk.Label(self.modalAtualizaFunc, text='Nº:', font='bold')
             txtNumero.place(relx= 0.79, rely=0.55)
@@ -662,14 +589,14 @@ class App:
     def funcionariosAll(self):
         self.treeviewFunc.delete(*self.treeviewFunc.get_children())
         self.rows = self.dao.funcionarioAll()
-        self.treeviewFunc.tag_configure("Vermelho", foreground='red')
+        self.treeviewFunc.tag_configure("Gray", foreground='gray')
         
         for row in self.rows:
             status = row[14]
             if status == 1:
                 self.treeviewFunc.insert("", END, values=row)
             else:
-                self.treeviewFunc.insert("", END, values=row, tags="Vermelho")
+                self.treeviewFunc.insert("", END, values=row, tags="Gray")
 
     def buscarFuncionarioNome(self):
         self.treeviewFunc.delete(*self.treeviewFunc.get_children())
@@ -1024,60 +951,7 @@ class App:
             self.atualizaTreeFunc()       
             self.exibir_sucesso(f"{self.nomeFuncionario} foi excluído com sucesso", self.funcionarios)
 
-# Calendarios
-    # def calendarioInicial(self):
-#         self.calendario = tkcalendar.Calendar(
-#             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
-#             bg='white', fg='black'
-#         )
-#
-#         self.calendario.place(relx=0.07, rely=0.4, relwidth=0.35, relheight=0.38)
-#
-#         self.insereData = tk.Button(self.modalNovoFunc, text='+', command=self.dataInicio)
-#         self.insereData.place(relx=0.385, rely=0.786, relwidth=0.035, relheight=0.04)
-#
-#     def dataInicio(self):
-#         dataInicial = self.calendario.get_date()
-#         self.calendario.destroy()
-#         self.data.delete(0 , END)
-#         self.data.insert(END, dataInicial)
-#         self.insereData.destroy()
-#
-#     def calendarioFinal(self):
-#         self.calendario = tkcalendar.Calendar(
-#             self.modalNovoFunc, font=('Arial', 9, 'bold'), locale='pt_br',
-#             bg='white', fg='black'
-#         )
-#
-#         self.calendario.place(relx=0.07, rely=0.4, relwidth=0.35, relheight=0.38)
-#
-#         self.insereData = tk.Button(self.modalNovoFunc, text='+', command=self.dataFim)
-#         self.insereData.place(relx=0.385, rely=0.786, relwidth=0.035, relheight=0.04)
-#
-#         self.rows = self.dao.especialidadeAll()
-#
-#         self.rowsList = [item[1] for item in self.rows]
-#         self.rowId = [item[0] for item in self.rows]
-#
-#         self.especialidadeMap = dict(zip(self.rowsList, self.rowId))
-#
-#         menu = self.dropdown['menu']
-#         menu.delete(0, 'end')
-#
-#         for especialidade in self.rowsList:
-#             menu.add_command(label=especialidade,
-#                             command=tk._setit(self.opcoes, especialidade))
-#
-#         self.opcoes.set(self.rowsList[0] if self.rowsList else "Especialidade")
-#
-#     def dataFim(self):
-#         dataFinal = self.calendario.get_date()
-#         self.calendario.destroy()
-#         self.data.delete(0 , END)
-#         self.data.insert(END, dataFinal)
-#         self.insereData.destroy()
-        # pass
-# Fim calendarios
+# Formatações - Funcionários -------------
 
 # Formatação CPF
     def formatar_cpfFunc(self,event=None):
@@ -1095,7 +969,6 @@ class App:
 
             self.cpfFunc.delete(0, END)
             self.cpfFunc.insert(0, cpf)
-# Fim Formatação CPF
 
 # Formatação CPF Atualização
     def formatar_cpfAtualizaFunc(self,event=None):
@@ -1113,7 +986,6 @@ class App:
 
             self.cpfAtualizaFunc.delete(0, END)
             self.cpfAtualizaFunc.insert(0, cpf)
-# Fim Formatação CPF Atualização
 
 # Formatação Data
     def formatar_data(self,event=None):
@@ -1130,7 +1002,6 @@ class App:
 
         self.data.delete(0, END)
         self.data.insert(0, data)
-# Fim Formatação Data
 
 # Formatação Atualiza Data
     def formatar_data_atualizar(self, event=None):
@@ -1147,7 +1018,6 @@ class App:
 
         self.dataAtualizaFunc.delete(0, END)
         self.dataAtualizaFunc.insert(0, dataAtualizar)
-# Fim Formatação Atualiza Data
 
 # Formatação Telefone
     def formatar_telefone(self, event=None):
@@ -1164,7 +1034,6 @@ class App:
 
         self.telefone.delete(0, END)
         self.telefone.insert(0, telefone)
-# Fim Formatação Telefone
 
 # Formatação Atualiza Telefone
     def formatar_telefone_Atualizar(self, event=None):
@@ -1181,7 +1050,6 @@ class App:
 
         self.telefoneAtualizaFunc.delete(0, END)
         self.telefoneAtualizaFunc.insert(0, telefone)
-# Fim Formatação Atualiza Telefone
 
 # Formatação Celular
     def formatar_celular(self, event=None):
@@ -1198,7 +1066,6 @@ class App:
 
             self.celular.delete(0, END)
             self.celular.insert(0, celular)
-# Fim Formatação Celular
 
 # Formatação Atualiza Celular
     def formatar_celular_Atualizar(self, event=None):
@@ -1215,7 +1082,8 @@ class App:
 
             self.celularAtualizaFunc.delete(0, END)
             self.celularAtualizaFunc.insert(0, celular)
-# Fim Formatação Atualiza Celular
+
+# Formatações - Funcionários -------------
 
 # Fim Funcionario ----------------------------------------
  
@@ -1223,7 +1091,6 @@ class App:
     def telaClientes(self):
         self.clientes = tk.Toplevel()
         self.clientes.transient(self.main)
-        # self.clientes.grab_set()
         self.clientes.lift()
         self.clientes.title('Clientes')
         self.clientes.configure(background='#A9A9A9')
@@ -1252,8 +1119,6 @@ class App:
         menuAuxiliar.add_command(label='Editar',command=self.atualizarClientesModal, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Novo',command=self.modalNovoCliente, font=('Arial', 10, 'bold'), foreground='black')
-        menuAuxiliar.add_separator()
-        menuAuxiliar.add_command(label='Excluir',command=self.excluirItemFuncionario, font=('Arial', 10, 'bold'), foreground='black')
 
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
@@ -1269,12 +1134,6 @@ class App:
 
         self.buscarClientes = tk.Button(self.frameclientes, text='BUSCAR' , command=self.buscarClienteNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buscarClientes.place(relx=0.02, rely=0.7 ,relheight=0.2)
-
-        # self.atualizarClientes = tk.Button(self.frameclientes, text='ATUALIZAR' , command=self.atualizarClientesModal, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        # self.atualizarClientes.place(relx=0.45, rely=0.7 ,relheight=0.2)               
-
-        # novoCliente = tk.Button(self.frameclientes, text='NOVO' , command=self.modalNovoCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        # novoCliente.place(relx=0.91, rely=0.7 ,relheight=0.2)
 
         self.frameTvClientes()
         self.treeviewClientes = ttk.Treeview(self.frameviewClientes, columns=(
@@ -1313,11 +1172,9 @@ class App:
         horizontalBar.place(rely=0.972, relx=0, relwidth=1)
 
         self.rowsClientes = self.dao.clientesAll()
-        self.treeviewClientes.tag_configure("Vermelho", foreground='red')
         
         for row in self.rowsClientes:
             self.treeviewClientes.insert("", END, values=row)
-            
             
         self.treeviewClientes.bind('<<TreeviewSelect>>', self.pegaIdClientes)
                         
@@ -1939,6 +1796,7 @@ class App:
         except IndexError as e:
             return
 
+# Organizar essa tela
     def adicionarAgendamentoCliente(self):
         if self.item_idCliente == "":
             messagebox.showinfo("Aviso","Selecione um cliente!", parent=self.clientes)
@@ -2091,6 +1949,7 @@ class App:
             buttonClienteAgendamento.place(relx= 0.7, rely=0.395)
             
             self.modalAgendaCliente.mainloop()
+# Organizar essa tela
 
     def calendarioCliente(self):
         self.clienteCalendar = Calendar(
@@ -2136,7 +1995,6 @@ class App:
             self.exibir_sucesso(msn, self.clientes)               
 
 # Fim Cliente -------------------------------------
-
 
 # Parte de Financeiro -------------------------------------
 
@@ -2536,7 +2394,6 @@ class App:
 
 # Fim Parte de Financeiro -------------------------------------
 
-
     def telaFaturamento(self):
         pass
 
@@ -2553,12 +2410,6 @@ class App:
     def frameTvAgendaRoot(self):
         self.frameAgenda2 = tk.Frame(self.agendaRoot, background='#A9A9A9')
         self.frameAgenda2.place(relx=0.01, rely=0.21, relheight=0.85, relwidth=0.75)
-
-    def buscarClienteId(self):
-        idCliente = self.codCliente.get()
-        rows = self.dao.clienteId(idCliente)
-        for row in rows:
-                self.treeviewAtendimento2.insert("", END, values=row)
 
     def telaAgenda(self):
         self.agendaRoot = tk.Toplevel()
@@ -2830,6 +2681,9 @@ class App:
                 self.treeviewAgenda.insert("", END, values=row)            
 
     def buscarNomeAgenda(self, event):
+        dataIni = self.entryDataAgenda.get()
+
+        # Buscar pelo Protocolo:
         if self.entryBuscarNomeAgenda.get().isnumeric():
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
             protocolo = self.entryBuscarNomeAgenda.get()
@@ -2838,7 +2692,15 @@ class App:
 
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row)
-            
+        
+        # Buscar pela Data e Nome
+        elif dataIni != "" and self.entryBuscarNomeAgenda.get() != "":
+            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
+            rows = self.dao.AgendaDataNome(dataIni, self.entryBuscarNomeAgenda.get())
+            for row in rows:
+                self.treeviewAgenda.insert("", END, values=row)             
+
+        # Buscar pelo Nome:
         else:
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
             nome = self.entryBuscarNomeAgenda.get()
@@ -2858,11 +2720,6 @@ class App:
         self.modalNovaAgenda.resizable(False,False)
         menu_bar = tk.Menu(self.modalNovaAgenda, background='#808080')
 
-        # menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        # menuAuxiliar.add_command(label='Inserir Atendimento', command=self.adicionarAtendimento,font=('Arial', 10, 'bold'), foreground='black')
-
-        # menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-
         self.modalNovaAgenda.config(menu=menu_bar)
 
         txtNome = tk.Label(self.modalNovaAgenda, text='*NOME DO CLIENTE:', font='bold')
@@ -2881,8 +2738,6 @@ class App:
         self.cpfClienteAgendamento = tk.Entry(self.modalNovaAgenda, width=15)
         self.cpfClienteAgendamento.place(relx= 0.7, rely=0.252)
         self.cpfClienteAgendamento.configure(background='white', fg='black')
-        # self.cpfClienteAgendamento.bind('<KeyRelease>', self.formatar_cpfCliente)
-        # self.cpfCliente.bind('<BackSpace>', self.formatar_cpfCliente)
 
         txtData = tk.Label(self.modalNovaAgenda, text='*DATA AGENDAMENTO:', font='bold')
         txtData.place(relx= 0.06, rely=0.34)
@@ -2891,7 +2746,6 @@ class App:
         self.dataAgendamentoEntry = tk.Entry(self.modalNovaAgenda, width=15)
         self.dataAgendamentoEntry.configure(background='white', fg='black')
         self.dataAgendamentoEntry.place(relx= 0.06, rely=0.39)
-        # self.dataCliente.bind('<KeyRelease>', self.formatar_dataCliente)
 
         self.buttonCalendarNewAgenda = tk.Button(self.modalNovaAgenda, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioAgendamento)
         self.buttonCalendarNewAgenda.place(relx= 0.2, rely=0.39, relwidth=0.035, relheight=0.06)
@@ -2911,7 +2765,6 @@ class App:
         self.codClienteAgendamento = tk.Entry(self.modalNovaAgenda, width=20)
         self.codClienteAgendamento.configure(background='white', fg='black')
         self.codClienteAgendamento.place(relx= 0.06, rely=0.552)        
-        # self.telefoneCliente.bind('<KeyRelease>', self.formatar_telefoneCliente)
 
         txtCelular = tk.Label(self.modalNovaAgenda, text='*CELULAR:', font='bold')
         txtCelular.place(relx= 0.4, rely=0.34)
@@ -2920,9 +2773,7 @@ class App:
         self.celularClienteAgendamento = tk.Entry(self.modalNovaAgenda, width=20)
         self.celularClienteAgendamento.configure(background='white', fg='black')
         self.celularClienteAgendamento.place(relx= 0.4, rely=0.39)
-        
-        # self.celularCliente.bind('<KeyRelease>', self.formatar_celularCliente)
-
+    
         txtEmail = tk.Label(self.modalNovaAgenda, text='*Email:', font='bold')
         txtEmail.place(relx= 0.7, rely=0.34)
         txtEmail.configure(background='#D3D3D3', fg='black')
@@ -3216,11 +3067,6 @@ class App:
         self.horaAtendimento.delete(0, 'end')
         self.horaAtendimento.insert(0, hora)
 
-    def setIdAgenda(self, *args):
-        self.selecaoAgenda = self.opcoesAgenda.get()
-        self.idSelecaoAgenda = self.agendaMap.get(self.selecaoAgenda)
-        print(f"Nome: {self.selecaoAgenda}\nId: {self.idSelecaoAgenda}")
-
     def inserirCampoValor(self, nome):
         self.valorPrc.configure(state='normal')
         self.valorPrc.delete(0, END)
@@ -3244,10 +3090,6 @@ class App:
 
         # self.procedimentoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
         pass
-
-    def setIdParcelasAtendimento(self, *args):
-        self.selecaoIdParcelaAtd = self.opcoesParcelasAtendimento.get()
-        self.idSelecaoParcelaAtendimento = self.parcelasAtendimentoMap.get(self.selecaoIdParcelaAtd)
 
     def addParcelas(self):
         messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.modalAtendimentoAdd)
@@ -3320,34 +3162,6 @@ class App:
             
             # self.modalAddParcela.mainloop()
 
-    def insertParcelasAtendimento(self):
-        # contador = int(self.contParcela.get())
-        # valor = float(self.valorPrcParcela.get()) / contador
-        # procedimento = self.prcParcela.get()
-        # protocolo = self.protocoloAgenda
-
-        # listParcelas = []
-        # rows = self.dao.parcelasId()
-        # for row in rows[0:contador]:
-        #     parcela = row[0]
-        #     listParcelas.append(parcela)
-
-        # erro = False
-        # for k in listParcelas:
-        #     resultado = self.dao.insertParcelasAtendimento(k, procedimento, protocolo, valor, self.idAtendimentoAg)
-
-        #     if isinstance(resultado, str):
-        #         erro = True
-        #         break
-        #     else:
-        #         erro = False
-                        
-        # if erro == False:
-        #     self.atualizaTreeParcelaAtendimento()
-        # else:
-        #     messagebox.showerror("Erro", resultado, parent=self.modalAddParcela)
-        pass
-
     def calendarioAgendamento(self):
         self.calendarioAgendar = Calendar(
             self.modalNovaAgenda, font=('Arial', 9, 'bold'), locale='pt_br',
@@ -3418,8 +3232,6 @@ class App:
         self.entryDataAgendaFinal.delete(0 , END)
         self.entryDataAgendaFinal.insert(END, dataFinal)
         self.buttonCalendarAgendaFinal['command'] = self.calendarioFimAgenda
-        
-# Fim Calendarios Agenda
 
 # Fim Agendamento --------------------------------
 
@@ -3578,7 +3390,7 @@ class App:
                     self.exibir_sucesso("Especialidade excluída!", self.modalEspecialidade)
 
     def atualizarEspecialidadeModal(self):
-        if self.selecao_itemEspecialidade  == "":
+        if self.ItemSelecionadoEspecialidade  == "":
             messagebox.showinfo("Aviso","Selecione uma especialidade!", parent=self.modalEspecialidade)
 
         else:
@@ -3611,7 +3423,6 @@ class App:
     def telaProcedimento(self):
         self.modalProcedimentos = tk.Toplevel()
         self.modalProcedimentos.transient(self.main)
-        # self.modalProcedimentos.grab_set()
         self.modalProcedimentos.lift()
         self.modalProcedimentos.title('Procedimento')
         self.modalProcedimentos.geometry('650x450')
@@ -3619,8 +3430,6 @@ class App:
         self.modalProcedimentos.resizable(False,False)
         self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
         self.ItemSelecionadoProcedimento = ""
-        # colors = colorchooser.Chooser()
-        # colors.show()
         menu_bar = tk.Menu(self.modalProcedimentos, background='#808080')
         
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -3810,29 +3619,23 @@ class App:
             self.modalAtualizaProcedimento.transient(self.modalProcedimentos)
             self.modalAtualizaProcedimento.grab_set()
             self.modalAtualizaProcedimento.lift()
-            self.modalAtualizaProcedimento.title('PROCEDIMENTOS')
-            self.modalAtualizaProcedimento.geometry('520x250')
+            self.modalAtualizaProcedimento.title('PROCEDIMENTO')
+            self.modalAtualizaProcedimento.geometry('350x250')
             self.modalAtualizaProcedimento.configure(background='#D3D3D3')
             self.modalAtualizaProcedimento.resizable(False,False)
             self.modalAtualizaProcedimento.colormapwindows(self.modalAtualizaProcedimento)
             
             txtNome = tk.Label(self.modalAtualizaProcedimento, text='PROCEDIMENTO:', font='bold')
-            txtNome.place(relx= 0.06, rely=0.2)
+            txtNome.place(relx= 0.1, rely=0.2)
             txtNome.configure(background='#D3D3D3', fg='black')
 
-            self.nomeAtualizaProcedimento = tk.Entry(self.modalAtualizaProcedimento,width=25)
-            self.nomeAtualizaProcedimento.configure(background='white', fg='black')
-            self.nomeAtualizaProcedimento.place(relx= 0.06, rely=0.245)
-            self.nomeAtualizaProcedimento.insert(0, self.nomeEspecialidadeSelecionado)
+            self.prcAtualiza = tk.Entry(self.modalAtualizaProcedimento,width=25)
+            self.prcAtualiza.configure(background='white', fg='black')
+            self.prcAtualiza.place(relx= 0.1, rely=0.3)
+            self.prcAtualiza.insert(0, self.nomeProcedimentoSelecionado)
 
-            txtValor = tk.Label(self.modalAtualizaProcedimento, text='VALOR:', font='bold')
-            txtValor.place(relx= 0.06, rely=0.2)
-            txtValor.configure(background='#D3D3D3', fg='black')
-
-            self.valorAtualizaProcedimento = tk.Entry(self.modalAtualizaProcedimento,width=25)
-            self.valorAtualizaProcedimento.configure(background='white', fg='black')
-            self.valorAtualizaProcedimento.place(relx= 0.06, rely=0.245)
-            self.valorAtualizaProcedimento.insert(0, self.nomeEspecialidadeSelecionado)
+            buttonEdit = tk.Button(self.modalAtualizaProcedimento, text='EDITAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            buttonEdit.place(relx=0.1, rely=0.4)
 
             self.modalAtualizaProcedimento.mainloop()
 
@@ -3857,4 +3660,4 @@ class App:
         telaSucesso.bind('<Return>', lambda event: buttonOk.invoke())
         telaSucesso.mainloop() 
 
-App()
+Zenix()
