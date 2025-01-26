@@ -2609,9 +2609,6 @@ class App:
         
         self.entryDataAgenda = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
         self.entryDataAgenda.place(relx=0.2 , rely=0.15, width=120)
-        dataAtual = datetime.now().date()
-        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
-        self.entryDataAgenda.insert(0, dataAtualFormatada)
         
         self.buttonCalendarAgenda = tk.Button(self.frameAgenda, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioIniAgenda)
         self.buttonCalendarAgenda.place(relx=0.266, rely=0.157, relwidth=0.015, relheight=0.103)
@@ -2621,6 +2618,8 @@ class App:
 
         self.entryDataAgendaFinal = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
         self.entryDataAgendaFinal.place(relx=0.3 , rely=0.15, width=120)
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
         self.entryDataAgendaFinal.insert(0, dataAtualFormatada)
                 
         self.buttonCalendarAgendaFinal = tk.Button(self.frameAgenda, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioFimAgenda)
@@ -2808,29 +2807,28 @@ class App:
             return
 
     def buscarAgendaData(self):
-        self.entryBuscarNomeAgenda.delete(0, END)
+        nomeCliente = self.entryBuscarNomeAgenda.get()
+        dataIni = self.entryDataAgenda.get()
+        dataFim = self.entryDataAgendaFinal.get()
 
-        if self.entryDataAgenda.get() != "" or self.entryDataAgendaFinal.get() != "":
+        if dataIni != "" and dataFim != "":
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
-            dataInicio = self.entryDataAgenda.get()
-            dataFim = self.entryDataAgendaFinal.get()
-            rows = self.dao.AgendaData(dataInicio, dataFim)
-            for row in rows:
-                self.treeviewAgenda.insert("", END, values=row)
-                
-        elif self.entryBuscarNomeAgenda.get() == "" and self.entryDataAgenda.get() == "" and self.entryDataAgendaFinal.get() == datetime.now().date() or self.entryDataAgendaFinal.get() == "":            
-            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
-            dataFim = self.entryDataAgendaFinal.get()
-            print(dataFim)
-            rows = self.dao.AgendaDataFim(dataFim)
+            rows = self.dao.AgendaData(dataIni, dataFim)
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row)
         
-        # else:
-        #     self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
-        #     rows = self.dao.agenda()
-        #     for row in rows:
-        #         self.treeviewAgenda.insert("", END, values=row)
+        elif dataIni == "" and dataFim != "":
+            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
+            rows = self.dao.AgendaData(dataIni, dataFim)
+            for row in rows:
+                self.treeviewAgenda.insert("", END, values=row) 
+
+        elif dataIni != "" and nomeCliente != "":
+            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
+            rows = self.dao.AgendaDataNome(dataIni, nomeCliente)
+            for row in rows:
+                self.treeviewAgenda.insert("", END, values=row)            
+
 
     def buscarNomeAgenda(self, event):
         if self.entryBuscarNomeAgenda.get().isnumeric():

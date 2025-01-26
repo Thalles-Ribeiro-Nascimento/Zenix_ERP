@@ -406,6 +406,16 @@ class Dao:
 
         return rows
 
+    def AgendaDataNome(self, dataInicio, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') = STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND `Nome do Cliente` like '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def addAgendamento(self, dataAgendamento, cliente):
         try:
             sql = f"INSERT INTO agendamento (data_agenda, idCliente) VALUES ('{dataAgendamento}', {cliente})"
