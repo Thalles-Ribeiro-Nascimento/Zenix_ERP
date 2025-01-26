@@ -2594,30 +2594,33 @@ class App:
 
         self.frameBotoesAgendaRoot()
         
-        titleNomeAgenda = tk.Label(self.frameAgenda, text='Nome do Cliente:', background='#A9A9A9', fg='black', font='bold')
+        titleNomeAgenda = tk.Label(self.frameAgenda, text='Pesquisar:', background='#A9A9A9', fg='black', font='bold')
         titleNomeAgenda.place(relx=0.02 , rely=0.07)
         
         self.entryBuscarNomeAgenda = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
         self.entryBuscarNomeAgenda.place(relx=0.02 , rely=0.15, width=170)
+        self.entryBuscarNomeAgenda.bind('<Return>', self.buscarNomeAgenda)       
         
-        buttonPesquisar = tk.Button(self.frameAgenda, text='Buscar', command=self.buscarAgenda, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonPesquisar.place(relx=0, rely=0.62)
+        buttonPesquisar = tk.Button(self.frameAgenda, text='Buscar', command=self.buscarAgendaData, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonPesquisar.place(relx=0.02, rely=0.3)
         
         titleDataInicio = tk.Label(self.frameAgenda, text='De:', background='#A9A9A9', fg='black', font='bold')
         titleDataInicio.place(relx=0.2 , rely=0.07)
         
         self.entryDataAgenda = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
         self.entryDataAgenda.place(relx=0.2 , rely=0.15, width=120)
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
+        self.entryDataAgenda.insert(0, dataAtualFormatada)
         
         self.buttonCalendarAgenda = tk.Button(self.frameAgenda, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioIniAgenda)
         self.buttonCalendarAgenda.place(relx=0.266, rely=0.157, relwidth=0.015, relheight=0.103)
         
         titleDataFinal = tk.Label(self.frameAgenda, text='Até:', background='#A9A9A9', fg='black', font='bold')
         titleDataFinal.place(relx=0.3 , rely=0.07)
+
         self.entryDataAgendaFinal = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
         self.entryDataAgendaFinal.place(relx=0.3 , rely=0.15, width=120)
-        dataAtual = datetime.now().date()
-        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
         self.entryDataAgendaFinal.insert(0, dataAtualFormatada)
                 
         self.buttonCalendarAgendaFinal = tk.Button(self.frameAgenda, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioFimAgenda)
@@ -2804,19 +2807,10 @@ class App:
         except IndexError as e:
             return
 
-    def buscarAgenda(self):
-        if self.entryBuscarNomeAgenda.get() != "" and self.entryDataAgenda.get() == "" and self.entryDataAgendaFinal.get() == datetime.now().date() or self.entryDataAgendaFinal.get() == "":
-            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
-            self.entryBuscarNomeAgenda.insert(END, '%')
-            nome = self.entryBuscarNomeAgenda.get()
-            rows = self.dao.AgendaNome(nome)
+    def buscarAgendaData(self):
+        self.entryBuscarNomeAgenda.delete(0, END)
 
-            for row in rows:
-                self.treeviewAgenda.insert("", END, values=row)
-
-            self.entryBuscarNomeAgenda.delete(0, END)
-                
-        elif self.entryDataAgenda.get() != "" or self.entryDataAgendaFinal.get() != "":
+        if self.entryDataAgenda.get() != "" or self.entryDataAgendaFinal.get() != "":
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
             dataInicio = self.entryDataAgenda.get()
             dataFim = self.entryDataAgendaFinal.get()
@@ -2832,12 +2826,30 @@ class App:
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row)
         
-        else:
+        # else:
+        #     self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
+        #     rows = self.dao.agenda()
+        #     for row in rows:
+        #         self.treeviewAgenda.insert("", END, values=row)
+
+    def buscarNomeAgenda(self, event):
+        if self.entryBuscarNomeAgenda.get().isnumeric():
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
-            rows = self.dao.agenda()
+            protocolo = self.entryBuscarNomeAgenda.get()
+            protocoloInt = int(protocolo)
+            rows = self.dao.agendaProtocolo(protocoloInt)
+
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row)
+            
+        else:
+            self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
+            nome = self.entryBuscarNomeAgenda.get()
+            rows = self.dao.AgendaNome(nome)
 
+            for row in rows:
+                self.treeviewAgenda.insert("", END, values=row)
+                
     def adicionarAgendamento(self):
         self.modalNovaAgenda = tk.Toplevel()
         self.modalNovaAgenda.transient(self.agendaRoot)

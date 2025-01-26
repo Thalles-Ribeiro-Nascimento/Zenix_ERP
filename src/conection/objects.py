@@ -376,6 +376,16 @@ class Dao:
 
         return rows
 
+    def agendaProtocolo(self, protocolo):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Agendamentos_Geral WHERE Protocolo = {protocolo}"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def AgendaDataFim(self, dataFim):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
