@@ -2811,7 +2811,7 @@ class App:
         dataIni = self.entryDataAgenda.get()
         dataFim = self.entryDataAgendaFinal.get()
 
-        if dataIni != "" and dataFim != "":
+        if dataIni != "" and dataFim != "" and nomeCliente == "":
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
             rows = self.dao.AgendaData(dataIni, dataFim)
             for row in rows:
@@ -2819,7 +2819,7 @@ class App:
         
         elif dataIni == "" and dataFim != "":
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
-            rows = self.dao.AgendaData(dataIni, dataFim)
+            rows = self.dao.agendaAll()
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row) 
 
@@ -2828,7 +2828,6 @@ class App:
             rows = self.dao.AgendaDataNome(dataIni, nomeCliente)
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row)            
-
 
     def buscarNomeAgenda(self, event):
         if self.entryBuscarNomeAgenda.get().isnumeric():

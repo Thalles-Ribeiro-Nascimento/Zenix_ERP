@@ -87,7 +87,7 @@ from conection.objects import Dao
 # indices.clear()
 # funcionarioUpgrade.clear()
 dao = Dao("admin", "SysteM98")
-rows = dao.AgendaDataNome('24/01/2025', 'thalles')
+rows = dao.agendaAll()
 
 for row in rows:
     print(row)

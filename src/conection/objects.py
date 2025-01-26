@@ -376,6 +376,16 @@ class Dao:
 
         return rows
 
+    def agendaAll(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Agendamentos_Geral"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def agendaProtocolo(self, protocolo):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -400,7 +410,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by Data"
+        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by Data"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
