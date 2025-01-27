@@ -88,6 +88,27 @@ class Dao:
 
         return rows
 
+    def atualizaEspecialidade(self, nome, id):
+
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"UPDATE especialidade SET nomeEspecialidade = %s WHERE idEspecialidade = %s"
+        try:
+            self.cursor.execute(sql, (nome, id))
+            self.conecta.commit()
+            
+        except Exception as e:
+            print(e)
+            error = str(e)
+            if "1062 (23000)" in error:
+                msg = error.split(":")[1]
+                self.erroUpdateFunc = f"Campo Duplicado\n{msg}"
+                return self.erroUpdateFunc
+            else:
+                print(error.split(":")[1])
+                return error.split(":")[1]
+       
     def deleteLogicoEspecialidade(self, id):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -317,7 +338,28 @@ class Dao:
             error = str(e)
             resultado = error.split(":")[1]
             return resultado
+
+    def atualizaProcedimento(self, nome, id):
+
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"UPDATE procedimentos SET nome_procedimento = %s WHERE cod_procedimento = %s"
+        try:
+            self.cursor.execute(sql, (nome, id))
+            self.conecta.commit()
             
+        except Exception as e:
+            print(e)
+            error = str(e)
+            if "1062 (23000)" in error:
+                msg = error.split(":")[1]
+                self.erroUpdateFunc = f"Campo Duplicado\n{msg}"
+                return self.erroUpdateFunc
+            else:
+                print(error.split(":")[1])
+                return error.split(":")[1]
+
     def trocaPwd(self, newPdw, user):
         if self.erro:
             return f'Houve erro de conexão: {self.erro}'

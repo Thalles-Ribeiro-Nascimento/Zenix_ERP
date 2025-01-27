@@ -25,6 +25,7 @@ class Zenix:
         self.item_idAgenda = ""
         self.item_idFormaPagamento = ""
         self.formaPagamentoDsc = ""
+        self.ItemSelecionadoEspecialidade = ""
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
@@ -3391,7 +3392,7 @@ class Zenix:
 
     def atualizarEspecialidadeModal(self):
         if self.ItemSelecionadoEspecialidade  == "":
-            messagebox.showinfo("Aviso","Selecione uma especialidade!", parent=self.modalEspecialidade)
+            messagebox.showinfo("Aviso", "Selecione uma especialidade!", parent=self.modalEspecialidade)
 
         else:
             self.modalAtualizaEspecialidade = tk.Toplevel()
@@ -3408,14 +3409,32 @@ class Zenix:
             txtNome.place(relx= 0.1, rely=0.2)
             txtNome.configure(background='#D3D3D3', fg='black')
 
-            self.nomeAtualizaEspecialidade = tk.Entry(self.modalAtualizaEspecialidade,width=25)
+            self.nomeAtualizaEspecialidade = tk.Entry(self.modalAtualizaEspecialidade, width=25)
             self.nomeAtualizaEspecialidade.configure(background='white', fg='black')
             self.nomeAtualizaEspecialidade.place(relx= 0.1, rely=0.3)
             self.nomeAtualizaEspecialidade.insert(0, self.nomeEspecialidadeSelecionado)
 
-            buttonEdit = tk.Button(self.modalAtualizaEspecialidade, text='EDITAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            buttonEdit = tk.Button(self.modalAtualizaEspecialidade, text='EDITAR', command=self.updateEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             buttonEdit.place(relx=0.1, rely=0.4)
             self.modalAtualizaEspecialidade.mainloop()
+
+    def updateEspecialidade(self):
+        especialidade = self.nomeAtualizaEspecialidade.get()
+        idEspecialidade = self.idEspecialidadeSelecionado
+        
+        if especialidade == self.nomeEspecialidadeSelecionado or especialidade == "":
+            messagebox.showinfo("Aviso", "Não foi possível alterar!", parent=self.modalAtualizaEspecialidade)
+
+        else:
+           resultado = self.dao.atualizaEspecialidade(especialidade, idEspecialidade)
+            
+           if isinstance(resultado, str):
+                messagebox.showerror("Erro", resultado, parent=self.modalAtualizaEspecialidade)
+            
+           else:
+               self.atualizaTreeEspecialidade()
+               self.modalAtualizaEspecialidade.destroy()
+               self.exibir_sucesso("Especialidade Alterada", self.modalEspecialidade)
 
 # Fim Especialidade --------------------------------
 
@@ -3634,10 +3653,28 @@ class Zenix:
             self.prcAtualiza.place(relx= 0.1, rely=0.3)
             self.prcAtualiza.insert(0, self.nomeProcedimentoSelecionado)
 
-            buttonEdit = tk.Button(self.modalAtualizaProcedimento, text='EDITAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            buttonEdit = tk.Button(self.modalAtualizaProcedimento, text='EDITAR', command=self.updateProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             buttonEdit.place(relx=0.1, rely=0.4)
 
             self.modalAtualizaProcedimento.mainloop()
+
+    def updateProcedimento(self):
+        procedimento = self.prcAtualiza.get()
+        idProcedimento = self.idProcedimentoSelecionado
+        
+        if procedimento == self.nomeProcedimentoSelecionado or procedimento == "":
+            messagebox.showinfo("Aviso", "Não foi possível alterar!", parent=self.modalAtualizaProcedimento)
+
+        else:
+           resultado = self.dao.atualizaProcedimento(procedimento, idProcedimento)
+            
+           if isinstance(resultado, str):
+                messagebox.showerror("Erro", resultado, parent=self.modalAtualizaProcedimento)
+            
+           else:
+               self.atualizaTreeProcedimento()
+               self.modalAtualizaProcedimento.destroy()
+               self.exibir_sucesso("Procedimento Alterado", self.modalProcedimentos)
 
 # Fim Procedimentos --------------------------------
 
