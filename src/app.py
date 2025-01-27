@@ -3556,15 +3556,27 @@ class Zenix:
                 self.exibir_sucesso(msn, self.modalProcedimentos)
 
     def buscarProcedimento(self):
-        self.treeviewProcedimentos.delete(*self.treeviewProcedimentos.get_children())
-        self.nomeProcedimento.insert(END, '%')
         nome = self.nomeProcedimento.get()
-        rows = self.dao.procedimentoNome(nome)
+        especialidade = self.opcoesEspecialidadeProcedimento.get()
 
-        for row in rows:
-            self.treeviewProcedimentos.insert("", END, values=row)
+        if nome == "":
+            self.treeviewProcedimentos.delete(*self.treeviewProcedimentos.get_children())
+            rowsEsp = self.dao.procedimentoEspecialidade(especialidade)
 
-        self.nomeProcedimento.delete(0, END)
+            for row in rowsEsp:
+                self.treeviewProcedimentos.insert("", END, values=row)
+
+        else:
+            self.opcoesEspecialidadeProcedimento.set("Especialidade")
+            self.treeviewProcedimentos.delete(*self.treeviewProcedimentos.get_children())
+            self.nomeProcedimento.insert(END, '%')
+            rows = self.dao.procedimentoNome(nome)
+
+            for row in rows:
+                self.treeviewProcedimentos.insert("", END, values=row)
+
+            self.nomeProcedimento.delete(0, END)
+            
 
     def selectItemTreeviewProcedimento(self, event):
         self.nomeProcedimento.delete(0, END)
@@ -3581,7 +3593,6 @@ class Zenix:
             
             # Nome do Procedimento Selecionado
             self.nomeProcedimentoSelecionado = self.listaProcedimentoSelecionado[1]
-            self.nomeProcedimento.insert(0, self.nomeProcedimentoSelecionado)
             
             # Nome da Especialidade do Procedimento Selecionado
             self.nomeEspecialidadeProcedimentoSelecionado = self.listaProcedimentoSelecionado[2]

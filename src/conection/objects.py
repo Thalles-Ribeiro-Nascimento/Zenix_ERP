@@ -302,11 +302,11 @@ class Dao:
 
         return rows
 
-    def procedimentoNomeEspecialidade(self, especialidade):
+    def procedimentoEspecialidade(self, especialidade):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"SELECT * FROM Vw_ProcedimentosAtivos WHERE Especialidade LIKE '{especialidade}%'"
+        sql = f"SELECT * FROM Vw_ProcedimentosAtivos WHERE Especialidade = '{especialidade}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
