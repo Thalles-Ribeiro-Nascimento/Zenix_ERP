@@ -253,6 +253,8 @@ class Zenix:
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
         menuAuxiliar.add_command(label='Todos Funcionarios',command=self.funcionariosAll, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Ativar',command=self.reativacaoFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Novo',command=self.modalNovoFuncionario, font=('Arial', 10, 'bold'), foreground='black')
@@ -272,6 +274,9 @@ class Zenix:
 
         self.buscarFunc = tk.Button(self.framefuncionarios, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buscarFunc.place(relx=0.02, rely=0.7 ,relheight=0.2)
+
+        self.campo_nome.bind('<Return>', self.buscarFuncionarioNome)
+
 
         self.frameTvFunc()
         self.treeviewFunc = ttk.Treeview(self.frameviewFunc, columns=(
@@ -498,7 +503,6 @@ class Zenix:
         self.atualizaIdEspecialidade = self.especialidadeAtualizaMap.get(self.atualizaEspecialidade)
 
     def pegaId(self, event):
-        self.campo_nome.delete(0, END)
         try:
             # Id do item selecionado
             self.item_id = self.treeviewFunc.selection()[0]
@@ -512,7 +516,6 @@ class Zenix:
             
             # Funcionario Nome
             self.nomeFuncionario = self.listaFuncionario[1]
-            self.campo_nome.insert(0, self.nomeFuncionario)
             
             # Funcionario Especialidade
             self.especialidadeFuncionario = self.listaFuncionario[2]
@@ -587,6 +590,14 @@ class Zenix:
         msn = "Especialidade Inserida!"
         self.exibir_sucesso(msn, self.modalNovoFunc)
 
+    def reativacaoFuncionario(self):
+        if self.item_id == "":
+            messagebox.showerror("Erro", "Selecione o funcionário", parent=self.funcionarios)
+        
+        else:
+            self.dao.reativarFuncionario(self.funcId)
+            self.atualizaTreeFunc()
+
     def funcionariosAll(self):
         self.treeviewFunc.delete(*self.treeviewFunc.get_children())
         self.rows = self.dao.funcionarioAll()
@@ -599,25 +610,18 @@ class Zenix:
             else:
                 self.treeviewFunc.insert("", END, values=row, tags="Gray")
 
-    def buscarFuncionarioNome(self):
+    def buscarFuncionarioNome(self, event=None):
         self.treeviewFunc.delete(*self.treeviewFunc.get_children())
-        self.campo_nome.insert(END, '%')
         nome = self.campo_nome.get()
         rows = self.dao.funcionarioNome(nome)        
-        if nome == "%":
-            self.treeviewFunc.delete(*self.treeviewFunc.get_children())
-            rows2 = self.dao.funcionarioAllAtivos()
-            for row in rows2:
+        self.treeviewFunc.delete(*self.treeviewFunc.get_children())
+
+        for row in rows:
+            status = row[14]
+            if status == 1:
                 self.treeviewFunc.insert("", END, values=row)
-            self.campo_nome.delete(0, END)
-        else:       
-            for row in rows:
-                status = row[14]
-                if status == 1:
-                    self.treeviewFunc.insert("", END, values=row)
-                else:
-                    self.treeviewFunc.insert("", END, values=row, tags='Vermelho')        
-            self.campo_nome.delete(0, END)
+            else:
+                self.treeviewFunc.insert("", END, values=row, tags='Gray')        
    
     def modalNovoFuncionario(self):
         self.modalNovoFunc = tk.Toplevel()
@@ -946,11 +950,9 @@ class Zenix:
                 return
             else:
                 self.atualizaTreeFunc()
-                self.exibir_sucesso("Funcionários Excluídos!", self.funcionarios)    
         else:
             self.dao.deleteLogicoFuncionario(self.funcId)    
             self.atualizaTreeFunc()       
-            self.exibir_sucesso(f"{self.nomeFuncionario} foi excluído com sucesso", self.funcionarios)
 
 # Formatações - Funcionários -------------
 
@@ -1314,7 +1316,6 @@ class Zenix:
 
     def buscarClienteNome(self):
         self.treeviewClientes.delete(*self.treeviewClientes.get_children())
-        self.campo_nomeClientes.insert(END, '%')
         nome = self.campo_nomeClientes.get()
         rows = self.dao.clienteNome(nome)
 
@@ -1323,8 +1324,6 @@ class Zenix:
                 self.treeviewClientes.insert("", END, values=row)
             else:
                 messagebox.showinfo("Aviso", "Erro de tupla")
-
-        self.campo_nomeClientes.delete(0, END)
 
     def atualizarClientesModal(self):
         if self.item_idCliente == "":
@@ -1742,7 +1741,6 @@ class Zenix:
             self.treeviewClientes.insert("", END, values=row)
 
     def pegaIdClientes(self, event):
-        self.campo_nomeClientes.delete(0, END)
         try:
             # Id do item Cliente selecionado
             self.item_idCliente = self.treeviewClientes.selection()[0]
@@ -1755,7 +1753,6 @@ class Zenix:
             
             # Cliente Nome
             self.nomeClienteSelect = self.listaCliente[1]
-            self.campo_nomeClientes.insert(0, self.nomeClienteSelect)
             
             # Cliente CPF
             self.cpfClienteSelect = self.listaCliente[2]

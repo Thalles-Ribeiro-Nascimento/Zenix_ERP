@@ -146,6 +146,23 @@ class Dao:
                 print(error.split(":")[1])
                 return error.split(":")[1]
 
+    def reativarFuncionario(self, id):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+
+        try:
+            sql = f'UPDATE funcionarios SET status = 1 WHERE id_funcionario = {id}'
+            self.cursor.execute(sql)
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print("Erro: ", e)
+
+            erroReativacao = str(e)
+
+            return erroReativacao
+
     def deleteLogicoFuncionario(self, id):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'

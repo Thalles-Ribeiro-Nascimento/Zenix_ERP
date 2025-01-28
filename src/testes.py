@@ -87,10 +87,10 @@ from conection.objects import Dao
 # indices.clear()
 # funcionarioUpgrade.clear()
 dao = Dao("admin", "SysteM98")
-rows = dao.agendaAll()
-
-for row in rows:
-    print(row)
+rows = dao.reativarFuncionario(50)
+print(rows)
+# for row in rows:
+#     print(row)
 
 
 # rows = dao.especialidadeView()
