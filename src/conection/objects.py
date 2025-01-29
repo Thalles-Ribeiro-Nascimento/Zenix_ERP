@@ -459,7 +459,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"select * from Vw_Agendamentos_Geral where Data '{dataFim}'"
+        sql = f"select * from Vw_Agendamentos_Geral where Data = '{dataFim}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 

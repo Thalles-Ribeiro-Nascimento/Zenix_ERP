@@ -2672,7 +2672,7 @@ class Zenix:
         
         elif dataIni == "" and dataFim != "":
             self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
-            rows = self.dao.agendaAll()
+            rows = self.dao.AgendaDataFim(dataFim)
             for row in rows:
                 self.treeviewAgenda.insert("", END, values=row) 
 
