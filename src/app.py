@@ -2821,7 +2821,7 @@ class Zenix:
         self.inserirEspecialidadeAtd(self.selecaoIdFuncAtd)
 
     def prcFuncionario(self, especialidade):
-        self.prcAtendimento = self.dao.procedimentoNomeEspecialidade(especialidade)
+        self.prcAtendimento = self.dao.procedimentoEspecialidade(especialidade)
         self.prcAtendimentoName = [item[1] for item in self.prcAtendimento]
         self.prcAtendimentoId = [item[0] for item in self.prcAtendimento]
         self.prcAtendimentoMap = dict(zip(self.prcAtendimentoName, self.prcAtendimentoId))
@@ -3089,6 +3089,7 @@ class Zenix:
         # self.procedimentoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='black')
         pass
 
+# Em Construção -----------------------------
     def addParcelas(self):
         messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.modalAtendimentoAdd)
         # if self.valorPrc.get() == "" or self.opcoesPrcAtendimento.get() == "Procedimento":
@@ -3159,6 +3160,7 @@ class Zenix:
         #     #     self.treeviewParcelasAtendimento.insert("", END, values=row)
             
             # self.modalAddParcela.mainloop()
+# Em Construção -----------------------------
 
     def calendarioAgendamento(self):
         self.calendarioAgendar = Calendar(
