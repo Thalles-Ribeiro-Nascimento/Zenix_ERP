@@ -156,7 +156,7 @@ class Zenix:
         menu_bar = tk.Menu(self.main, background='#808080')
         menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
         menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Agendamento',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
@@ -189,7 +189,7 @@ class Zenix:
         self.main.rowconfigure(3, weight=0)
         self.main.rowconfigure(4, weight=0)
 
-        buttonAgenda = tk.Button(self.main, text='AGENDA', command=self.telaAgenda, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAgenda = tk.Button(self.main, text='AGENDAMENTO', command=self.telaAgenda, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonAgenda.grid(row=2, column=0, sticky="nsew", padx=20, pady=10)
 
         buttonAtendimento = tk.Button(self.main, text='ATENDIMENTO', command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
@@ -1794,7 +1794,7 @@ class Zenix:
         except IndexError as e:
             return
 
-# Organizar essa tela
+# Organizar essa tela -----------------------
     def adicionarAgendamentoCliente(self):
         if self.item_idCliente == "":
             messagebox.showinfo("Aviso","Selecione um cliente!", parent=self.clientes)
@@ -1947,7 +1947,7 @@ class Zenix:
             buttonClienteAgendamento.place(relx= 0.7, rely=0.395)
             
             self.modalAgendaCliente.mainloop()
-# Organizar essa tela
+# Organizar essa tela -----------------------
 
     def calendarioCliente(self):
         self.clienteCalendar = Calendar(
@@ -2780,10 +2780,94 @@ class Zenix:
         self.EmailClienteAgendamento.configure(background='white', fg='black')
         self.EmailClienteAgendamento.place(relx= 0.7, rely=0.39)
 
+        # buttonEditarCliente = tk.Button(self.modalNovaAgenda, image='/icons/iconCliente.png' , command=self.atualizaTreevwAgendamento)
+        # buttonEditarCliente.place(relx= 0.5, rely=0.552)
+
+        buttonEditarCliente = tk.Button(self.modalNovaAgenda, text="EDITAR", command=self.editaClienteAtd, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonEditarCliente.place(relx= 0.5, rely=0.552)
+
         self.buttonClienteAgendamento = tk.Button(self.modalNovaAgenda, text='AGENDAR' , command=self.insertAgendamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buttonClienteAgendamento.place(relx= 0.7, rely=0.552)
         
         self.modalNovaAgenda.mainloop()
+
+    def editaClienteAtd(self):
+        if self.nomeClienteAgendamento.get() == "":
+            messagebox.showerror("Aviso", "Insira um Cliente", parent=self.modalNovaAgenda)
+
+        else:
+            cliente = self.dao.clienteId(self.codClienteAgendamento.get())
+            nome: str
+            cpf: str
+            telefone: str
+            celular: str
+            email: str
+            for row in cliente:
+                nome = row[1]
+                cpf = row[2]
+                telefone = row[5]
+                celular = row[6]
+                email = row[12]
+
+            nomeEditar = self.nomeClienteAgendamento.get()
+            cpfEditar = self.cpfClienteAgendamento.get()
+            telefoneEditar = self.telefoneClienteAgendamento.get()
+            celularEditar = self.celularClienteAgendamento.get()
+            emailEditar = self.EmailClienteAgendamento.get()
+
+            if nome != nomeEditar:
+                atualizaNome = self.dao.atualizaCliente(self.codClienteAgendamento.get(), nomeEditar, "nome_cliente")
+
+                if isinstance(atualizaNome, str):
+                    messagebox.showerror("Erro", atualizaNome, parent=self.modalNovaAgenda)
+                else:
+                    self.nomeClienteAgendamento.delete(0, END)
+                    self.nomeClienteAgendamento.insert(0, nomeEditar)
+                    return
+            
+            elif cpf != cpfEditar:
+                atualizaCPF = self.dao.atualizaCliente(self.codClienteAgendamento.get(), cpfEditar, "cpf")
+
+                if isinstance(atualizaCPF, str):
+                    messagebox.showerror("Erro", atualizaCPF, parent=self.modalNovaAgenda)
+                else:
+                    self.cpfClienteAgendamento.delete(0, END)
+                    self.cpfClienteAgendamento.insert(0, cpfEditar)
+                    return
+
+            elif telefone != telefoneEditar:
+                atualizaTelefone = self.dao.atualizaCliente(self.codClienteAgendamento.get(), telefoneEditar, "telefone")
+
+                if isinstance(atualizaTelefone, str):
+                    messagebox.showerror("Erro", atualizaTelefone, parent=self.modalNovaAgenda)
+                else:
+                    self.telefoneClienteAgendamento.delete(0, END)
+                    self.telefoneClienteAgendamento.insert(0, telefoneEditar)
+                    return
+
+            elif celular != celularEditar:
+                atualizaCelular = self.dao.atualizaCliente(self.codClienteAgendamento.get(), celularEditar, "celular")
+
+                if isinstance(atualizaCelular, str):
+                    messagebox.showerror("Erro", atualizaCelular, parent=self.modalNovaAgenda)
+                else:
+                    self.celularClienteAgendamento.delete(0, END)
+                    self.celularClienteAgendamento.insert(0, celularEditar)
+                    return
+
+            elif email != emailEditar:
+                atualizaEmail = self.dao.atualizaCliente(self.codClienteAgendamento.get(), emailEditar, "email")
+
+                if isinstance(atualizaEmail, str):
+                    messagebox.showerror("Erro", atualizaEmail, parent=self.modalNovaAgenda)
+                else:
+                    self.EmailClienteAgendamento.delete(0, END)
+                    self.EmailClienteAgendamento.insert(0, emailEditar)
+                    return
+
+            aviso = messagebox.showinfo("Aviso", "Nenhum campo alterado", parent=self.modalNovaAgenda)
+
+            return aviso
 
     def insertAgendamento(self):
         idCliente = self.codClienteAgendamento.get()
@@ -3182,16 +3266,9 @@ class Zenix:
             messagebox.showinfo("Aviso","Preencha o campo Nome!")
             return
         else:
-            
-            # self.codClienteAgendamento.delete(0, END)
-            # self.nomeClienteAgendamento.delete(0, END)
-            # self.cpfClienteAgendamento.delete(0, END)
-            # self.telefoneClienteAgendamento.delete(0, END)
-            # self.celularClienteAgendamento.delete(0, END)
-            # self.EmailClienteAgendamento.delete(0, END)
-
-
             rows = self.dao.clienteNomeAtendimento(self.nomeClienteAgendamento.get())
+            self.nomeClienteAgendamento.delete(0, END)
+
             for row in rows:
                 self.codClienteAgendamento.insert(0, row[0])
                 self.nomeClienteAgendamento.insert(0, row[1])
