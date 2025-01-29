@@ -2409,6 +2409,10 @@ class Zenix:
         self.frameAgenda2 = tk.Frame(self.agendaRoot, background='#A9A9A9')
         self.frameAgenda2.place(relx=0.01, rely=0.21, relheight=0.85, relwidth=0.75)
 
+    def frameButtonAgenda(self):
+        self.frameButton = tk.Frame(self.modalNovaAgenda, background='gray')
+        self.frameButton.place(relx=0.0, rely=0.0, relheight=0.1, relwidth=1)
+
     def telaAgenda(self):
         self.agendaRoot = tk.Toplevel()
         self.agendaRoot.transient(self.main)
@@ -2716,9 +2720,8 @@ class Zenix:
         self.modalNovaAgenda.geometry('750x350')
         self.modalNovaAgenda.configure(background='#D3D3D3')
         self.modalNovaAgenda.resizable(False,False)
-        menu_bar = tk.Menu(self.modalNovaAgenda, background='#808080')
 
-        self.modalNovaAgenda.config(menu=menu_bar)
+        self.frameButtonAgenda()
 
         txtNome = tk.Label(self.modalNovaAgenda, text='*NOME DO CLIENTE:', font='bold')
         txtNome.place(relx= 0.06, rely=0.2)
@@ -2760,9 +2763,9 @@ class Zenix:
         txtCodCliente.place(relx= 0.06, rely=0.5)
         txtCodCliente.configure(background='#D3D3D3', fg='black')
 
-        self.codClienteAgendamento = tk.Entry(self.modalNovaAgenda, width=20)
-        self.codClienteAgendamento.configure(background='white', fg='black')
-        self.codClienteAgendamento.place(relx= 0.06, rely=0.552)        
+        self.codClienteAgendamento = tk.Entry(self.modalNovaAgenda, width=10)
+        self.codClienteAgendamento.configure(disabledbackground='white', disabledforeground='black', state='disabled')
+        self.codClienteAgendamento.place(relx= 0.06, rely=0.552) 
 
         txtCelular = tk.Label(self.modalNovaAgenda, text='*CELULAR:', font='bold')
         txtCelular.place(relx= 0.4, rely=0.34)
@@ -2783,13 +2786,27 @@ class Zenix:
         # buttonEditarCliente = tk.Button(self.modalNovaAgenda, image='/icons/iconCliente.png' , command=self.atualizaTreevwAgendamento)
         # buttonEditarCliente.place(relx= 0.5, rely=0.552)
 
-        buttonEditarCliente = tk.Button(self.modalNovaAgenda, text="EDITAR", command=self.editaClienteAtd, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonEditarCliente.place(relx= 0.5, rely=0.552)
+        buttonEditarCliente = tk.Button(self.frameButton, text="EDITAR", command=self.editaClienteAtd, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        buttonEditarCliente.place(relx= 0.01, rely=0.2, relwidth=0.12, relheight=0.7)
 
-        self.buttonClienteAgendamento = tk.Button(self.modalNovaAgenda, text='AGENDAR' , command=self.insertAgendamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        self.buttonClienteAgendamento.place(relx= 0.7, rely=0.552)
+        self.buttonClienteAgendamento = tk.Button(self.frameButton, text='AGENDAR' , command=self.insertAgendamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        self.buttonClienteAgendamento.place(relx= 0.15, rely=0.2, relwidth=0.12, relheight=0.7)
+
+        btnClear = tk.Button(self.frameButton, text="LIMPAR", command=self.limparCamposAgenda, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        btnClear.place(relx=0.29, rely=0.2, relwidth=0.12, relheight=0.7)
         
         self.modalNovaAgenda.mainloop()
+
+    def limparCamposAgenda(self):
+        self.EmailClienteAgendamento.delete(0, END)
+        self.celularClienteAgendamento.delete(0, END)
+        self.codClienteAgendamento.configure(state='normal')
+        self.codClienteAgendamento.delete(0, END)
+        self.codClienteAgendamento.configure(state='disabled')
+        self.telefoneClienteAgendamento.delete(0, END)
+        self.dataAgendamentoEntry.delete(0, END)
+        self.cpfClienteAgendamento.delete(0, END)
+        self.nomeClienteAgendamento.delete(0, END)
 
     def editaClienteAtd(self):
         if self.nomeClienteAgendamento.get() == "":
@@ -2873,22 +2890,20 @@ class Zenix:
         idCliente = self.codClienteAgendamento.get()
         dataAgenda = self.dataAgendamentoEntry.get()
 
-        if idCliente == "":
-            messagebox.showerror("Aviso","O campo Cód.Cliente está vazio")
+        if idCliente == "" or dataAgenda == "":
+            messagebox.showerror("Aviso","Campos vazios", parent=self.modalNovaAgenda)
         
-        elif dataAgenda == "":
-            messagebox.showerror("Aviso","A data do agendamento está vazia")
-        
-        dao = self.dao.addAgendamento(dataAgenda, idCliente)
-        if isinstance(dao, str):
-            self.modalNovaAgenda.destroy()
-            messagebox.showerror("Erro", dao, parent=self.modalNovaAgenda)
-            
         else:
-            self.atualizaTreevwAgendamento()
-            self.modalNovaAgenda.destroy()
-            msn = f'Cliente agendado'
-            self.exibir_sucesso(msn, self.agendaRoot)
+            dao = self.dao.addAgendamento(dataAgenda, idCliente)
+            if isinstance(dao, str):
+                self.modalNovaAgenda.destroy()
+                messagebox.showerror("Erro", dao, parent=self.modalNovaAgenda)
+                
+            else:
+                self.atualizaTreevwAgendamento()
+                self.modalNovaAgenda.destroy()
+                msn = f'Cliente agendado'
+                self.exibir_sucesso(msn, self.agendaRoot)
 
     def atualizaTreevwAgendamento(self):
         self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
@@ -3263,10 +3278,11 @@ class Zenix:
 
     def insertClienteDados(self, event):
         if self.nomeClienteAgendamento.get() == "":
-            messagebox.showinfo("Aviso","Preencha o campo Nome!")
+            messagebox.showinfo("Aviso","Preencha o campo Nome!", parent=self.modalNovaAgenda)
             return
         else:
             rows = self.dao.clienteNomeAtendimento(self.nomeClienteAgendamento.get())
+            self.codClienteAgendamento.configure(state='normal')
             self.nomeClienteAgendamento.delete(0, END)
 
             for row in rows:
@@ -3276,6 +3292,8 @@ class Zenix:
                 self.telefoneClienteAgendamento.insert(0, row[5])
                 self.celularClienteAgendamento.insert(0, row[6])
                 self.EmailClienteAgendamento.insert(0, row[12])
+            
+            self.codClienteAgendamento.configure(disabledbackground='white', disabledforeground='black', state='disabled')
 
 # Calendarios Agenda
     def calendarioIniAgenda(self):
