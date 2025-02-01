@@ -2007,7 +2007,6 @@ class Zenix:
     def telaFinanceiro(self):
         self.financeiro = tk.Toplevel()
         self.financeiro.transient(self.main)
-        # self.financeiro.grab_set()
         self.financeiro.lift()
         self.financeiro.title('Lançamentos')
         self.financeiro.configure(background='#A9A9A9')
@@ -2110,112 +2109,116 @@ class Zenix:
         self.financeiro.mainloop()
 
     def telaForma_pagamento(self):
-        self.formaPagamento = tk.Toplevel()
-        self.formaPagamento.transient(self.financeiro)
-        # self.formaPagamento.grab_set()
-        self.formaPagamento.lift()
-        self.formaPagamento.title('Forma de Pagamento')
-        self.formaPagamento.geometry('650x450')
-        self.formaPagamento.configure(background='#D3D3D3')
-        self.formaPagamento.resizable(False,False)
-        self.formaPagamento.colormapwindows(self.formaPagamento)
-        
-        menu_bar = tk.Menu(self.formaPagamento, background='#808080')
-        
-        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Parcelas',command=self.adicionarParcela, font=('Arial', 10, 'bold'), foreground='black')
-        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-        self.formaPagamento.config(menu=menu_bar)
-        
-        titleFormaPagamento = tk.Label(self.formaPagamento, text='FORMA DE PAGAMENTO:', font='bold')
-        titleFormaPagamento.configure(background='#D3D3D3', fg='black')
-        titleFormaPagamento.place(relx= 0.03, rely=0.05)
+        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.financeiro)
 
-        self.formaPagamentoEntry = tk.Entry(self.formaPagamento)
-        self.formaPagamentoEntry.configure(background='white', fg='black', width=20)
-        self.formaPagamentoEntry.place(relx= 0.032, rely=0.1)
+        # self.formaPagamento = tk.Toplevel()
+        # self.formaPagamento.transient(self.financeiro)
+        # # self.formaPagamento.grab_set()
+        # self.formaPagamento.lift()
+        # self.formaPagamento.title('Forma de Pagamento')
+        # self.formaPagamento.geometry('650x450')
+        # self.formaPagamento.configure(background='#D3D3D3')
+        # self.formaPagamento.resizable(False,False)
+        # self.formaPagamento.colormapwindows(self.formaPagamento)
+        
+        # menu_bar = tk.Menu(self.formaPagamento, background='#808080')
+        
+        # menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        # menuAuxiliar.add_command(label='Parcelas',command=self.adicionarParcela, font=('Arial', 10, 'bold'), foreground='black')
+        # menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+        # self.formaPagamento.config(menu=menu_bar)
+        
+        # titleFormaPagamento = tk.Label(self.formaPagamento, text='FORMA DE PAGAMENTO:', font='bold')
+        # titleFormaPagamento.configure(background='#D3D3D3', fg='black')
+        # titleFormaPagamento.place(relx= 0.03, rely=0.05)
 
-        button = tk.Button(self.formaPagamento, text='ADICIONAR', command=self.adicionarFormaPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        button.place(relx=0.15, rely=0.28)   
-        
-        self.treeviewFormaPagamento = ttk.Treeview(self.formaPagamento, columns=("Id", "Forma de Pagamento", "Tipo de Pagamento", "Taxa"), show='headings')
-        self.treeviewFormaPagamento.heading("Id", text="Cód.Pagamento")
-        self.treeviewFormaPagamento.heading("Forma de Pagamento", text="Forma de Pagamento")
-        self.treeviewFormaPagamento.heading("Tipo de Pagamento", text="Tipo de Pagamento")
-        self.treeviewFormaPagamento.heading("Taxa", text="Taxa")
-        
-        verticalBar = ttk.Scrollbar(self.formaPagamento, orient='vertical', command=self.treeviewFormaPagamento.yview)
-        horizontalBar = ttk.Scrollbar(self.formaPagamento, orient='horizontal', command=self.treeviewFormaPagamento.xview)
-        self.treeviewFormaPagamento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+        # self.formaPagamentoEntry = tk.Entry(self.formaPagamento)
+        # self.formaPagamentoEntry.configure(background='white', fg='black', width=20)
+        # self.formaPagamentoEntry.place(relx= 0.032, rely=0.1)
 
-        style = ttk.Style(self.treeviewFormaPagamento)
-        style.theme_use('clam')
-        style.configure("self.treeviewFormaPagamento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        # button = tk.Button(self.formaPagamento, text='ADICIONAR', command=self.adicionarFormaPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        # button.place(relx=0.15, rely=0.28)   
         
-        self.treeviewFormaPagamento.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+        # self.treeviewFormaPagamento = ttk.Treeview(self.formaPagamento, columns=("Id", "Forma de Pagamento", "Tipo de Pagamento", "Taxa"), show='headings')
+        # self.treeviewFormaPagamento.heading("Id", text="Cód.Pagamento")
+        # self.treeviewFormaPagamento.heading("Forma de Pagamento", text="Forma de Pagamento")
+        # self.treeviewFormaPagamento.heading("Tipo de Pagamento", text="Tipo de Pagamento")
+        # self.treeviewFormaPagamento.heading("Taxa", text="Taxa")
+        
+        # verticalBar = ttk.Scrollbar(self.formaPagamento, orient='vertical', command=self.treeviewFormaPagamento.yview)
+        # horizontalBar = ttk.Scrollbar(self.formaPagamento, orient='horizontal', command=self.treeviewFormaPagamento.xview)
+        # self.treeviewFormaPagamento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
-        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+        # style = ttk.Style(self.treeviewFormaPagamento)
+        # style.theme_use('clam')
+        # style.configure("self.treeviewFormaPagamento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        # self.treeviewFormaPagamento.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
 
-        rows = self.dao.formaPagamentoAll()
-        for row in rows:
-            self.treeviewFormaPagamento.insert("", END, values=row)
-        
-        buttonBuscar = tk.Button(self.formaPagamento, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
-        buttonBuscar.place(relx=0.02, rely=0.28)
-        
-        self.treeviewFormaPagamento.bind('<<TreeviewSelect>>', self.selectFormaPagamento)
-        
-        self.formaPagamento.bind('<Return>', lambda event: buttonBuscar.invoke())
+        # verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
+        # horizontalBar.place(rely=0.968, relx=0, relwidth=1)
 
-        self.formaPagamento.mainloop()
+        # rows = self.dao.formaPagamentoAll()
+        # for row in rows:
+        #     self.treeviewFormaPagamento.insert("", END, values=row)
+        
+        # buttonBuscar = tk.Button(self.formaPagamento, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+        # buttonBuscar.place(relx=0.02, rely=0.28)
+        
+        # self.treeviewFormaPagamento.bind('<<TreeviewSelect>>', self.selectFormaPagamento)
+        
+        # self.formaPagamento.bind('<Return>', lambda event: buttonBuscar.invoke())
+
+        # self.formaPagamento.mainloop()
 
     def adicionarFormaPagamento(self):
-        self.modalNovaFormaPagamento = tk.Toplevel()
-        self.modalNovaFormaPagamento.transient(self.formaPagamento)
-        self.modalNovaFormaPagamento.grab_set()
-        self.modalNovaFormaPagamento.lift()
-        self.modalNovaFormaPagamento.title('Nova Forma de Pagamento')
-        self.modalNovaFormaPagamento.geometry('520x200')
-        self.modalNovaFormaPagamento.configure(background='#D3D3D3')
-        self.modalNovaFormaPagamento.resizable(False,False)
-        self.modalNovaFormaPagamento.colormapwindows(self.modalNovaFormaPagamento)
+        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.financeiro)
+
+        # self.modalNovaFormaPagamento = tk.Toplevel()
+        # self.modalNovaFormaPagamento.transient(self.formaPagamento)
+        # self.modalNovaFormaPagamento.grab_set()
+        # self.modalNovaFormaPagamento.lift()
+        # self.modalNovaFormaPagamento.title('Nova Forma de Pagamento')
+        # self.modalNovaFormaPagamento.geometry('520x200')
+        # self.modalNovaFormaPagamento.configure(background='#D3D3D3')
+        # self.modalNovaFormaPagamento.resizable(False,False)
+        # self.modalNovaFormaPagamento.colormapwindows(self.modalNovaFormaPagamento)
         
-        titulo = tk.Label(self.modalNovaFormaPagamento, text='ADICIONAR FORMA DE PAGAMENTO', font=('Arial', 14, 'bold'), background='#D3D3D3', fg='black')
-        titulo.place(relx= 0.2, rely=0.07)
+        # titulo = tk.Label(self.modalNovaFormaPagamento, text='ADICIONAR FORMA DE PAGAMENTO', font=('Arial', 14, 'bold'), background='#D3D3D3', fg='black')
+        # titulo.place(relx= 0.2, rely=0.07)
 
-        txtNome = tk.Label(self.modalNovaFormaPagamento, text='FORMA DE PAGAMENTO:', font=('Arial', 10, 'bold'))
-        txtNome.place(relx= 0.05, rely=0.25)
-        txtNome.configure(background='#D3D3D3', fg='black')
+        # txtNome = tk.Label(self.modalNovaFormaPagamento, text='FORMA DE PAGAMENTO:', font=('Arial', 10, 'bold'))
+        # txtNome.place(relx= 0.05, rely=0.25)
+        # txtNome.configure(background='#D3D3D3', fg='black')
 
-        self.nomeFormaPagamento = tk.Entry(self.modalNovaFormaPagamento,width=25)
-        self.nomeFormaPagamento.configure(background='white', fg='black')
-        self.nomeFormaPagamento.place(relx= 0.05, rely=0.35)
+        # self.nomeFormaPagamento = tk.Entry(self.modalNovaFormaPagamento,width=25)
+        # self.nomeFormaPagamento.configure(background='white', fg='black')
+        # self.nomeFormaPagamento.place(relx= 0.05, rely=0.35)
                 
-        txtTipo = tk.Label(self.modalNovaFormaPagamento, text='TIPO DE PAGAMENTO:', font=('Arial', 10, 'bold'))
-        txtTipo.place(relx= 0.05, rely=0.55)
-        txtTipo.configure(background='#D3D3D3', fg='black')
+        # txtTipo = tk.Label(self.modalNovaFormaPagamento, text='TIPO DE PAGAMENTO:', font=('Arial', 10, 'bold'))
+        # txtTipo.place(relx= 0.05, rely=0.55)
+        # txtTipo.configure(background='#D3D3D3', fg='black')
 
-        self.tipoPagamento = StringVar(self.modalNovaFormaPagamento)
-        self.tipoPagamento.set('À Vista')
-        listTipo = ['À Vista', 'Parcelado']
+        # self.tipoPagamento = StringVar(self.modalNovaFormaPagamento)
+        # self.tipoPagamento.set('À Vista')
+        # listTipo = ['À Vista', 'Parcelado']
         
-        self.tipoPagamentoDrop = tk.OptionMenu(self.modalNovaFormaPagamento, self.tipoPagamento, *listTipo)
-        self.tipoPagamentoDrop.configure(background='white', fg='black', activebackground='gray')
-        self.tipoPagamentoDrop.place(relx= 0.05, rely=0.65)
+        # self.tipoPagamentoDrop = tk.OptionMenu(self.modalNovaFormaPagamento, self.tipoPagamento, *listTipo)
+        # self.tipoPagamentoDrop.configure(background='white', fg='black', activebackground='gray')
+        # self.tipoPagamentoDrop.place(relx= 0.05, rely=0.65)
 
-        txtTaxa = tk.Label(self.modalNovaFormaPagamento, text='TAXA:', font=('Arial', 10, 'bold'))
-        txtTaxa.place(relx= 0.7, rely=0.25)
-        txtTaxa.configure(background='#D3D3D3', fg='black')
+        # txtTaxa = tk.Label(self.modalNovaFormaPagamento, text='TAXA:', font=('Arial', 10, 'bold'))
+        # txtTaxa.place(relx= 0.7, rely=0.25)
+        # txtTaxa.configure(background='#D3D3D3', fg='black')
 
-        self.taxaPagamento = tk.Entry(self.modalNovaFormaPagamento, width=5)
-        self.taxaPagamento.place(relx= 0.7, rely=0.35)
-        self.taxaPagamento.configure(background='white', fg='black')
+        # self.taxaPagamento = tk.Entry(self.modalNovaFormaPagamento, width=5)
+        # self.taxaPagamento.place(relx= 0.7, rely=0.35)
+        # self.taxaPagamento.configure(background='white', fg='black')
 
-        buttonAdd = tk.Button(self.modalNovaFormaPagamento, text='ADICIONAR' , command=self.insertPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAdd.place(relx= 0.7, rely=0.65)
+        # buttonAdd = tk.Button(self.modalNovaFormaPagamento, text='ADICIONAR' , command=self.insertPagamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        # buttonAdd.place(relx= 0.7, rely=0.65)
         
-        self.modalNovaFormaPagamento.mainloop()
+        # self.modalNovaFormaPagamento.mainloop()
 
     def adicionarParcela(self):
         messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.formaPagamento)
@@ -2303,92 +2306,97 @@ class Zenix:
         #     self.modalNovaParcela.mainloop()
 
     def setIdPgParcela(self, *args):
-        self.selecaoIdpgParcela = self.opcoesPagamentoParcela.get()
-        self.idSelecaoPgParcela = self.formaPagParcelaMap.get(self.selecaoIdpgParcela)
+        # self.selecaoIdpgParcela = self.opcoesPagamentoParcela.get()
+        # self.idSelecaoPgParcela = self.formaPagParcelaMap.get(self.selecaoIdpgParcela)
+        pass
 
     def insertParcela(self):
-        numParcela = self.numParcelas.get().upper()
-        tipoPagamento = self.idFormaPagamento
-        taxa = self.taxaParcelamento.get()
+        # numParcela = self.numParcelas.get().upper()
+        # tipoPagamento = self.idFormaPagamento
+        # taxa = self.taxaParcelamento.get()
 
-        if numParcela == "":
-            messagebox.showerror("Aviso","O campo Forma de Pagamento está vazio")
-            return
+        # if numParcela == "":
+        #     messagebox.showerror("Aviso","O campo Forma de Pagamento está vazio")
+        #     return
         
-        elif tipoPagamento == "":
-            messagebox.showerror("Aviso","O campo Tipo de Pagamento está vazio")
-            return
+        # elif tipoPagamento == "":
+        #     messagebox.showerror("Aviso","O campo Tipo de Pagamento está vazio")
+        #     return
             
-        elif taxa == "":
-            messagebox.showerror("Aviso","O campo Taxa está vazio")
-            return
+        # elif taxa == "":
+        #     messagebox.showerror("Aviso","O campo Taxa está vazio")
+        #     return
 
-        dao = self.dao.insertParcelas(numParcela, tipoPagamento, taxa)
-        if isinstance(dao, str):
-            messagebox.showerror("Erro",dao, parent=self.formaPagamento)           
-        else:
-            self.atualizaTreeFormaPagamento()
-            msn = f'Parcela inserida com sucesso'
-            self.exibir_sucesso(msn, self.formaPagamento) 
+        # dao = self.dao.insertParcelas(numParcela, tipoPagamento, taxa)
+        # if isinstance(dao, str):
+        #     messagebox.showerror("Erro",dao, parent=self.formaPagamento)           
+        # else:
+        #     self.atualizaTreeFormaPagamento()
+        #     msn = f'Parcela inserida com sucesso'
+        #     self.exibir_sucesso(msn, self.formaPagamento) 
+        pass
 
     def insertPagamento(self):
-        nomeFormaPagamento = self.nomeFormaPagamento.get().upper()
-        tipoPagamento = self.tipoPagamento.get().upper()
-        taxa = self.taxaPagamento.get()
+        # nomeFormaPagamento = self.nomeFormaPagamento.get().upper()
+        # tipoPagamento = self.tipoPagamento.get().upper()
+        # taxa = self.taxaPagamento.get()
 
-        if nomeFormaPagamento == "":
-            messagebox.showerror("Aviso","O campo Forma de Pagamento está vazio")
-            return
+        # if nomeFormaPagamento == "":
+        #     messagebox.showerror("Aviso","O campo Forma de Pagamento está vazio")
+        #     return
         
-        elif tipoPagamento == "":
-            messagebox.showerror("Aviso","O campo Tipo de Pagamento está vazio")
-            return
+        # elif tipoPagamento == "":
+        #     messagebox.showerror("Aviso","O campo Tipo de Pagamento está vazio")
+        #     return
             
-        elif taxa == "":
-            messagebox.showerror("Aviso","O campo Taxa está vazio")
-            return
+        # elif taxa == "":
+        #     messagebox.showerror("Aviso","O campo Taxa está vazio")
+        #     return
 
-        dao = self.dao.insertFormaPagamento(nomeFormaPagamento, tipoPagamento, taxa)
-        if isinstance(dao, str):
-            self.modalNovaFormaPagamento.destroy()
-            messagebox.showerror("Erro",dao, parent=self.formaPagamento)
+        # dao = self.dao.insertFormaPagamento(nomeFormaPagamento, tipoPagamento, taxa)
+        # if isinstance(dao, str):
+        #     self.modalNovaFormaPagamento.destroy()
+        #     messagebox.showerror("Erro",dao, parent=self.formaPagamento)
             
-        else:
-            self.atualizaTreeFormaPagamento()
-            self.modalNovaFormaPagamento.destroy()
-            msn = f'Forma de pagamento inserida com sucesso'
-            self.exibir_sucesso(msn, self.formaPagamento) 
+        # else:
+        #     self.atualizaTreeFormaPagamento()
+        #     self.modalNovaFormaPagamento.destroy()
+        #     msn = f'Forma de pagamento inserida com sucesso'
+        #     self.exibir_sucesso(msn, self.formaPagamento) 
+        pass
 
     def atualizaTreeFormaPagamento(self):
-        self.treeviewParcelas.delete(*self.treeviewParcelas.get_children())
+        # self.treeviewParcelas.delete(*self.treeviewParcelas.get_children())
 
-        rowsFormaPagamento = self.dao.parcelasPagamento(self.formaPagamentoDsc)        
-        for row in rowsFormaPagamento:
-            self.treeviewParcelas.insert("", END, values=row)
+        # rowsFormaPagamento = self.dao.parcelasPagamento(self.formaPagamentoDsc)        
+        # for row in rowsFormaPagamento:
+        #     self.treeviewParcelas.insert("", END, values=row)
+        pass
 
     def selectFormaPagamento(self, event):
-        try:
-            # Id do item Forma de pagamento selecionada
-            self.item_idFormaPagamento = self.treeviewFormaPagamento.selection()[0]
+        # try:
+        #     # Id do item Forma de pagamento selecionada
+        #     self.item_idFormaPagamento = self.treeviewFormaPagamento.selection()[0]
             
-            # Lista Informações Forma de Pagamento Selecionada
-            self.listaFormaPagamento = self.treeviewFormaPagamento.item(self.item_idFormaPagamento, 'values')
+        #     # Lista Informações Forma de Pagamento Selecionada
+        #     self.listaFormaPagamento = self.treeviewFormaPagamento.item(self.item_idFormaPagamento, 'values')
             
-            # Forma de Pagamento
-            self.idFormaPagamento = self.listaFormaPagamento[0]
+        #     # Forma de Pagamento
+        #     self.idFormaPagamento = self.listaFormaPagamento[0]
             
-            # Forma de Pagamento
-            self.formaPagamentoDsc = self.listaFormaPagamento[1]
+        #     # Forma de Pagamento
+        #     self.formaPagamentoDsc = self.listaFormaPagamento[1]
 
-            # Tipo de Pagamento
-            self.tipoPagamentoSelect = self.listaFormaPagamento[2]
+        #     # Tipo de Pagamento
+        #     self.tipoPagamentoSelect = self.listaFormaPagamento[2]
 
-            # Taxa
-            self.taxaPagamentoSelect = self.listaFormaPagamento[3]
+        #     # Taxa
+        #     self.taxaPagamentoSelect = self.listaFormaPagamento[3]
             
             
-        except IndexError as e:
-            return
+        # except IndexError as e:
+        #     return
+        pass
 
 # Fim Parte de Financeiro -------------------------------------
 

@@ -2,8 +2,6 @@ import conection.conexao as c
 import mysql.connector
 from datetime import datetime
 
-
-
 class Dao:
     def __init__(self, login, key):
         self.conecta = c.Conexao().Conecta(login, key)
@@ -15,18 +13,6 @@ class Dao:
         else:
             self.erro = None
             self.cursor = self.conecta.cursor()
-
-    def atendimentoDoDia(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        sql = 'SELECT * FROM Vw_Atendimentos_Dia order by Hora'
-        cr = self.cursor
-        cr.execute(sql)
-        rows = cr.fetchall()
-        
-
-        return rows
 
     def funcionarioAllAtivos(self):
         if self.erro:
@@ -561,79 +547,8 @@ class Dao:
 
         return rows   
 
-    def parcelas(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        sql = 'SELECT * FROM Vw_Parcelas'
-        self.cursor.execute(sql)
-        rows = self.cursor.fetchall()
 
-        return rows  
-
-    def parcelasPagamento(self, pagamento):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        sql = f"SELECT * FROM Vw_Parcelas WHERE Pagamento = '{pagamento}'"
-        self.cursor.execute(sql)
-        rows = self.cursor.fetchall()
-
-        return rows  
-
-    def insertParcelas(self, parcelas, formaPagamento, taxa):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        try:
-            sql = f"INSERT INTO parcelas (parcela, idFormaPagamento, taxa) VALUES (%s, %s, %s)"
-            self.cursor.execute(sql, (parcelas, formaPagamento, taxa))
-            self.conecta.commit()
-            return
-        
-        except mysql.connector.Error as e:
-            print(e)
-            
-            erroInsercao = str(e)
-            resultado = erroInsercao.split(":")[1]
-            return resultado   
-
-    def parcelasAtendimento(self, protocolo):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        sql = f'SELECT * FROM Vw_ParcelasAtendimento WHERE Protocolo = {protocolo}'
-        self.cursor.execute(sql)
-        rows = self.cursor.fetchall()
-
-        return rows 
-
-    def parcelasId(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        sql = 'select idParcela from parcelas;'
-        self.cursor.execute(sql)
-        rows = self.cursor.fetchall()
-
-        return rows 
-
-    def insertParcelasAtendimento(self, idParcela, procedimento, protocolo, valor, atendimento):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
-        try:
-            sql = f"INSERT INTO atendimento_parcelado (idParcela, procedimento, protocolo, valor, idAtendimento) VALUES (%s, %s, %s, %s, %s)"
-            self.cursor.execute(sql, (idParcela, procedimento, protocolo, valor, atendimento))
-            self.conecta.commit()
-            return
-        
-        except mysql.connector.Error as e:
-            print(e)
-            
-            erroInsercao = str(e)
-            resultado = erroInsercao.split(":")[1]
-            return resultado   
+   
 
 
 # CURDATE()
