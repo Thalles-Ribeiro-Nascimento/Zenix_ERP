@@ -1,6 +1,7 @@
 import conection.conexao as c
 import mysql.connector
 from datetime import datetime
+import re
 
 class Dao:
     def __init__(self, login, key):
@@ -177,6 +178,10 @@ class Dao:
         
         except mysql.connector.Error as e:
             print(e)
+
+            erroInsercao = str(e)
+            resultado = re.search(r"Duplicate entry '([^']+)'", erroInsercao)
+            return f"Erro: {resultado.group(0)}"
 
     def atualizaFuncionario(self, id, dado, coluna):
         

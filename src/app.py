@@ -3395,7 +3395,8 @@ class Zenix:
         self.treeviewEspecialidade.bind('<<TreeviewSelect>>', self.selectItemTreeviewEspecialidade)
         self.treeviewEspecialidade.bind("<Double-1>", self.double_clickEspecialidade)
         
-        self.modalEspecialidade.bind('<Return>', lambda event: buttonBuscar.invoke())
+        self.modalEspecialidade.bind("<F5>", lambda event: buttonBuscar.invoke())
+        self.modalEspecialidade.bind('<Return>', lambda event: button.invoke())
 
         self.modalEspecialidade.mainloop()
 
@@ -3406,10 +3407,15 @@ class Zenix:
         if self.nomeEspecialidade.get() == "":
             messagebox.showinfo("Aviso","Preencha o campo Nome!", parent=self.modalEspecialidade)
         else:
-            self.dao.insertEspecialidade(self.nomeEspecialidade.get())
+            resultado = self.dao.insertEspecialidade(self.nomeEspecialidade.get())
+
+            if isinstance(resultado, str):
+                messagebox.showerror("Erro", resultado, parent=self.modalEspecialidade)
+
+            else:
+                self.atualizaTreeEspecialidade()
 
     def selectItemTreeviewEspecialidade(self, event):
-        self.nomeEspecialidade.delete(0, END)
         try:
             # Id do Especialidade Selecionada
             self.ItemSelecionadoEspecialidade = self.treeviewEspecialidade.selection()[0]
@@ -3423,7 +3429,6 @@ class Zenix:
             
             # Nome da Especialidade Selecionada
             self.nomeEspecialidadeSelecionado = self.listaEspecialidadeSelecionado[1]
-            self.nomeEspecialidade.insert(0, self.nomeEspecialidadeSelecionado)
             
             # Status da Especialidade Selecionada
             self.nomeEspecialidadeEspecialidadeSelecionado = self.listaEspecialidadeSelecionado[2]
@@ -3440,7 +3445,6 @@ class Zenix:
 
     def buscarEspecialidade(self):
         self.treeviewEspecialidade.delete(*self.treeviewEspecialidade.get_children())
-        self.nomeEspecialidade.insert(END, '%')
         nome = self.nomeEspecialidade.get()
         rows = self.dao.especialidadeViewNome(nome)
 
@@ -3449,8 +3453,6 @@ class Zenix:
                 self.treeviewEspecialidade.insert("", END, values=row)
             else:
                 messagebox.showinfo("Aviso","Erro de tupla")
-
-        self.nomeEspecialidade.delete(0, END)
 
     def deleteEspecialidade(self):
         if self.ItemSelecionadoEspecialidade == "":
@@ -3594,7 +3596,9 @@ class Zenix:
         self.valorProcedimento.place(relx= 0.553, rely=0.1)
 
         button = tk.Button(self.modalProcedimentos, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        button.place(relx=0.635, rely=0.28)   
+        button.place(relx=0.635, rely=0.28)
+
+        self.modalProcedimentos.bind('<Return>', lambda event : button.invoke())
         
         self.treeviewProcedimentos = ttk.Treeview(self.modalProcedimentos, columns=("cod_procedimento","Procedimento", "Especialidade", "Valor"), show='headings')
         self.treeviewProcedimentos.heading("cod_procedimento", text="Cód.Procedimento")
@@ -3625,7 +3629,7 @@ class Zenix:
         buttonBuscar = tk.Button(self.modalProcedimentos, text='BUSCAR', command=self.buscarProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
         buttonBuscar.place(relx=0.8, rely=0.28)
 
-        self.modalProcedimentos.bind('<Return>', lambda event: buttonBuscar.invoke())
+        self.modalProcedimentos.bind("<F5>", lambda event: buttonBuscar.invoke())
         
         self.modalProcedimentos.mainloop()
 
