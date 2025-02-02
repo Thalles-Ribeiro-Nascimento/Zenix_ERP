@@ -336,6 +336,7 @@ class Zenix:
             self.treeviewFunc.insert("", END, values=row)
             
         self.treeviewFunc.bind('<<TreeviewSelect>>', self.pegaId)
+        self.treeviewFunc.bind("<Double-1>", self.double_click)
                 
         self.funcionarios.mainloop()
 
@@ -497,7 +498,10 @@ class Zenix:
             self.buttonAtualizaFunc.place(relx= 0.7, rely=0.85)
             
             self.modalAtualizaFunc.mainloop()
-            
+
+    def double_click(self, event):
+        self.atualizarModal()
+
     def setIdEspecialidadeAtualiza(self, *args):
         self.atualizaEspecialidade = self.opcoesAtualizaFunc.get()
         self.atualizaIdEspecialidade = self.especialidadeAtualizaMap.get(self.atualizaEspecialidade)
@@ -1172,8 +1176,12 @@ class Zenix:
             self.treeviewClientes.insert("", END, values=row)
             
         self.treeviewClientes.bind('<<TreeviewSelect>>', self.pegaIdClientes)
+        self.treeviewClientes.bind("<Double-1>", self.double_clickCliente)
                         
         self.clientes.mainloop()
+
+    def double_clickCliente(self, event):
+        self.atualizarClientesModal()
 
     def modalNovoCliente(self):
         self.modalNovoClientes = tk.Toplevel()
@@ -2449,7 +2457,7 @@ class Zenix:
         
         self.entryBuscarNomeAgenda = tk.Entry(self.frameAgenda, background='white', fg='black', font=('Arial', 13))
         self.entryBuscarNomeAgenda.place(relx=0.02 , rely=0.15, width=170)
-        self.entryBuscarNomeAgenda.bind('<Return>', self.buscarNomeAgenda)       
+        self.entryBuscarNomeAgenda.bind('<Return>', self.buscarNomeAgenda)      
         
         buttonPesquisar = tk.Button(self.frameAgenda, text='Buscar', command=self.buscarAgendaData, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonPesquisar.place(relx=0.02, rely=0.3)
@@ -3386,6 +3394,7 @@ class Zenix:
         buttonBuscar.place(relx=0.02, rely=0.28)
         
         self.treeviewEspecialidade.bind('<<TreeviewSelect>>', self.selectItemTreeviewEspecialidade)
+        self.treeviewEspecialidade.bind("<Double-1>", self.double_clickEspecialidade)
         
         self.modalEspecialidade.bind('<Return>', lambda event: buttonBuscar.invoke())
 
@@ -3475,6 +3484,9 @@ class Zenix:
 
                 else:
                     self.atualizaTreeEspecialidade()
+
+    def double_clickEspecialidade(self, event):
+        self.atualizarEspecialidadeModal()
 
     def atualizarEspecialidadeModal(self):
         if self.ItemSelecionadoEspecialidade  == "":
@@ -3606,6 +3618,7 @@ class Zenix:
         horizontalBar.place(rely=0.968, relx=0, relwidth=1)
         
         self.treeviewProcedimentos.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
+        self.treeviewProcedimentos.bind("<Double-1>", self.double_clickProcedimento)
         
         resultado = self.dao.procedimentosAtivos()
         for row in resultado:
@@ -3776,6 +3789,9 @@ class Zenix:
             buttonEdit.place(relx=0.7, rely=0.77)
 
             self.modalAtualizaProcedimento.mainloop()
+
+    def double_clickProcedimento(self, event):
+        self.atualizarProcedimentoModal()
 
     def idEspecialidadePrc(self, *args):
         self.espPrcSelecionada = self.opEspProcedimento.get()
