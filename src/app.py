@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk, messagebox, colorchooser
 from conection.objects import Dao
-# import function as f
 from tkcalendar import Calendar
 from datetime import datetime
 
@@ -32,10 +31,10 @@ class Zenix:
         txt.configure(background='#D3D3D3', fg='black')
 
         with open("zenix.txt", "r") as arquivo:
-            self.usuario = arquivo.read().split(":")[1]
+            usuario = arquivo.read().split(":")[1]
 
         self.login = tk.Entry(self.root_login,width=25)
-        self.login.insert(0,self.usuario)
+        self.login.insert(0,usuario)
         self.login.configure(background='white', fg='black')
         self.login.place(relx= 0.36, rely=0.34)
         
@@ -143,8 +142,10 @@ class Zenix:
                 self.telaRoot()
             
     def telaRoot(self):
-        user = self.usuario.upper()
-        # Criando a janela principal
+        with open("zenix.txt", "r") as arquivo:
+            usuario = arquivo.read().split(":")[1]
+            
+        user = usuario.upper()
         self.main = tk.Tk()
         self.main.attributes('-zoomed',True)
         self.main.title(f"Zenix - {user}")
