@@ -3642,7 +3642,7 @@ class Zenix:
 
     def insertProcedimento(self):
         if self.opcoesEspecialidadeProcedimento.get() == "Especialidade" or self.nomeProcedimento.get() == "" or self.valorProcedimento.get() == "":
-            messagebox.showinfo("Aviso", "Preencha todos os campos!")
+            messagebox.showinfo("Aviso", "Preencha todos os campos!", parent=self.modalProcedimentos)
         else:
             resultado = self.dao.insertProcedimento(self.nomeProcedimento.get(), self.idEspecialidadeProcSelecao, self.valorProcedimento.get())
             if isinstance(resultado, str):
@@ -3657,7 +3657,7 @@ class Zenix:
         nome = self.nomeProcedimento.get()
         especialidade = self.opcoesEspecialidadeProcedimento.get()
 
-        if nome == "":
+        if nome == "" and especialidade != "Especialidade":
             self.treeviewProcedimentos.delete(*self.treeviewProcedimentos.get_children())
             rowsEsp = self.dao.procedimentoEspecialidade(especialidade)
 
