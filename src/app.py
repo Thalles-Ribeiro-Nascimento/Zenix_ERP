@@ -3514,6 +3514,9 @@ class Zenix:
 
             buttonEdit = tk.Button(self.modalAtualizaEspecialidade, text='EDITAR', command=self.updateEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             buttonEdit.place(relx=0.1, rely=0.4)
+
+            self.modalAtualizaEspecialidade.bind('<Return>', lambda event: buttonEdit.invoke())
+
             self.modalAtualizaEspecialidade.mainloop()
 
     def updateEspecialidade(self):
@@ -3789,6 +3792,8 @@ class Zenix:
             buttonEdit = tk.Button(self.modalAtualizaProcedimento, text='EDITAR', command=self.updateProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             buttonEdit.place(relx=0.7, rely=0.77)
 
+            self.modalAtualizaProcedimento.bind('<Return>', lambda event: buttonEdit.invoke())
+
             self.modalAtualizaProcedimento.mainloop()
 
     def double_clickProcedimento(self, event):
@@ -3817,7 +3822,6 @@ class Zenix:
             return
 
         else:
-            print(indices)
             for i in indices:
                 for coluna in colunas[1:4]:
                     if i == colunas.index(coluna):
@@ -3828,7 +3832,7 @@ class Zenix:
             erro = False
             for coluna, dado in zip(procedimentoUpgradeDict.keys(), procedimentoUpgradeDict.values()):
                 if coluna == "idEspecialidade":
-                    self.dao.atualizaProcedimento(idProcedimento, coluna, self.idEspPrcSelecionada)
+                    resultado = self.dao.atualizaProcedimento(idProcedimento, coluna, self.idEspPrcSelecionada)
                 else:
                     resultado = self.dao.atualizaProcedimento(idProcedimento, coluna, dado)
 
