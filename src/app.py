@@ -1332,7 +1332,6 @@ class Zenix:
         else:
             self.modalAtualizaCliente = tk.Toplevel()
             self.modalAtualizaCliente.transient(self.clientes)
-            self.modalAtualizaCliente.grab_set()
             self.modalAtualizaCliente.lift()
             self.modalAtualizaCliente.title('Cliente')
             self.modalAtualizaCliente.geometry('750x550')
@@ -3495,7 +3494,6 @@ class Zenix:
         else:
             self.modalAtualizaEspecialidade = tk.Toplevel()
             self.modalAtualizaEspecialidade.transient(self.modalEspecialidade)
-            self.modalAtualizaEspecialidade.grab_set()
             self.modalAtualizaEspecialidade.lift()
             self.modalAtualizaEspecialidade.title('ESPECIALIDADE')
             self.modalAtualizaEspecialidade.geometry('350x250')
@@ -3738,7 +3736,6 @@ class Zenix:
         else:
             self.modalAtualizaProcedimento = tk.Toplevel()
             self.modalAtualizaProcedimento.transient(self.modalProcedimentos)
-            self.modalAtualizaProcedimento.grab_set()
             self.modalAtualizaProcedimento.lift()
             self.modalAtualizaProcedimento.title('PROCEDIMENTO')
             self.modalAtualizaProcedimento.geometry('350x250')
