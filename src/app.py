@@ -111,10 +111,9 @@ class Zenix:
         else:
             resultado = self.dao.trocaPwd(novaSenha, self.usuarioTrocaSenha)
             if isinstance(resultado, str):
-                messagebox.showinfo("Aviso",resultado)
+                messagebox.showinfo("Aviso",resultado, parent=self.modalTrocaSenha)
             else:
                 self.modalTrocaSenha.destroy()
-                self.exibir_sucesso(f"Senha alterada do usuário: {self.usuarioTrocaSenha}", self.main)
 
     def conectar(self):
         login = self.login.get()
@@ -895,10 +894,6 @@ class Zenix:
         elif percentil == "":
             messagebox.showinfo("Aviso","O campo Porcentagem está vazio", parent=self.modalNovoFunc)
         
-        # cpfSemFormatacao = ''.join(filter(str.isdigit, cpf))
-        # telefoneSemFormatacao = ''.join(filter(str.isdigit, telefone))
-        # celularSemFormatacao = ''.join(filter(str.isdigit, celular))
-        
         if "@" in email and ".com" in email:
             dao = self.dao.inserirFuncionario(
             nome, especialidade, cpf, nascimento, telefone, celular,
@@ -908,11 +903,9 @@ class Zenix:
                 messagebox.showerror("Erro", dao, parent=self.modalNovoFunc)
                 
             else:
-                msn = f'Funcionário {nome}, inserido com sucesso'
                 self.atualizaTreeFunc()
                 self.modalNovoFunc.destroy()
-                self.exibir_sucesso(msn, self.funcionarios)               
-                
+
         else:
             messagebox.showinfo("Aviso","Email incompleto: Escreva -> exemplo@email.com", parent=self.modalNovoFunc)
 
@@ -956,7 +949,6 @@ class Zenix:
             self.atualizaTreeFunc()       
 
 # Formatações - Funcionários -------------
-
 # Formatação CPF
     def formatar_cpfFunc(self,event=None):
             cpf = self.cpfFunc.get()
@@ -1086,8 +1078,7 @@ class Zenix:
 
             self.celularAtualizaFunc.delete(0, END)
             self.celularAtualizaFunc.insert(0, celular)
-
-# Formatações - Funcionários -------------
+# Formatações - Funcionários -----------------------------
 
 # Fim Funcionario ----------------------------------------
  
@@ -1726,9 +1717,7 @@ class Zenix:
                 
             else:
                 self.atualizaTreeClient()
-                self.modalNovoClientes.destroy()
-                msn = f'Cliente inserido com sucesso'
-                self.exibir_sucesso(msn, self.clientes)               
+                self.modalNovoClientes.destroy()            
                 
         else:
             messagebox.showerror("Email Incompleto","Email incompleto: Escreva -> exemplo@email.com")
@@ -1796,157 +1785,158 @@ class Zenix:
 
 # Organizar essa tela -----------------------
     def adicionarAgendamentoCliente(self):
-        if self.item_idCliente == "":
-            messagebox.showinfo("Aviso","Selecione um cliente!", parent=self.clientes)
-        else:
-            self.modalAgendaCliente = tk.Toplevel()
-            self.modalAgendaCliente.transient(self.clientes)
-            self.modalAgendaCliente.grab_set()
-            self.modalAgendaCliente.lift()
-            self.modalAgendaCliente.title('Novo Agendamento')
-            self.modalAgendaCliente.geometry('750x550')
-            self.modalAgendaCliente.configure(background='#D3D3D3')
-            self.modalAgendaCliente.resizable(False,False)
-            menu_bar = tk.Menu(self.modalAgendaCliente, background='#808080')
+        messagebox.showinfo("Aviso", "Em manutenção", parent=self.clientes)
+        # if self.item_idCliente == "":
+        #     messagebox.showinfo("Aviso","Selecione um cliente!", parent=self.clientes)
+        # else:
+        #     self.modalAgendaCliente = tk.Toplevel()
+        #     self.modalAgendaCliente.transient(self.clientes)
+        #     self.modalAgendaCliente.grab_set()
+        #     self.modalAgendaCliente.lift()
+        #     self.modalAgendaCliente.title('Novo Agendamento')
+        #     self.modalAgendaCliente.geometry('750x550')
+        #     self.modalAgendaCliente.configure(background='#D3D3D3')
+        #     self.modalAgendaCliente.resizable(False,False)
+        #     menu_bar = tk.Menu(self.modalAgendaCliente, background='#808080')
 
-            menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-            menuAuxiliar.add_command(label='Inserir Atendimento', command=self.adicionarAtendimento,font=('Arial', 10, 'bold'), foreground='black')
+        #     menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        #     menuAuxiliar.add_command(label='Inserir Atendimento', command=self.adicionarAtendimento,font=('Arial', 10, 'bold'), foreground='black')
 
-            menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+        #     menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
-            self.modalAgendaCliente.config(menu=menu_bar)
+        #     self.modalAgendaCliente.config(menu=menu_bar)
 
-            txtNome = tk.Label(self.modalAgendaCliente, text='*NOME DO CLIENTE:', font='bold')
-            txtNome.place(relx= 0.06, rely=0.1)
-            txtNome.configure(background='#D3D3D3', fg='black')
+        #     txtNome = tk.Label(self.modalAgendaCliente, text='*NOME DO CLIENTE:', font='bold')
+        #     txtNome.place(relx= 0.06, rely=0.1)
+        #     txtNome.configure(background='#D3D3D3', fg='black')
 
-            self.nomeClienteAgenda = tk.Entry(self.modalAgendaCliente,width=25)
-            self.nomeClienteAgenda.configure(background='white', fg='black')
-            self.nomeClienteAgenda.place(relx= 0.06, rely=0.145)
-            self.nomeClienteAgenda.insert(0, self.nomeClienteSelect)
+        #     self.nomeClienteAgenda = tk.Entry(self.modalAgendaCliente,width=25)
+        #     self.nomeClienteAgenda.configure(background='white', fg='black')
+        #     self.nomeClienteAgenda.place(relx= 0.06, rely=0.145)
+        #     self.nomeClienteAgenda.insert(0, self.nomeClienteSelect)
 
-            txtCpf = tk.Label(self.modalAgendaCliente, text='CPF DO CLIENTE:', font='bold')
-            txtCpf.place(relx= 0.7, rely=0.1)
-            txtCpf.configure(background='#D3D3D3', fg='black')
+        #     txtCpf = tk.Label(self.modalAgendaCliente, text='CPF DO CLIENTE:', font='bold')
+        #     txtCpf.place(relx= 0.7, rely=0.1)
+        #     txtCpf.configure(background='#D3D3D3', fg='black')
 
-            self.cpfClienteAgenda = tk.Entry(self.modalAgendaCliente, width=15)
-            self.cpfClienteAgenda.place(relx= 0.7, rely=0.145)
-            self.cpfClienteAgenda.configure(background='white', fg='black')
-            self.cpfClienteAgenda.insert(0, self.cpfClienteSelect)
-            # self.cpfClienteAgendamento.bind('<KeyRelease>', self.formatar_cpfCliente)
-            # self.cpfCliente.bind('<BackSpace>', self.formatar_cpfCliente)
+        #     self.cpfClienteAgenda = tk.Entry(self.modalAgendaCliente, width=15)
+        #     self.cpfClienteAgenda.place(relx= 0.7, rely=0.145)
+        #     self.cpfClienteAgenda.configure(background='white', fg='black')
+        #     self.cpfClienteAgenda.insert(0, self.cpfClienteSelect)
+        #     # self.cpfClienteAgendamento.bind('<KeyRelease>', self.formatar_cpfCliente)
+        #     # self.cpfCliente.bind('<BackSpace>', self.formatar_cpfCliente)
 
-            txtData = tk.Label(self.modalAgendaCliente, text='*DATA:', font='bold')
-            txtData.place(relx= 0.06, rely=0.23)
-            txtData.configure(background='#D3D3D3', fg='black')
+        #     txtData = tk.Label(self.modalAgendaCliente, text='*DATA:', font='bold')
+        #     txtData.place(relx= 0.06, rely=0.23)
+        #     txtData.configure(background='#D3D3D3', fg='black')
 
-            self.buttonCalendarCliente = tk.Button(self.modalAgendaCliente, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioCliente)
-            self.buttonCalendarCliente.place(relx=0.15, rely=0.228, relwidth=0.035, relheight=0.04)
+        #     self.buttonCalendarCliente = tk.Button(self.modalAgendaCliente, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioCliente)
+        #     self.buttonCalendarCliente.place(relx=0.15, rely=0.228, relwidth=0.035, relheight=0.04)
 
-            self.dataAgendamentoEntry2 = tk.Entry(self.modalAgendaCliente)
-            self.dataAgendamentoEntry2.configure(background='white', fg='black')
-            self.dataAgendamentoEntry2.place(relx= 0.06, rely=0.27, width=120)
-            # self.dataCliente.bind('<KeyRelease>', self.formatar_dataCliente)
+        #     self.dataAgendamentoEntry2 = tk.Entry(self.modalAgendaCliente)
+        #     self.dataAgendamentoEntry2.configure(background='white', fg='black')
+        #     self.dataAgendamentoEntry2.place(relx= 0.06, rely=0.27, width=120)
+        #     # self.dataCliente.bind('<KeyRelease>', self.formatar_dataCliente)
             
-            funcionario = tk.Label(self.modalAgendaCliente, text='FUNCIONARIO:', font='bold')
-            funcionario.place(relx= 0.37, rely=0.1)
-            funcionario.configure(background='#D3D3D3', fg='black')
+        #     funcionario = tk.Label(self.modalAgendaCliente, text='FUNCIONARIO:', font='bold')
+        #     funcionario.place(relx= 0.37, rely=0.1)
+        #     funcionario.configure(background='#D3D3D3', fg='black')
 
-            self.funcAgendamento2 = self.dao.funcionarioAllAtivos()
-            self.funcAgendamento2List = [item[1] for item in self.funcAgendamento2]
-            self.funcAgendamento2Id = [item[0] for item in self.funcAgendamento2]
-            self.funcionarioMapAgenda2 = dict(zip(self.funcAgendamento2List, self.funcAgendamento2Id))
+        #     self.funcAgendamento2 = self.dao.funcionarioAllAtivos()
+        #     self.funcAgendamento2List = [item[1] for item in self.funcAgendamento2]
+        #     self.funcAgendamento2Id = [item[0] for item in self.funcAgendamento2]
+        #     self.funcionarioMapAgenda2 = dict(zip(self.funcAgendamento2List, self.funcAgendamento2Id))
             
-            self.opcoesFuncAgenda2 = StringVar(self.modalAgendaCliente)
-            self.opcoesFuncAgenda2.set("Funcionarios")
-            self.dropdownAgenda2 = tk.OptionMenu(self.modalAgendaCliente, self.opcoesFuncAgenda2, *self.funcAgendamento2List)
-            self.dropdownAgenda2.configure(background='white', fg='black', activebackground='gray')
-            self.dropdownAgenda2.place(relx= 0.37, rely=0.145, relheight=0.05, relwidth=0.286)
+        #     self.opcoesFuncAgenda2 = StringVar(self.modalAgendaCliente)
+        #     self.opcoesFuncAgenda2.set("Funcionarios")
+        #     self.dropdownAgenda2 = tk.OptionMenu(self.modalAgendaCliente, self.opcoesFuncAgenda2, *self.funcAgendamento2List)
+        #     self.dropdownAgenda2.configure(background='white', fg='black', activebackground='gray')
+        #     self.dropdownAgenda2.place(relx= 0.37, rely=0.145, relheight=0.05, relwidth=0.286)
 
-            self.opcoesFuncAgenda2.trace_add('write', self.setIdFuncionarioAgendaCliente)
+        #     self.opcoesFuncAgenda2.trace_add('write', self.setIdFuncionarioAgendaCliente)
 
-            txtTelefone = tk.Label(self.modalAgendaCliente, text='TELEFONE:', font='bold')
-            txtTelefone.place(relx= 0.4, rely=0.23)
-            txtTelefone.configure(background='#D3D3D3', fg='black')
+        #     txtTelefone = tk.Label(self.modalAgendaCliente, text='TELEFONE:', font='bold')
+        #     txtTelefone.place(relx= 0.4, rely=0.23)
+        #     txtTelefone.configure(background='#D3D3D3', fg='black')
 
-            self.telefoneClienteAgenda = tk.Entry(self.modalAgendaCliente, width=20)
-            self.telefoneClienteAgenda.configure(background='white', fg='black')
-            self.telefoneClienteAgenda.place(relx= 0.4, rely=0.27)
-            self.telefoneClienteAgenda.insert(0, self.telefoneClienteSelect)
+        #     self.telefoneClienteAgenda = tk.Entry(self.modalAgendaCliente, width=20)
+        #     self.telefoneClienteAgenda.configure(background='white', fg='black')
+        #     self.telefoneClienteAgenda.place(relx= 0.4, rely=0.27)
+        #     self.telefoneClienteAgenda.insert(0, self.telefoneClienteSelect)
             
-            # self.telefoneCliente.bind('<KeyRelease>', self.formatar_telefoneCliente)
+        #     # self.telefoneCliente.bind('<KeyRelease>', self.formatar_telefoneCliente)
 
-            txtCelular = tk.Label(self.modalAgendaCliente, text='*CELULAR:', font='bold')
-            txtCelular.place(relx= 0.7, rely=0.23)
-            txtCelular.configure(background='#D3D3D3', fg='black')
+        #     txtCelular = tk.Label(self.modalAgendaCliente, text='*CELULAR:', font='bold')
+        #     txtCelular.place(relx= 0.7, rely=0.23)
+        #     txtCelular.configure(background='#D3D3D3', fg='black')
 
-            self.celularClienteAgenda = tk.Entry(self.modalAgendaCliente, width=20)
-            self.celularClienteAgenda.configure(background='white', fg='black')
-            self.celularClienteAgenda.place(relx= 0.7, rely=0.27)
-            self.celularClienteAgenda.insert(0, self.celularClienteSelect)
+        #     self.celularClienteAgenda = tk.Entry(self.modalAgendaCliente, width=20)
+        #     self.celularClienteAgenda.configure(background='white', fg='black')
+        #     self.celularClienteAgenda.place(relx= 0.7, rely=0.27)
+        #     self.celularClienteAgenda.insert(0, self.celularClienteSelect)
             
-            # self.celularCliente.bind('<KeyRelease>', self.formatar_celularCliente)
+        #     # self.celularCliente.bind('<KeyRelease>', self.formatar_celularCliente)
 
-            txtEmail = tk.Label(self.modalAgendaCliente, text='*Email:', font='bold')
-            txtEmail.place(relx= 0.06, rely=0.35)
-            txtEmail.configure(background='#D3D3D3', fg='black')
+        #     txtEmail = tk.Label(self.modalAgendaCliente, text='*Email:', font='bold')
+        #     txtEmail.place(relx= 0.06, rely=0.35)
+        #     txtEmail.configure(background='#D3D3D3', fg='black')
 
-            self.EmailClienteAgenda = tk.Entry(self.modalAgendaCliente,width=30)
-            self.EmailClienteAgenda.configure(background='white', fg='black')
-            self.EmailClienteAgenda.place(relx= 0.06, rely=0.395)
-            self.EmailClienteAgenda.insert(0, self.emailClienteSelect)
+        #     self.EmailClienteAgenda = tk.Entry(self.modalAgendaCliente,width=30)
+        #     self.EmailClienteAgenda.configure(background='white', fg='black')
+        #     self.EmailClienteAgenda.place(relx= 0.06, rely=0.395)
+        #     self.EmailClienteAgenda.insert(0, self.emailClienteSelect)
 
-            txtCodCliente = tk.Label(self.modalAgendaCliente, text='*Cód.Cliente:', font='bold')
-            txtCodCliente.place(relx= 0.7, rely=0.23)
-            txtCodCliente.configure(background='#D3D3D3', fg='black')
+        #     txtCodCliente = tk.Label(self.modalAgendaCliente, text='*Cód.Cliente:', font='bold')
+        #     txtCodCliente.place(relx= 0.7, rely=0.23)
+        #     txtCodCliente.configure(background='#D3D3D3', fg='black')
 
-            self.codigoClienteAgenda = tk.Entry(self.modalAgendaCliente, width=20)
-            self.codigoClienteAgenda.configure(background='white', fg='black')
-            self.codigoClienteAgenda.place(relx= 0.7, rely=0.27)
-            self.codigoClienteAgenda.insert(0, self.ClienteId)
+        #     self.codigoClienteAgenda = tk.Entry(self.modalAgendaCliente, width=20)
+        #     self.codigoClienteAgenda.configure(background='white', fg='black')
+        #     self.codigoClienteAgenda.place(relx= 0.7, rely=0.27)
+        #     self.codigoClienteAgenda.insert(0, self.ClienteId)
 
-            self.treeviewAgendaCliente = ttk.Treeview(self.modalAgendaCliente, columns=('Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento',
-                                                                                        'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
+        #     self.treeviewAgendaCliente = ttk.Treeview(self.modalAgendaCliente, columns=('Hora','Nome do Cliente', 'Cod.Cliente', 'Cod.Atendimento',
+        #                                                                                 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
         
-            self.treeviewAgendaCliente.heading('Hora', text='Hora')
-            self.treeviewAgendaCliente.heading('Nome do Cliente', text='Nome do Cliente')
-            self.treeviewAgendaCliente.heading('Cod.Cliente', text='Cód.Cliente')
-            self.treeviewAgendaCliente.heading('Cod.Atendimento', text='Cód.Atendimento')
-            self.treeviewAgendaCliente.heading('Funcionario', text='Funcionario')
-            self.treeviewAgendaCliente.heading('Procedimento', text='Procedimento')
-            self.treeviewAgendaCliente.heading('Valor', text='Valor')
-            self.treeviewAgendaCliente.heading('Status', text='Status')
+        #     self.treeviewAgendaCliente.heading('Hora', text='Hora')
+        #     self.treeviewAgendaCliente.heading('Nome do Cliente', text='Nome do Cliente')
+        #     self.treeviewAgendaCliente.heading('Cod.Cliente', text='Cód.Cliente')
+        #     self.treeviewAgendaCliente.heading('Cod.Atendimento', text='Cód.Atendimento')
+        #     self.treeviewAgendaCliente.heading('Funcionario', text='Funcionario')
+        #     self.treeviewAgendaCliente.heading('Procedimento', text='Procedimento')
+        #     self.treeviewAgendaCliente.heading('Valor', text='Valor')
+        #     self.treeviewAgendaCliente.heading('Status', text='Status')
             
-            self.treeviewAgendaCliente.column('Hora', stretch=False, width=100)
-            self.treeviewAgendaCliente.column('Cod.Cliente', stretch=False, width=92)
-            self.treeviewAgendaCliente.column('Cod.Atendimento', stretch=False, width=92)
-            self.treeviewAgendaCliente.column('Nome do Cliente', stretch=False, width=100)
-            self.treeviewAgendaCliente.column('Funcionario', stretch=False, width=100)
-            self.treeviewAgendaCliente.column('Procedimento', stretch=False, width=100)
-            self.treeviewAgendaCliente.column('Valor', stretch=False, width=100)
-            self.treeviewAgendaCliente.column('Status', stretch=False, width=90)
+        #     self.treeviewAgendaCliente.column('Hora', stretch=False, width=100)
+        #     self.treeviewAgendaCliente.column('Cod.Cliente', stretch=False, width=92)
+        #     self.treeviewAgendaCliente.column('Cod.Atendimento', stretch=False, width=92)
+        #     self.treeviewAgendaCliente.column('Nome do Cliente', stretch=False, width=100)
+        #     self.treeviewAgendaCliente.column('Funcionario', stretch=False, width=100)
+        #     self.treeviewAgendaCliente.column('Procedimento', stretch=False, width=100)
+        #     self.treeviewAgendaCliente.column('Valor', stretch=False, width=100)
+        #     self.treeviewAgendaCliente.column('Status', stretch=False, width=90)
             
-            verticalBar = ttk.Scrollbar(self.modalAgendaCliente, orient='vertical', command=self.treeviewAgendaCliente.yview)
-            horizontalBar = ttk.Scrollbar(self.modalAgendaCliente, orient='horizontal', command=self.treeviewAgendaCliente.xview)
-            self.treeviewAgendaCliente.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+        #     verticalBar = ttk.Scrollbar(self.modalAgendaCliente, orient='vertical', command=self.treeviewAgendaCliente.yview)
+        #     horizontalBar = ttk.Scrollbar(self.modalAgendaCliente, orient='horizontal', command=self.treeviewAgendaCliente.xview)
+        #     self.treeviewAgendaCliente.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-            style = ttk.Style(self.treeviewAgendaCliente)
-            style.theme_use('clam')
-            style.configure("self.treeviewAgendaCliente", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        #     style = ttk.Style(self.treeviewAgendaCliente)
+        #     style.theme_use('clam')
+        #     style.configure("self.treeviewAgendaCliente", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
-            self.treeviewAgendaCliente.place(relx=0, rely=0.5, relheight=0.5, relwidth=0.98)
+        #     self.treeviewAgendaCliente.place(relx=0, rely=0.5, relheight=0.5, relwidth=0.98)
 
-            verticalBar.place(relx=0.98 , rely=0.5, relheight=0.48)
-            horizontalBar.place(rely=0.978, relx=0, relwidth=1)
+        #     verticalBar.place(relx=0.98 , rely=0.5, relheight=0.48)
+        #     horizontalBar.place(rely=0.978, relx=0, relwidth=1)
                     
-            # rows = self.dao.atendimentoCliente(self.nomeClienteAgendamento)
-            # for row in rows:
-            #     self.treeviewAgendaCliente.insert("", END, values=row)
+        #     # rows = self.dao.atendimentoCliente(self.nomeClienteAgendamento)
+        #     # for row in rows:
+        #     #     self.treeviewAgendaCliente.insert("", END, values=row)
 
-            buttonClienteAgendamento = tk.Button(self.modalAgendaCliente, text='AGENDAR' , command=self.insertAgendaCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-            buttonClienteAgendamento.place(relx= 0.7, rely=0.395)
+        #     buttonClienteAgendamento = tk.Button(self.modalAgendaCliente, text='AGENDAR' , command=self.insertAgendaCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        #     buttonClienteAgendamento.place(relx= 0.7, rely=0.395)
             
-            self.modalAgendaCliente.mainloop()
+        #     self.modalAgendaCliente.mainloop()
 # Organizar essa tela -----------------------
 
     def calendarioCliente(self):
@@ -1969,28 +1959,27 @@ class Zenix:
         self.idSelecaoAgendaFuncCliente = self.funcionarioMapAgenda2.get(self.selecaoIdFuncCliente)
 
     def insertAgendaCliente(self):
-        data = self.dataAgendamentoEntry2.get()
-        idCliente = self.codigoClienteAgenda.get()
-        idFuncionario = self.idSelecaoAgendaFuncCliente
+        pass
+        # data = self.dataAgendamentoEntry2.get()
+        # idCliente = self.codigoClienteAgenda.get()
+        # idFuncionario = self.idSelecaoAgendaFuncCliente
  
-        if data == "":
-            messagebox.showerror("Aviso","O campo Nome está vazio")
+        # if data == "":
+        #     messagebox.showerror("Aviso","O campo Nome está vazio")
         
-        elif idCliente == "":
-            messagebox.showerror("Aviso","O código do Cliente está vazio")
+        # elif idCliente == "":
+        #     messagebox.showerror("Aviso","O código do Cliente está vazio")
             
-        elif idFuncionario == "":
-            messagebox.showerror("Aviso","O código do Funcionário está vazio")
+        # elif idFuncionario == "":
+        #     messagebox.showerror("Aviso","O código do Funcionário está vazio")
         
-        dao = self.dao.addAgendamento(data, idCliente, idFuncionario)
-        if isinstance(dao, str):
-            self.modalAgendaCliente.destroy()
-            messagebox.showerror("Erro",dao , parent=self.modalAgendaCliente)
+        # dao = self.dao.addAgendamento(data, idCliente, idFuncionario)
+        # if isinstance(dao, str):
+        #     self.modalAgendaCliente.destroy()
+        #     messagebox.showerror("Erro",dao , parent=self.modalAgendaCliente)
             
-        else:
-            self.modalAgendaCliente.destroy()
-            msn = f'Agendamento realizado'
-            self.exibir_sucesso(msn, self.clientes)               
+        # else:
+        #     self.modalAgendaCliente.destroy()             
 
 # Fim Cliente -------------------------------------
 
@@ -2910,8 +2899,6 @@ class Zenix:
             else:
                 self.atualizaTreevwAgendamento()
                 self.modalNovaAgenda.destroy()
-                msn = f'Cliente agendado'
-                self.exibir_sucesso(msn, self.agendaRoot)
 
     def atualizaTreevwAgendamento(self):
         self.treeviewAgenda.delete(*self.treeviewAgenda.get_children())
@@ -3148,7 +3135,6 @@ class Zenix:
             
         else:
             self.atualizaTreeAtendimento()
-            self.exibir_sucesso("Atendimento marcado", self.modalAtendimentoAdd)
 
     def atualizaTreeAtendimento(self):
         self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
@@ -3410,11 +3396,9 @@ class Zenix:
 
     def insertEspecialidadeNovo(self):
         if self.nomeEspecialidade.get() == "":
-            messagebox.showinfo("Aviso","Preencha o campo Nome!")
+            messagebox.showinfo("Aviso","Preencha o campo Nome!", parent=self.modalEspecialidade)
         else:
             self.dao.insertEspecialidade(self.nomeEspecialidade.get())
-            self.atualizaTreeEspecialidade()
-            self.exibir_sucesso("Especialidade Inserida!", self.modalEspecialidade)
 
     def selectItemTreeviewEspecialidade(self, event):
         self.nomeEspecialidade.delete(0, END)
@@ -3482,15 +3466,15 @@ class Zenix:
                     return
                 else:
                     self.atualizaTreeEspecialidade()
-                    self.exibir_sucesso("Especialidade Excluídas!", self.modalEspecialidade)    
+
             else:       
                 resultado = self.dao.deleteLogicoEspecialidade(self.idEspecialidadeSelecionado)
         
                 if isinstance(resultado, str):
                     messagebox.showerror("Erro",resultado)
+
                 else:
                     self.atualizaTreeEspecialidade()
-                    self.exibir_sucesso("Especialidade excluída!", self.modalEspecialidade)
 
     def atualizarEspecialidadeModal(self):
         if self.ItemSelecionadoEspecialidade  == "":
@@ -3536,7 +3520,6 @@ class Zenix:
            else:
                self.atualizaTreeEspecialidade()
                self.modalAtualizaEspecialidade.destroy()
-               self.exibir_sucesso("Especialidade Alterada", self.modalEspecialidade)
 
 # Fim Especialidade --------------------------------
 
@@ -3654,8 +3637,6 @@ class Zenix:
                 self.opcoesEspecialidadeProcedimento.set("Especialidade")
                 self.valorProcedimento.delete(0, END)
                 self.clearFieldProcedimento()
-                msn = "Procedimento inserido!"
-                self.exibir_sucesso(msn, self.modalProcedimentos)
 
     def buscarProcedimento(self):
         nome = self.nomeProcedimento.get()
