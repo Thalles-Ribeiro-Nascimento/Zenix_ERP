@@ -843,7 +843,7 @@ class Zenix:
             if erro == False:
                 self.atualizaTreeFunc()
                 self.modalAtualizaFunc.destroy()
-                self.exibir_sucesso("Alterações Realizadas", self.funcionarios)
+
             else:
                 messagebox.showerror("Erro", resultado, parent=self.modalAtualizaFunc)
                      
@@ -1506,7 +1506,6 @@ class Zenix:
                             else:
                                 validacao = True
                                 clienteUpgrade.update({c:listaUpgrade[i - 1]})
-                                
                                 continue  
                         else:
                             continue
@@ -1534,7 +1533,7 @@ class Zenix:
             if erro == False:
                 self.atualizaTreeClient()
                 self.modalAtualizaCliente.destroy() 
-                self.exibir_sucesso("Alterações Realizadas", self.clientes)
+
             else:
                 messagebox.showerror("Erro",resultado)
                      
@@ -3672,17 +3671,12 @@ class Zenix:
         else:
             self.opcoesEspecialidadeProcedimento.set("Especialidade")
             self.treeviewProcedimentos.delete(*self.treeviewProcedimentos.get_children())
-            self.nomeProcedimento.insert(END, '%')
             rows = self.dao.procedimentoNome(nome)
 
             for row in rows:
                 self.treeviewProcedimentos.insert("", END, values=row)
-
-            self.nomeProcedimento.delete(0, END)
             
-
     def selectItemTreeviewProcedimento(self, event):
-        self.nomeProcedimento.delete(0, END)
         try:
             # Id do Procedimento Selecionado
             self.ItemSelecionadoProcedimento = self.treeviewProcedimentos.selection()[0]
@@ -3759,36 +3753,105 @@ class Zenix:
             self.modalAtualizaProcedimento.colormapwindows(self.modalAtualizaProcedimento)
             
             txtNome = tk.Label(self.modalAtualizaProcedimento, text='PROCEDIMENTO:', font='bold')
-            txtNome.place(relx= 0.1, rely=0.2)
+            txtNome.place(relx= 0.1, rely=0.1)
             txtNome.configure(background='#D3D3D3', fg='black')
 
             self.prcAtualiza = tk.Entry(self.modalAtualizaProcedimento,width=25)
             self.prcAtualiza.configure(background='white', fg='black')
-            self.prcAtualiza.place(relx= 0.1, rely=0.3)
+            self.prcAtualiza.place(relx= 0.1, rely=0.2)
             self.prcAtualiza.insert(0, self.nomeProcedimentoSelecionado)
 
+            titleEspecialidadeId = tk.Label(self.modalAtualizaProcedimento, text='ESPECIALIDADE:', font='bold')
+            titleEspecialidadeId.configure(background='#D3D3D3', fg='black')
+            titleEspecialidadeId.place(relx= 0.1, rely=0.35)
+
+            self.espProcedimento = self.dao.especialidadeView()
+            self.espProcedimentoList = [item[1] for item in self.espProcedimento]
+            self.espPrcId = [item[0] for item in self.espProcedimento]
+            self.espProcedimentoMap = dict(zip(self.espProcedimentoList, self.espPrcId))
+            
+            self.opEspProcedimento = StringVar(self.modalAtualizaProcedimento)
+            self.opEspProcedimento.set(self.nomeEspecialidadeProcedimentoSelecionado)
+            dropdown = tk.OptionMenu(self.modalAtualizaProcedimento, self.opEspProcedimento, *self.espProcedimentoList)
+            dropdown.configure(background='white', fg='black', activebackground='gray')
+            dropdown.place(relx= 0.1, rely=0.435)
+
+            self.opEspProcedimento.trace_add('write', self.idEspecialidadePrc)
+
+            titleValores = tk.Label(self.modalAtualizaProcedimento, text='VALOR:', font='bold')
+            titleValores.configure(background='#D3D3D3', fg='black')
+            titleValores.place(relx= 0.1, rely=0.6)
+            
+            titleReal = tk.Label(self.modalAtualizaProcedimento, text='R$', font='bold')
+            titleReal.configure(background='#D3D3D3', fg='black')
+            titleReal.place(relx= 0.03, rely=0.67)
+            
+            self.valorProcedimentoEdit = tk.Entry(self.modalAtualizaProcedimento)
+            self.valorProcedimentoEdit.configure(background='white', fg='black', width=10)
+            self.valorProcedimentoEdit.place(relx= 0.1, rely=0.67)
+            self.valorProcedimentoEdit.insert(0, self.valorProcedimentoSelecionado)
+
             buttonEdit = tk.Button(self.modalAtualizaProcedimento, text='EDITAR', command=self.updateProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            buttonEdit.place(relx=0.1, rely=0.4)
+            buttonEdit.place(relx=0.7, rely=0.77)
 
             self.modalAtualizaProcedimento.mainloop()
 
+    def idEspecialidadePrc(self, *args):
+        self.espPrcSelecionada = self.opEspProcedimento.get()
+        self.idEspPrcSelecionada = self.espProcedimentoMap.get(self.espPrcSelecionada)
+
     def updateProcedimento(self):
-        procedimento = self.prcAtualiza.get()
         idProcedimento = self.idProcedimentoSelecionado
-        
-        if procedimento == self.nomeProcedimentoSelecionado or procedimento == "":
-            messagebox.showinfo("Aviso", "Não foi possível alterar!", parent=self.modalAtualizaProcedimento)
+        listaUpgrade = [self.prcAtualiza.get().upper(), self.opEspProcedimento.get(), self.valorProcedimentoEdit.get()]
+        colunas = [" ", "nome_procedimento", "idEspecialidade", "valor"]
+        indices = []
+        procedimentoUpgradeDict = dict()
+
+        for old, new in zip(self.listaProcedimentoSelecionado[1:4], listaUpgrade):
+            if old == new:
+                continue
+            else: 
+                indices.append(self.listaProcedimentoSelecionado.index(old))
+                
+
+        if len(indices) < 1:
+            messagebox.showinfo("Aviso","Nenhum campo foi alterado!", parent=self.modalAtualizaProcedimento)
+            return
 
         else:
-           resultado = self.dao.atualizaProcedimento(procedimento, idProcedimento)
-            
-           if isinstance(resultado, str):
-                messagebox.showerror("Erro", resultado, parent=self.modalAtualizaProcedimento)
-            
-           else:
-               self.atualizaTreeProcedimento()
-               self.modalAtualizaProcedimento.destroy()
-               self.exibir_sucesso("Procedimento Alterado", self.modalProcedimentos)
+            print(indices)
+            for i in indices:
+                for coluna in colunas[1:4]:
+                    if i == colunas.index(coluna):
+                        procedimentoUpgradeDict.update({coluna: listaUpgrade[i-1]})
+                else:
+                    continue
+
+            erro = False
+            for coluna, dado in zip(procedimentoUpgradeDict.keys(), procedimentoUpgradeDict.values()):
+                if coluna == "idEspecialidade":
+                    self.dao.atualizaProcedimento(idProcedimento, coluna, self.idEspPrcSelecionada)
+                else:
+                    resultado = self.dao.atualizaProcedimento(idProcedimento, coluna, dado)
+
+                if isinstance(resultado, str):
+                    erro = True
+                    break
+                else:
+                    erro = False
+                        
+            if erro == False:
+                self.atualizaTreeProcedimento()
+                self.modalAtualizaProcedimento.destroy() 
+                
+            else:
+                messagebox.showerror("Erro",resultado, parent=self.modalAtualizaProcedimento)
+
+        listaUpgrade.clear()
+        colunas.clear()
+        procedimentoUpgradeDict.clear()
+        indices.clear()
+
 
 # Fim Procedimentos --------------------------------
 
@@ -3811,4 +3874,4 @@ class Zenix:
         telaSucesso.bind('<Return>', lambda event: buttonOk.invoke())
         telaSucesso.mainloop() 
 
-Zenix()
+Zenix()               

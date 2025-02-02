@@ -89,12 +89,10 @@ from conection.objects import Dao
 
 
 dao = Dao("admin", "SysteM98")
-rows = dao.reativarFuncionario(50)
-print(rows)
+rows = dao.procedimentosAll()
 
-
-# for row in rows:
-#     print(row)
+for row in rows:
+    print(row)
 
 
 # rows = dao.especialidadeView()

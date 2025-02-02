@@ -342,14 +342,14 @@ class Dao:
             resultado = error.split(":")[1]
             return resultado
 
-    def atualizaProcedimento(self, nome, id):
+    def atualizaProcedimento(self, id, coluna, dado):
 
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"UPDATE procedimentos SET nome_procedimento = %s WHERE cod_procedimento = %s"
+        sql = f"UPDATE procedimentos SET {coluna} = %s WHERE cod_procedimento = %s"
         try:
-            self.cursor.execute(sql, (nome, id))
+            self.cursor.execute(sql, (dado, id))
             self.conecta.commit()
             
         except Exception as e:
