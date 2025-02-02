@@ -3371,6 +3371,11 @@ class Zenix:
         self.treeviewEspecialidade.heading("idEspecialidade", text="Cód.Especialidade")
         self.treeviewEspecialidade.heading("Especialidade", text="Especialidade")
         self.treeviewEspecialidade.heading("Status", text="Status")
+
+        self.menu_RightClick = tk.Menu(self.modalEspecialidade, tearoff=0, background='#808080')
+        self.menu_RightClick.add_command(label='Editar',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
+        self.menu_RightClick.add_separator()
+        self.menu_RightClick.add_command(label='Log de Modificação',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
         
         verticalBar = ttk.Scrollbar(self.modalEspecialidade, orient='vertical', command=self.treeviewEspecialidade.yview)
         horizontalBar = ttk.Scrollbar(self.modalEspecialidade, orient='horizontal', command=self.treeviewEspecialidade.xview)
@@ -3394,6 +3399,7 @@ class Zenix:
         
         self.treeviewEspecialidade.bind('<<TreeviewSelect>>', self.selectItemTreeviewEspecialidade)
         self.treeviewEspecialidade.bind("<Double-1>", self.double_clickEspecialidade)
+        self.treeviewEspecialidade.bind("<Button-3>", self.menuRightClick)
         
         self.modalEspecialidade.bind("<F5>", lambda event: buttonBuscar.invoke())
         self.modalEspecialidade.bind('<Return>', lambda event: button.invoke())
@@ -3535,6 +3541,12 @@ class Zenix:
            else:
                self.atualizaTreeEspecialidade()
                self.modalAtualizaEspecialidade.destroy()
+
+    def menuRightClick(self, event):
+        itemSelecionado = self.treeviewEspecialidade.identify_row(event.y)
+        if itemSelecionado:
+            self.treeviewEspecialidade.selection_set(itemSelecionado)
+            self.menu_RightClick.post(event.x_root, event.y_root)
 
 # Fim Especialidade --------------------------------
 
