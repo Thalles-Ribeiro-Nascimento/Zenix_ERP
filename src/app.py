@@ -192,7 +192,7 @@ class Zenix:
         buttonAgenda = tk.Button(self.main, text='AGENDAMENTO', command=self.telaAgenda, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonAgenda.grid(row=2, column=0, sticky="nsew", padx=20, pady=10)
 
-        buttonAtendimento = tk.Button(self.main, text='ATENDIMENTO', command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonAtendimento = tk.Button(self.main, text='ATENDIMENTO', command=self.telaAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonAtendimento.grid(row=2, column=1, sticky="nsew", padx=20, pady=10)
 
         buttonProcedimento = tk.Button(self.main, text='PROCEDIMENTO', command=self.telaProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
@@ -236,7 +236,7 @@ class Zenix:
         # Menu superior
         menu_bar = tk.Menu(self.funcionarios, background='#808080')
         menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        # menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
@@ -1099,7 +1099,7 @@ class Zenix:
         # Menu superior
         menu_bar = tk.Menu(self.clientes, background='#808080')
         menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        # menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
@@ -2012,7 +2012,7 @@ class Zenix:
         # Menu superior
         menu_bar = tk.Menu(self.financeiro, background='#808080')
         menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        # menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
@@ -2400,7 +2400,7 @@ class Zenix:
         pass
 
     def telaAtendimento(self):
-        # Button atender
+        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.main)
         pass
 
 # Agendamento --------------------------------
@@ -2428,7 +2428,7 @@ class Zenix:
     
         menu_bar = tk.Menu(self.agendaRoot, background='#808080')
         menu = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menu.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        # menu.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
         menu.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
         menu.add_separator()
         menu.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
@@ -3570,16 +3570,16 @@ class Zenix:
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
         self.modalProcedimentos.config(menu=menu_bar)
         
-        titleNomeProcedimento = tk.Label(self.modalProcedimentos, text='NOME DO PROCEDIMENTO:', font='bold')
+        titleNomeProcedimento = tk.Label(self.modalProcedimentos, text='PROCEDIMENTO:', font='bold')
         titleNomeProcedimento.configure(background='#D3D3D3', fg='black')
         titleNomeProcedimento.place(relx= 0.03, rely=0.05)
 
-        buttonClear = tk.Button(self.modalProcedimentos, text='x', command=self.clearFieldProcedimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonClear.place(relx=0.282, rely=0.1, relwidth=0.05, relheight=0.05)
-        
         self.nomeProcedimento = tk.Entry(self.modalProcedimentos)
         self.nomeProcedimento.configure(background='white', fg='black', width=20)
         self.nomeProcedimento.place(relx= 0.032, rely=0.1)
+
+        buttonClear = tk.Button(self.modalProcedimentos, text='x', command=self.clearFieldProcedimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonClear.place(relx=0.282, rely=0.1, relwidth=0.05, relheight=0.05)
         
         titleEspecialidadeId = tk.Label(self.modalProcedimentos, text='ESPECIALIDADE:', font='bold')
         titleEspecialidadeId.configure(background='#D3D3D3', fg='black')
@@ -3598,7 +3598,7 @@ class Zenix:
 
         self.opcoesEspecialidadeProcedimento.trace_add('write', self.setIdEspecialidadeProcedimentos)
         
-        titleValores = tk.Label(self.modalProcedimentos, text='VALOR DO PROCEDIMENTO:', font='bold')
+        titleValores = tk.Label(self.modalProcedimentos, text='VALOR:', font='bold')
         titleValores.configure(background='#D3D3D3', fg='black')
         titleValores.place(relx= 0.55, rely=0.05)
         
@@ -3607,7 +3607,7 @@ class Zenix:
         titleReal.place(relx= 0.5, rely=0.1)
         
         self.valorProcedimento = tk.Entry(self.modalProcedimentos)
-        self.valorProcedimento.configure(background='white', fg='black', width=20)
+        self.valorProcedimento.configure(background='white', fg='black', width=10)
         self.valorProcedimento.place(relx= 0.553, rely=0.1)
 
         button = tk.Button(self.modalProcedimentos, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
