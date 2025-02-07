@@ -2024,7 +2024,6 @@ class Zenix:
         menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
-        # menuFunCli.add_command(label='Ocultar Tela', command=self.financeiro.withdraw, font=('Arial', 10, 'bold'), foreground='black')
         menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
 
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
