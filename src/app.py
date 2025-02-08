@@ -3436,7 +3436,7 @@ class Zenix:
             self.nomeEspecialidadeSelecionado = self.listaEspecialidadeSelecionado[1]
             
             # Status da Especialidade Selecionada
-            self.nomeEspecialidadeEspecialidadeSelecionado = self.listaEspecialidadeSelecionado[2]
+            self.statusEspecialidade = self.listaEspecialidadeSelecionado[2]
             
         except IndexError as e:
             return
@@ -3507,6 +3507,9 @@ class Zenix:
             self.modalAtualizaEspecialidade.configure(background='#D3D3D3')
             self.modalAtualizaEspecialidade.resizable(False,False)
             self.modalAtualizaEspecialidade.colormapwindows(self.modalAtualizaEspecialidade)
+
+            self.checkvar1 = IntVar()
+            self.checkvar1.set(self.statusEspecialidade)
             
             txtNome = tk.Label(self.modalAtualizaEspecialidade, text='ESPECIALIDADE:', font='bold')
             txtNome.place(relx= 0.1, rely=0.2)
@@ -3516,6 +3519,14 @@ class Zenix:
             self.nomeAtualizaEspecialidade.configure(background='white', fg='black')
             self.nomeAtualizaEspecialidade.place(relx= 0.1, rely=0.3)
             self.nomeAtualizaEspecialidade.insert(0, self.nomeEspecialidadeSelecionado)
+
+            txtCheck = Label(self.modalAtualizaEspecialidade, text='Ativo?')
+            txtCheck.place(relx= 0.5, rely=0.4)
+            txtCheck.configure(background='#D3D3D3', fg='black')
+
+            self.checkbutton1 = Checkbutton(self.modalAtualizaEspecialidade, text='', variable = self.checkvar1)
+            self.checkbutton1.place(relx= 0.5, rely=0.48)
+            self.checkbutton1.configure(background='#D3D3D3')
 
             buttonEdit = tk.Button(self.modalAtualizaEspecialidade, text='EDITAR', command=self.updateEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             buttonEdit.place(relx=0.1, rely=0.4)
@@ -3527,11 +3538,12 @@ class Zenix:
     def updateEspecialidade(self):
         especialidade = self.nomeAtualizaEspecialidade.get()
         idEspecialidade = self.idEspecialidadeSelecionado
+        ativo = self.checkvar1.get()
         
-        if especialidade == self.nomeEspecialidadeSelecionado or especialidade == "":
+        if especialidade == self.nomeEspecialidadeSelecionado or especialidade == "" and ativo == self.statusEspecialidade:
             messagebox.showinfo("Aviso", "Não foi possível alterar!", parent=self.modalAtualizaEspecialidade)
 
-        else:
+        elif ativo == self.statusEspecialidade:
            resultado = self.dao.atualizaEspecialidade(especialidade, idEspecialidade)
             
            if isinstance(resultado, str):
@@ -3540,6 +3552,18 @@ class Zenix:
            else:
                self.atualizaTreeEspecialidade()
                self.modalAtualizaEspecialidade.destroy()
+
+        else:
+            resultado2 = self.dao.atualizaEspecialidade(especialidade, idEspecialidade)
+            delete = self.dao.deleteLogicoEspecialidade(idEspecialidade)
+
+            if isinstance(resultado2, str) and isinstance(delete, str):
+                messagebox.showerror("Erro", "Não foi possível alterar!", parent=self.modalAtualizaEspecialidade)
+            
+            else:
+                self.atualizaTreeEspecialidade()
+                self.modalAtualizaEspecialidade.destroy()
+            
 
     def menuRightClick(self, event):
         itemSelecionado = self.treeviewEspecialidade.identify_row(event.y)
