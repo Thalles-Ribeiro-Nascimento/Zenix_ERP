@@ -1998,7 +1998,11 @@ class Zenix:
 
     def frameTvFinanceiro(self):
         self.frameviewFinanceiro = tk.Frame(self.financeiro, background='white')
-        self.frameviewFinanceiro.place(relx=0.02, rely=0.25, relheight=0.70, relwidth=0.96)
+        self.frameviewFinanceiro.place(relx=0.02, rely=0.25, relheight=0.6, relwidth=0.96)
+
+    def frameRelFinanceiro(self):
+        self.relatorioFinanceiro = tk.Frame(self.financeiro, background='white')
+        self.relatorioFinanceiro.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.96)
 
     def telaFinanceiro(self):
         self.financeiro = tk.Toplevel()
@@ -2091,8 +2095,10 @@ class Zenix:
 
         self.treeviewFinanceiro.place(relx=0, rely=0, relheight=1, relwidth=1)
 
-        verticalBar.place(relx=0.988 , rely=0, relheight=0.976)
-        horizontalBar.place(rely=0.976, relx=0, relwidth=1)
+        verticalBar.place(relx=0.988 , rely=0, relheight=0.972)
+        horizontalBar.place(rely=0.972, relx=0, relwidth=1)
+
+        self.frameRelFinanceiro()
                 
         self.financeiro.mainloop()
 
@@ -2106,74 +2112,144 @@ class Zenix:
         self.novoLancamento.grab_set()
         self.novoLancamento.lift()
         self.novoLancamento.title('Lançamento - [Novo]')
-        self.novoLancamento.geometry('750x550')
+        self.novoLancamento.geometry('750x450')
         self.novoLancamento.configure(background='#D3D3D3')
         self.novoLancamento.resizable(False,False)
 
         self.frameButtonNovoLancamento()
 
-        self.buttonNovoLancamento = tk.Button(self.frameButtonLancamento, text='INSERIR' , command=self.insertCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        self.buttonNovoLancamento.place(relx= 0.01, rely=0.2, relwidth=0.12, relheight=0.6)
+        self.buttonNovoLancamento = tk.Button(self.frameButtonLancamento, text='INSERIR' , command=self.insertLancamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.buttonNovoLancamento.place(relx= 0.01, rely=0.2, relwidth=0.14, relheight=0.6)
 
-        txtDataLancamento = tk.Label(self.novoLancamento, text='Data do Pagamento:', font='bold')
+        txtDataLancamento = tk.Label(self.novoLancamento, text='Data:', font='bold')
         txtDataLancamento.place(relx= 0.06, rely=0.2)
         txtDataLancamento.configure(background='#D3D3D3', fg='black')
 
-        self.dataLancamento = tk.Entry(self.novoLancamento,width=25)
+        self.dataLancamento = tk.Entry(self.novoLancamento,width=15)
         self.dataLancamento.configure(background='white', fg='black')
         self.dataLancamento.place(relx= 0.06, rely=0.245)
-                
-        txtCodAtendimento = tk.Label(self.novoLancamento, text='Cód.Atendimento:', font='bold')
-        txtCodAtendimento.place(relx= 0.7, rely=0.2)
-        txtCodAtendimento.configure(background='#D3D3D3', fg='black')
-
-        self.lancamentoAtd = tk.Entry(self.novoLancamento, width=15)
-        self.lancamentoAtd.place(relx= 0.7, rely=0.245)
-        self.lancamentoAtd.configure(background='white', fg='black')
 
         txtDescribe = tk.Label(self.novoLancamento, text='Descrição:', font='bold')
-        txtDescribe.place(relx= 0.06, rely=0.33)
+        txtDescribe.place(relx= 0.3, rely=0.2)
         txtDescribe.configure(background='#D3D3D3', fg='black')
 
-        self.describeLancamento = tk.Entry(self.novoLancamento, width=10)
+        self.describeLancamento = tk.Entry(self.novoLancamento, width=25)
         self.describeLancamento.configure(background='white', fg='black')
-        self.describeLancamento.place(relx= 0.06, rely=0.37)
+        self.describeLancamento.place(relx= 0.3, rely=0.245)
                 
-        txtVlBruto = tk.Label(self.novoLancamento, text='Valor Bruto:', font='bold')
-        txtVlBruto.place(relx= 0.45, rely=0.2)
+        txtVlBruto = tk.Label(self.novoLancamento, text='Vl.Bruto:', font='bold')
+        txtVlBruto.place(relx= 0.06, rely=0.33)
         txtVlBruto.configure(background='#D3D3D3', fg='black')
         
         self.valueTotal = tk.Entry(self.novoLancamento, width=10)
         self.valueTotal.configure(background='white', fg='black')
-        self.valueTotal.place(relx= 0.45, rely=0.245)
+        self.valueTotal.place(relx= 0.06, rely=0.38)
+
+        self.novoLancamento.bind('<F5>', self.setVlLiquido)
 
         txtImposto = tk.Label(self.novoLancamento, text='Imposto:', font='bold')
-        txtImposto.place(relx= 0.4, rely=0.33)
+        txtImposto.place(relx= 0.3, rely=0.33)
         txtImposto.configure(background='#D3D3D3', fg='black')
 
         self.imposto = tk.Entry(self.novoLancamento, width=10)
         self.imposto.configure(background='white', fg='black')
-        self.imposto.place(relx= 0.4, rely=0.37)
+        self.imposto.place(relx= 0.3, rely=0.38)
+
+        titleFormaPagamento = tk.Label(self.novoLancamento, text='Pagamento:', font='bold')
+        titleFormaPagamento.place(relx= 0.6, rely=0.2)
+        titleFormaPagamento.configure(background='#D3D3D3', fg='black')
+
+        self.formaPagamento = self.dao.formaPagamentoAll()
+        formaPagamentoId = [item[0] for item in self.formaPagamento]
+        formaPagamento = [item[1] for item in self.formaPagamento]
+        formaPagamentoTipo = [item[2] for item in self.formaPagamento]
+        self.mapPagamentoLancamento = dict(zip(formaPagamento, formaPagamentoId))
         
-        txtVlLiquido = tk.Label(self.novoLancamento, text='Valor Líquido:', font='bold')
-        txtVlLiquido.place(relx= 0.7, rely=0.33)
+        self.pagamentoOpcoes = StringVar(self.novoLancamento)
+        self.pagamentoOpcoes.set("Pagamento")
+        dropdown = tk.OptionMenu(self.novoLancamento, self.pagamentoOpcoes, *formaPagamento)
+        dropdown.configure(background='white', fg='black', activebackground='gray')
+        dropdown.place(relx= 0.6, rely=0.25)
+
+        self.pagamentoOpcoes.trace_add('write', self.formaPagamentoSet)
+
+        txtVlLiquido = tk.Label(self.novoLancamento, text='Vl.Líquido:', font='bold')
+        txtVlLiquido.place(relx= 0.45, rely=0.33)
         txtVlLiquido.configure(background='#D3D3D3', fg='black')
 
         self.valueLiquido = tk.Entry(self.novoLancamento, width=10)
-        self.valueLiquido.configure(background='white', fg='black')
-        self.valueLiquido.place(relx= 0.7, rely=0.37)
+        self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
+        self.valueLiquido.place(relx= 0.45, rely=0.38)
 
-        estimativa = IntVar()
-        txtEstimativa = tk.Label(self.novoLancamento, text='Estimativa?', font='bold')
-        txtEstimativa.place(relx= 0.06, rely=0.45)
-        txtEstimativa.configure(background='#D3D3D3', fg='black')
-
-        self.estimativaLancamento = Checkbutton(self.novoLancamento, text='', variable = estimativa)
-        self.estimativaLancamento.place(relx= 0.06, rely=0.495)
-        estimativa.set(1)
-        self.estimativaLancamento.configure(background='#D3D3D3')
+        self.estimativa = IntVar()
+        estimativaLancamento = Checkbutton(self.novoLancamento, text='Estimativa?', variable = self.estimativa)
+        estimativaLancamento.place(relx= 0.6, rely=0.38)
+        self.estimativa.set(1)
+        estimativaLancamento.configure(background='#D3D3D3')
         
         self.novoLancamento.mainloop()
+
+    def setVlLiquido(self, event):
+        total = self.valueTotal.get()
+        imposto = self.imposto.get()
+        liquido = self.valueLiquido.get()
+        
+        if total == "":
+            return
+        else:
+            if imposto == "" or imposto == 0:
+                self.valueLiquido.configure(state='normal', background='white', fg='black')
+
+                self.valueLiquido.insert(0, total)
+                
+                self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
+
+            elif liquido == "":
+                self.valueLiquido.configure(state='normal', background='white', fg='black')
+
+                valorTotal = int(total)
+                imposto = int(imposto)
+                vlLiquido = valorTotal * (imposto/100)
+                self.valueLiquido.insert(0, str(vlLiquido))
+                
+                self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
+                
+
+            else:
+                self.valueLiquido.configure(state='normal', background='white', fg='black')
+                self.valueLiquido.delete(0, END)
+
+                valorTotal = int(total)
+                imposto = int(imposto)
+                vlLiquido = valorTotal * (imposto/100)
+                self.valueLiquido.insert(0, str(vlLiquido))
+                
+                self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
+
+    def formaPagamentoSet(self, *args):
+        self.selecaoPagamentoLancamento = self.pagamentoOpcoes.get()
+        self.idPagamentoLancamento = self.mapPagamentoLancamento.get(self.selecaoPagamentoLancamento)
+
+    def insertLancamento(self):
+        dataPagamento = self.dataLancamento.get()
+        descricao = self.describeLancamento.get()
+        valorTotal = self.valueTotal.get()
+        imposto = self.imposto.get()
+        valorPagar = self.valueLiquido.get()
+        estimativa = self.estimativa.get()
+        pagamento = self.idPagamentoLancamento
+
+        if dataPagamento == "" or descricao == "" or valorTotal == "":
+            messagebox.showerror("Aviso","Campos vazios", parent=self.novoLancamento)
+        
+        else:
+            dao = self.dao.insertLancamento(dataPagamento, 0, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento)
+            if isinstance(dao, str):
+                messagebox.showerror("Erro", dao, parent=self.novoLancamento)
+                
+            else:
+                self.atualizaTreeLancamento()
+                self.novoLancamento.destroy()
 
     def telaForma_pagamento(self):
         messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.financeiro)
@@ -2432,13 +2508,12 @@ class Zenix:
         #     self.exibir_sucesso(msn, self.formaPagamento) 
         pass
 
-    def atualizaTreeFormaPagamento(self):
-        # self.treeviewParcelas.delete(*self.treeviewParcelas.get_children())
+    def atualizaTreeLancamento(self):
+        self.treeviewFinanceiro.delete(*self.treeviewFinanceiro.get_children())
 
-        # rowsFormaPagamento = self.dao.parcelasPagamento(self.formaPagamentoDsc)        
-        # for row in rowsFormaPagamento:
-        #     self.treeviewParcelas.insert("", END, values=row)
-        pass
+        rowsLancamento = self.dao.lancamentos()        
+        for row in rowsLancamento:
+            self.treeviewFinanceiro.insert("", END, values=row)
 
     def selectFormaPagamento(self, event):
         # try:

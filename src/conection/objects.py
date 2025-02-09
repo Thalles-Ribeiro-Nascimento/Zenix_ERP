@@ -552,12 +552,12 @@ class Dao:
 
         return rows
     
-    def insertLancamento(self, data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa):
+    def insertLancamento(self, data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         try:
-            sql = f"INSERT INTO lancamento (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-            self.cursor.execute(sql, (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa))
+            sql = f"INSERT INTO lancamento (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            self.cursor.execute(sql, (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento))
             self.conecta.commit()
             return
         
