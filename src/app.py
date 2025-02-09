@@ -163,6 +163,7 @@ class Zenix:
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Lançamentos',command=self.telaLancamento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
@@ -198,7 +199,7 @@ class Zenix:
         buttonProcedimento = tk.Button(self.main, text='PROCEDIMENTO', command=self.telaProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonProcedimento.grid(row=2, column=2, sticky="nsew", padx=20, pady=10)
 
-        buttonFinanceiro = tk.Button(self.main, text='FINANCEIRO' , command=self.telaFinanceiro, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonFinanceiro = tk.Button(self.main, text='LANÇAMENTOS' , command=self.telaLancamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonFinanceiro.grid(row=2, column=3, sticky="nsew", padx=20, pady=10)
 
         buttonFatura = tk.Button(self.main, text='FATURAMENTO', command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
@@ -243,7 +244,7 @@ class Zenix:
         menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Lançamentos',command=self.telaLancamento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
@@ -1106,7 +1107,7 @@ class Zenix:
         menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuFunCli.add_command(label='Lançamentos',command=self.telaLancamento, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_separator()
         menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
         menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
@@ -1992,29 +1993,29 @@ class Zenix:
 
 # Parte de Financeiro -------------------------------------
 
-    def frameFinanceiro(self):
-        self.framefinanceiros = tk.Frame(self.financeiro, background='#A9A9A9')
-        self.framefinanceiros.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
+    def frameLancamento(self):
+        self.frameLancamentos = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
+        self.frameLancamentos.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
 
-    def frameTvFinanceiro(self):
-        self.frameviewFinanceiro = tk.Frame(self.financeiro, background='white')
-        self.frameviewFinanceiro.place(relx=0.02, rely=0.25, relheight=0.6, relwidth=0.96)
+    def frameTvLancamento(self):
+        self.frameviewLancamento = tk.Frame(self.lancamentoRoot, background='white')
+        self.frameviewLancamento.place(relx=0.02, rely=0.25, relheight=0.6, relwidth=0.96)
 
-    def frameRelFinanceiro(self):
-        self.relatorioFinanceiro = tk.Frame(self.financeiro, background='white')
-        self.relatorioFinanceiro.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.96)
+    def frameRelLancamento(self):
+        self.relatorioLancamento = tk.Frame(self.lancamentoRoot, background='gray')
+        self.relatorioLancamento.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.96)
 
-    def telaFinanceiro(self):
-        self.financeiro = tk.Toplevel()
-        self.financeiro.transient(self.main)
-        self.financeiro.lift()
-        self.financeiro.title('Lançamentos')
-        self.financeiro.configure(background='#A9A9A9')
-        self.financeiro.geometry('1024x720')
-        self.financeiro.resizable(False, False)
+    def telaLancamento(self):
+        self.lancamentoRoot = tk.Toplevel()
+        self.lancamentoRoot.transient(self.main)
+        self.lancamentoRoot.lift()
+        self.lancamentoRoot.title('Lançamentos')
+        self.lancamentoRoot.configure(background='#A9A9A9')
+        self.lancamentoRoot.geometry('1024x720')
+        self.lancamentoRoot.resizable(False, False)
         
         # Menu superior
-        menu_bar = tk.Menu(self.financeiro, background='#808080')
+        menu_bar = tk.Menu(self.lancamentoRoot, background='#808080')
 
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
         menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
@@ -2026,18 +2027,129 @@ class Zenix:
         menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
-        self.financeiro.config(menu=menu_bar)
+        self.lancamentoRoot.config(menu=menu_bar)
         # Fim do menu superior
 
-        self.frameFinanceiro()
-        texto_nome = tk.Label(self.framefinanceiros, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
+        self.frameLancamento()
+        texto_nome = tk.Label(self.frameLancamentos, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
         texto_nome.place(relx=0.02, rely=0.35)
 
-        self.campo_nome = tk.Entry(self.framefinanceiros, width=25, bg='white', fg='black')
+        self.campo_nome = tk.Entry(self.frameLancamentos, width=25, bg='white', fg='black')
         self.campo_nome.place(relx=0.02, rely=0.5)
 
-        self.buscarFunc = tk.Button(self.framefinanceiros, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.buscarFunc = tk.Button(self.frameLancamentos, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buscarFunc.place(relx=0.02, rely=0.7 ,relheight=0.2)
+
+        self.frameTvLancamento()
+        self.treeviewLancamento = ttk.Treeview(self.frameviewLancamento, columns=(
+            'Cod.Lancamento', 'Data', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 
+            'Especialidade' ,'Forma de Pagamento', 'Tipo', 'Descricao',
+            'Vl.Bruto', 'Taxa','Imposto', 'Perc.(%)', 'Vl.Liquido', 'Estimativa', 'Status' 
+            ), show='headings')
+
+        self.treeviewLancamento.heading('Cod.Lancamento', text='Cód.Lancamento')
+        self.treeviewLancamento.heading('Data', text='Data')
+        self.treeviewLancamento.heading('Cod.Atendimento', text='Cod.Atendimento')
+        self.treeviewLancamento.heading('Funcionario', text='Funcionario')
+        self.treeviewLancamento.heading('Procedimento', text='Procedimento')
+        self.treeviewLancamento.heading('Especialidade', text='Especialidade')
+        self.treeviewLancamento.heading('Forma de Pagamento', text='Pagamento')
+        self.treeviewLancamento.heading('Tipo', text='Tipo')
+        self.treeviewLancamento.heading('Descricao', text='Descricao')
+        self.treeviewLancamento.heading('Vl.Bruto', text='Vl.Bruto')
+        self.treeviewLancamento.heading('Taxa', text='Taxa')
+        self.treeviewLancamento.heading('Imposto', text='Imposto')
+        self.treeviewLancamento.heading('Perc.(%)', text='Perc.(%)')
+        self.treeviewLancamento.heading('Vl.Liquido', text='Vl.Liquido')
+        self.treeviewLancamento.heading('Estimativa', text='Estimativa')
+        self.treeviewLancamento.heading('Status', text='Status')
+        
+        self.treeviewLancamento.column('Cod.Lancamento', stretch=False, width=90)
+        self.treeviewLancamento.column('Data', stretch=False)
+        self.treeviewLancamento.column('Cod.Atendimento', stretch=False)
+        self.treeviewLancamento.column('Funcionario', stretch=False, width=100)
+        self.treeviewLancamento.column('Procedimento', stretch=False, width=100)
+        self.treeviewLancamento.column('Especialidade', stretch=False, width=100)
+        self.treeviewLancamento.column('Forma de Pagamento', stretch=False, width=100)
+        self.treeviewLancamento.column('Tipo', stretch=False)
+        self.treeviewLancamento.column('Descricao', stretch=False)
+        self.treeviewLancamento.column('Vl.Bruto', stretch=False, width=90)
+        self.treeviewLancamento.column('Taxa', stretch=False, width=90)
+        self.treeviewLancamento.column('Imposto', stretch=False)
+        self.treeviewLancamento.column('Perc.(%)', stretch=False)
+        self.treeviewLancamento.column('Vl.Liquido', stretch=False, width=90)
+        self.treeviewLancamento.column('Estimativa', stretch=False, width=90)
+        self.treeviewLancamento.column('Status', stretch=False, width=90)
+                   
+        verticalBar = ttk.Scrollbar(self.frameviewLancamento, orient='vertical', command=self.treeviewLancamento.yview)
+        horizontalBar = ttk.Scrollbar(self.frameviewLancamento, orient='horizontal', command=self.treeviewLancamento.xview)
+        self.treeviewLancamento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeviewLancamento)
+        style.theme_use('clam')
+        style.configure("self.treeviewLancamento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        rows = self.dao.lancamentos()
+
+        for row in rows:
+            self.treeviewFinanceiro.insert("", tk.END, values=row)
+
+        self.treeviewLancamento.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        verticalBar.place(relx=0.988 , rely=0, relheight=0.972)
+        horizontalBar.place(rely=0.972, relx=0, relwidth=1)
+
+        self.frameRelLancamento()
+                
+        self.lancamentoRoot.mainloop()
+
+    def frameFinanceiro(self):
+        self.frameFinanceiros = tk.Frame(self.financeiroRoot, background='#A9A9A9')
+        self.frameFinanceiros.place(relx=0.02, rely=0.1, relheight=0.20, relwidth=0.96)
+
+    def frameTvFinanceiro(self):
+        self.frameviewFinanceiro = tk.Frame(self.financeiroRoot, background='white')
+        self.frameviewFinanceiro.place(relx=0.02, rely=0.25, relheight=0.6, relwidth=0.96)
+
+    def frameButtonsTelaFinanceiro(self):
+        self.buttonsFinanceiro = tk.Frame(self.financeiroRoot, background='gray')
+        self.buttonsFinanceiro.place(relx=0.0, rely=0.0, relheight=0.07, relwidth=1)
+
+    def telaFinanceiro(self):
+        self.financeiroRoot = tk.Toplevel()
+        self.financeiroRoot.transient(self.main)
+        self.financeiroRoot.lift()
+        self.financeiroRoot.title('Financeiro - [Contas Fixas]')
+        self.financeiroRoot.configure(background='#A9A9A9')
+        self.financeiroRoot.geometry('1024x720')
+        self.financeiroRoot.resizable(False, False)
+        
+        self.frameButtonsTelaFinanceiro()
+
+        btnNovo = tk.Button(self.buttonsFinanceiro, text='Novo', command=self.modalnovoFinanceiro, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        btnNovo.place(relx= 0.01, rely=0.2, relwidth=0.14, relheight=0.6)
+
+        # menu_bar = tk.Menu(self.financeiroRoot, background='#808080')
+
+        # menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        # menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
+        # menuAuxiliar.add_separator()
+        # menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
+        # menuAuxiliar.add_separator()
+        # menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
+        # menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+
+        # self.financeiroRoot.config(menu=menu_bar)
+
+        self.frameFinanceiro()
+        texto_nome = tk.Label(self.frameFinanceiros, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
+        texto_nome.place(relx=0.02, rely=0.15)
+
+        self.campo_nome = tk.Entry(self.frameFinanceiros, width=25, bg='white', fg='black')
+        self.campo_nome.place(relx=0.02, rely=0.3)
+
+        buscarFunc = tk.Button(self.buttonsFinanceiro, text='Buscar' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buscarFunc.place(relx= 0.2, rely=0.2, relwidth=0.14, relheight=0.6)
 
         self.frameTvFinanceiro()
         self.treeviewFinanceiro = ttk.Treeview(self.frameviewFinanceiro, columns=(
@@ -2097,65 +2209,63 @@ class Zenix:
 
         verticalBar.place(relx=0.988 , rely=0, relheight=0.972)
         horizontalBar.place(rely=0.972, relx=0, relwidth=1)
-
-        self.frameRelFinanceiro()
                 
-        self.financeiro.mainloop()
+        self.financeiroRoot.mainloop()
 
-    def frameButtonNovoLancamento(self):
-        self.frameButtonLancamento = tk.Frame(self.novoLancamento, background='gray')
+    def frameButtonNovoFinanceiro(self):
+        self.frameButtonLancamento = tk.Frame(self.novoFinanceiro, background='gray')
         self.frameButtonLancamento.place(relx=0.0, rely=0.0, relheight=0.07, relwidth=1)
 
-    def modalNovoLancamento(self):
-        self.novoLancamento = tk.Toplevel()
-        self.novoLancamento.transient(self.financeiro)
-        self.novoLancamento.grab_set()
-        self.novoLancamento.lift()
-        self.novoLancamento.title('Lançamento - [Novo]')
-        self.novoLancamento.geometry('750x450')
-        self.novoLancamento.configure(background='#D3D3D3')
-        self.novoLancamento.resizable(False,False)
+    def modalnovoFinanceiro(self):
+        self.novoFinanceiro = tk.Toplevel()
+        self.novoFinanceiro.transient(self.financeiroRoot)
+        self.novoFinanceiro.grab_set()
+        self.novoFinanceiro.lift()
+        self.novoFinanceiro.title('Financeiro - [Novo]')
+        self.novoFinanceiro.geometry('750x450')
+        self.novoFinanceiro.configure(background='#D3D3D3')
+        self.novoFinanceiro.resizable(False,False)
 
-        self.frameButtonNovoLancamento()
+        self.frameButtonNovoFinanceiro()
 
-        self.buttonNovoLancamento = tk.Button(self.frameButtonLancamento, text='INSERIR' , command=self.insertLancamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        self.buttonNovoLancamento.place(relx= 0.01, rely=0.2, relwidth=0.14, relheight=0.6)
+        self.buttonnovoFinanceiro = tk.Button(self.frameButtonLancamento, text='INSERIR' , command=self.insertFinanceiro, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.buttonnovoFinanceiro.place(relx= 0.01, rely=0.2, relwidth=0.14, relheight=0.6)
 
-        txtDataLancamento = tk.Label(self.novoLancamento, text='Data:', font='bold')
+        txtDataLancamento = tk.Label(self.novoFinanceiro, text='Data:', font='bold')
         txtDataLancamento.place(relx= 0.06, rely=0.2)
         txtDataLancamento.configure(background='#D3D3D3', fg='black')
 
-        self.dataLancamento = tk.Entry(self.novoLancamento,width=15)
+        self.dataLancamento = tk.Entry(self.novoFinanceiro,width=15)
         self.dataLancamento.configure(background='white', fg='black')
         self.dataLancamento.place(relx= 0.06, rely=0.245)
 
-        txtDescribe = tk.Label(self.novoLancamento, text='Descrição:', font='bold')
+        txtDescribe = tk.Label(self.novoFinanceiro, text='Descrição:', font='bold')
         txtDescribe.place(relx= 0.3, rely=0.2)
         txtDescribe.configure(background='#D3D3D3', fg='black')
 
-        self.describeLancamento = tk.Entry(self.novoLancamento, width=25)
+        self.describeLancamento = tk.Entry(self.novoFinanceiro, width=25)
         self.describeLancamento.configure(background='white', fg='black')
         self.describeLancamento.place(relx= 0.3, rely=0.245)
                 
-        txtVlBruto = tk.Label(self.novoLancamento, text='Vl.Bruto:', font='bold')
+        txtVlBruto = tk.Label(self.novoFinanceiro, text='Vl.Bruto:', font='bold')
         txtVlBruto.place(relx= 0.06, rely=0.33)
         txtVlBruto.configure(background='#D3D3D3', fg='black')
         
-        self.valueTotal = tk.Entry(self.novoLancamento, width=10)
+        self.valueTotal = tk.Entry(self.novoFinanceiro, width=10)
         self.valueTotal.configure(background='white', fg='black')
         self.valueTotal.place(relx= 0.06, rely=0.38)
 
-        self.novoLancamento.bind('<F5>', self.setVlLiquido)
+        self.novoFinanceiro.bind('<F5>', self.setVlLiquido)
 
-        txtImposto = tk.Label(self.novoLancamento, text='Imposto:', font='bold')
+        txtImposto = tk.Label(self.novoFinanceiro, text='Imposto:', font='bold')
         txtImposto.place(relx= 0.3, rely=0.33)
         txtImposto.configure(background='#D3D3D3', fg='black')
 
-        self.imposto = tk.Entry(self.novoLancamento, width=10)
+        self.imposto = tk.Entry(self.novoFinanceiro, width=10)
         self.imposto.configure(background='white', fg='black')
         self.imposto.place(relx= 0.3, rely=0.38)
 
-        titleFormaPagamento = tk.Label(self.novoLancamento, text='Pagamento:', font='bold')
+        titleFormaPagamento = tk.Label(self.novoFinanceiro, text='Pagamento:', font='bold')
         titleFormaPagamento.place(relx= 0.6, rely=0.2)
         titleFormaPagamento.configure(background='#D3D3D3', fg='black')
 
@@ -2165,29 +2275,29 @@ class Zenix:
         formaPagamentoTipo = [item[2] for item in self.formaPagamento]
         self.mapPagamentoLancamento = dict(zip(formaPagamento, formaPagamentoId))
         
-        self.pagamentoOpcoes = StringVar(self.novoLancamento)
+        self.pagamentoOpcoes = StringVar(self.novoFinanceiro)
         self.pagamentoOpcoes.set("Pagamento")
-        dropdown = tk.OptionMenu(self.novoLancamento, self.pagamentoOpcoes, *formaPagamento)
+        dropdown = tk.OptionMenu(self.novoFinanceiro, self.pagamentoOpcoes, *formaPagamento)
         dropdown.configure(background='white', fg='black', activebackground='gray')
         dropdown.place(relx= 0.6, rely=0.25)
 
         self.pagamentoOpcoes.trace_add('write', self.formaPagamentoSet)
 
-        txtVlLiquido = tk.Label(self.novoLancamento, text='Vl.Líquido:', font='bold')
+        txtVlLiquido = tk.Label(self.novoFinanceiro, text='Vl.Líquido:', font='bold')
         txtVlLiquido.place(relx= 0.45, rely=0.33)
         txtVlLiquido.configure(background='#D3D3D3', fg='black')
 
-        self.valueLiquido = tk.Entry(self.novoLancamento, width=10)
+        self.valueLiquido = tk.Entry(self.novoFinanceiro, width=10)
         self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
         self.valueLiquido.place(relx= 0.45, rely=0.38)
 
         self.estimativa = IntVar()
-        estimativaLancamento = Checkbutton(self.novoLancamento, text='Estimativa?', variable = self.estimativa)
+        estimativaLancamento = Checkbutton(self.novoFinanceiro, text='Estimativa?', variable = self.estimativa)
         estimativaLancamento.place(relx= 0.6, rely=0.38)
         self.estimativa.set(1)
         estimativaLancamento.configure(background='#D3D3D3')
         
-        self.novoLancamento.mainloop()
+        self.novoFinanceiro.mainloop()
 
     def setVlLiquido(self, event):
         total = self.valueTotal.get()
@@ -2209,7 +2319,7 @@ class Zenix:
 
                 valorTotal = int(total)
                 imposto = int(imposto)
-                vlLiquido = valorTotal * (imposto/100)
+                vlLiquido = valorTotal - (valorTotal * (imposto/100))
                 self.valueLiquido.insert(0, str(vlLiquido))
                 
                 self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
@@ -2230,7 +2340,7 @@ class Zenix:
         self.selecaoPagamentoLancamento = self.pagamentoOpcoes.get()
         self.idPagamentoLancamento = self.mapPagamentoLancamento.get(self.selecaoPagamentoLancamento)
 
-    def insertLancamento(self):
+    def insertFinanceiro(self):
         dataPagamento = self.dataLancamento.get()
         descricao = self.describeLancamento.get()
         valorTotal = self.valueTotal.get()
@@ -2252,10 +2362,10 @@ class Zenix:
                 self.novoLancamento.destroy()
 
     def telaForma_pagamento(self):
-        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.financeiro)
+        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.lancamentoRoot)
 
         # self.formaPagamento = tk.Toplevel()
-        # self.formaPagamento.transient(self.financeiro)
+        # self.formaPagamento.transient(self.lancamentoRoot)
         # # self.formaPagamento.grab_set()
         # self.formaPagamento.lift()
         # self.formaPagamento.title('Forma de Pagamento')
@@ -2315,7 +2425,7 @@ class Zenix:
         # self.formaPagamento.mainloop()
 
     def adicionarFormaPagamento(self):
-        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.financeiro)
+        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.lancamentoRoot)
 
         # self.modalNovaFormaPagamento = tk.Toplevel()
         # self.modalNovaFormaPagamento.transient(self.formaPagamento)
@@ -2581,7 +2691,7 @@ class Zenix:
         menu.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
         menu.add_separator()
         menu.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
-        menu.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Lançamentos',command=self.telaLancamento, font=('Arial', 10, 'bold'), foreground='black')
         menu.add_separator()
         menu.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
         menu.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
