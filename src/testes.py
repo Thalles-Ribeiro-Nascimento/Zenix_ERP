@@ -17,15 +17,15 @@ class MinhaGUI:
         self.checkvar4 = IntVar()
         
         # Setando valor 0 para aparecem desmarcados
-        self.checkvar1.set(0)
-        self.checkvar2.set(1)
+        self.checkvar1.set(2)
+        self.checkvar2.set(0)
         self.checkvar3.set(0)
         self.checkvar4.set(0)
         
         # Criando os check buttons e o label
         self.label = Label(self.frame_cima, text='Que tipo de música você gosta: ')
         self.checkbutton1 = Checkbutton(self.frame_cima, text='MPB', \
-            variable = self.checkvar1)
+            onvalue=2, offvalue=1, variable = self.checkvar1)
         self.checkbutton2 = Checkbutton(self.frame_cima, text='Música clássica', \
             variable = self.checkvar2)
         self.checkbutton3 = Checkbutton(self.frame_cima, text='Metal', \

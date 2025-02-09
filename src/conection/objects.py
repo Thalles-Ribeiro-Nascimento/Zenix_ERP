@@ -568,6 +568,14 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
    
+    def lancamentos(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Lancamento"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
 
+        return rows
 
 # CURDATE()
