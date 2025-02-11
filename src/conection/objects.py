@@ -93,7 +93,6 @@ class Dao:
                 self.erroUpdateFunc = f"Campo Duplicado\n{msg}"
                 return self.erroUpdateFunc
             else:
-                print(error.split(":")[1])
                 return error.split(":")[1]
        
     def deleteLogicoEspecialidade(self, id):

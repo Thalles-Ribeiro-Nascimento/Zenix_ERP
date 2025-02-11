@@ -1991,8 +1991,9 @@ class Zenix:
 
 # Fim Cliente -------------------------------------
 
-# Parte de Financeiro -------------------------------------
+# Tela Financeiro/Lançamento -------------------------------------
 
+# Lançamento ------------------------------
     def frameLancamento(self):
         self.frameLancamentos = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
         self.frameLancamentos.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
@@ -2022,8 +2023,8 @@ class Zenix:
         menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
-        menuAuxiliar.add_command(label='Novo',command=self.modalNovoLancamento, font=('Arial', 10, 'bold'), foreground='black')
-        menuAuxiliar.add_separator()
+        # menuAuxiliar.add_command(label='Novo',command=self.modalNovoLancamento, font=('Arial', 10, 'bold'), foreground='black')
+        # menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
         menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
@@ -2102,6 +2103,7 @@ class Zenix:
         self.frameRelLancamento()
                 
         self.lancamentoRoot.mainloop()
+# Lançamento ------------------------------
 
     def frameFinanceiro(self):
         self.frameFinanceiros = tk.Frame(self.financeiroRoot, background='#A9A9A9')
@@ -2129,18 +2131,6 @@ class Zenix:
         btnNovo = tk.Button(self.buttonsFinanceiro, text='Novo', command=self.modalnovoFinanceiro, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         btnNovo.place(relx= 0.01, rely=0.2, relwidth=0.14, relheight=0.6)
 
-        # menu_bar = tk.Menu(self.financeiroRoot, background='#808080')
-
-        # menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        # menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
-        # menuAuxiliar.add_separator()
-        # menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
-        # menuAuxiliar.add_separator()
-        # menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
-        # menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-
-        # self.financeiroRoot.config(menu=menu_bar)
-
         self.frameFinanceiro()
         texto_nome = tk.Label(self.frameFinanceiros, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
         texto_nome.place(relx=0.02, rely=0.15)
@@ -2149,7 +2139,7 @@ class Zenix:
         self.campo_nome.place(relx=0.02, rely=0.3)
 
         buscarFunc = tk.Button(self.buttonsFinanceiro, text='Buscar' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buscarFunc.place(relx= 0.2, rely=0.2, relwidth=0.14, relheight=0.6)
+        buscarFunc.place(relx= 0.12, rely=0.2, relwidth=0.14, relheight=0.6)
 
         self.frameTvFinanceiro()
         self.treeviewFinanceiro = ttk.Treeview(self.frameviewFinanceiro, columns=(
