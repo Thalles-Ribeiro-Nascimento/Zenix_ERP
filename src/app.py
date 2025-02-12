@@ -184,26 +184,26 @@ class Zenix:
         self.main.columnconfigure(2, weight=1)
         self.main.columnconfigure(3, weight=1)
         self.main.columnconfigure(4, weight=1)
-        self.main.rowconfigure(0, weight=0)
-        self.main.rowconfigure(1, weight=0)
+        # self.main.rowconfigure(0, weight=0)
+        # self.main.rowconfigure(1, weight=0)
         self.main.rowconfigure(2, weight=0)
-        self.main.rowconfigure(3, weight=0)
-        self.main.rowconfigure(4, weight=0)
+        # self.main.rowconfigure(3, weight=1)
+        # self.main.rowconfigure(4, weight=0)
 
         buttonAgenda = tk.Button(self.main, text='AGENDAMENTO', command=self.telaAgenda, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAgenda.grid(row=2, column=0, sticky="nsew", padx=20, pady=10)
+        buttonAgenda.grid(row=2, column=0, padx=20, pady=10)
 
         buttonAtendimento = tk.Button(self.main, text='ATENDIMENTO', command=self.telaAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAtendimento.grid(row=2, column=1, sticky="nsew", padx=20, pady=10)
+        buttonAtendimento.grid(row=2, column=1, padx=20, pady=10)
 
         buttonProcedimento = tk.Button(self.main, text='PROCEDIMENTO', command=self.telaProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonProcedimento.grid(row=2, column=2, sticky="nsew", padx=20, pady=10)
+        buttonProcedimento.grid(row=2, column=2, padx=20, pady=10)
 
         buttonFinanceiro = tk.Button(self.main, text='LANÇAMENTOS' , command=self.telaLancamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonFinanceiro.grid(row=2, column=3, sticky="nsew", padx=20, pady=10)
+        buttonFinanceiro.grid(row=2, column=3, padx=20, pady=10)
 
         buttonFatura = tk.Button(self.main, text='FATURAMENTO', command=self.telaFaturamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonFatura.grid(row=2, column=4, sticky="nsew", padx=20, pady=10)       
+        buttonFatura.grid(row=2, column=4, padx=20, pady=10)       
 
         self.main.mainloop()
 
@@ -2128,8 +2128,17 @@ class Zenix:
         
         self.frameButtonsTelaFinanceiro()
 
+        self.financeiroRoot.grid_columnconfigure(0, weight=0)
+        self.financeiroRoot.grid_columnconfigure(1, weight=0)
+        self.financeiroRoot.grid_columnconfigure(2, weight=0)
+        self.financeiroRoot.grid_columnconfigure(3, weight=0)
+        self.financeiroRoot.grid_rowconfigure(0,weight=0)
+
         btnNovo = tk.Button(self.buttonsFinanceiro, text='Novo', command=self.modalnovoFinanceiro, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        btnNovo.place(relx= 0.01, rely=0.2, relwidth=0.14, relheight=0.6)
+        btnNovo.grid(row=0, column=0, padx=10, pady=5)
+
+        buscarFunc = tk.Button(self.buttonsFinanceiro, text='Buscar' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buscarFunc.grid(row=0, column=1, padx=10, pady=5)
 
         self.frameFinanceiro()
         texto_nome = tk.Label(self.frameFinanceiros, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
@@ -2137,9 +2146,6 @@ class Zenix:
 
         self.campo_nome = tk.Entry(self.frameFinanceiros, width=25, bg='white', fg='black')
         self.campo_nome.place(relx=0.02, rely=0.3)
-
-        buscarFunc = tk.Button(self.buttonsFinanceiro, text='Buscar' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buscarFunc.place(relx= 0.12, rely=0.2, relwidth=0.14, relheight=0.6)
 
         self.frameTvFinanceiro()
         self.treeviewFinanceiro = ttk.Treeview(self.frameviewFinanceiro, columns=(
@@ -2254,6 +2260,7 @@ class Zenix:
         self.imposto = tk.Entry(self.novoFinanceiro, width=10)
         self.imposto.configure(background='white', fg='black')
         self.imposto.place(relx= 0.3, rely=0.38)
+        
 
         titleFormaPagamento = tk.Label(self.novoFinanceiro, text='Pagamento:', font='bold')
         titleFormaPagamento.place(relx= 0.6, rely=0.2)
@@ -2281,6 +2288,15 @@ class Zenix:
         self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
         self.valueLiquido.place(relx= 0.45, rely=0.38)
 
+        txtJuros = tk.Label(self.novoFinanceiro, text='Juros/Multa:', font='bold')
+        txtJuros.place(relx= 0.2, rely=0.53)
+        txtJuros.configure(background='#D3D3D3', fg='black')
+
+        self.jurosMultaFinancas = tk.Entry(self.novoFinanceiro, width=10)
+        self.jurosMultaFinancas.configure(background='white', fg='black')
+        self.jurosMultaFinancas.place(relx= 0.2, rely=0.58)
+        
+
         self.estimativa = IntVar()
         estimativaLancamento = Checkbutton(self.novoFinanceiro, text='Estimativa?', variable = self.estimativa)
         estimativaLancamento.place(relx= 0.6, rely=0.38)
@@ -2292,36 +2308,61 @@ class Zenix:
     def setVlLiquido(self, event):
         total = self.valueTotal.get()
         imposto = self.imposto.get()
-        liquido = self.valueLiquido.get()
+        juros = self.jurosMultaFinancas.get()
         
         if total == "":
             return
         else:
-            if imposto == "" or imposto == 0:
+            if imposto == "" and juros == "":
+                print("Imposto e Juros vazios")
+                imposto = 0
+                juros = 0
                 self.valueLiquido.configure(state='normal', background='white', fg='black')
-
-                self.valueLiquido.insert(0, total)
                 
-                self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
-
-            elif liquido == "":
-                self.valueLiquido.configure(state='normal', background='white', fg='black')
-
                 valorTotal = int(total)
                 imposto = int(imposto)
-                vlLiquido = valorTotal - (valorTotal * (imposto/100))
+                juros = int(juros)
+                vlLiquido = juros + valorTotal - imposto
+                self.valueLiquido.delete(0, END)
                 self.valueLiquido.insert(0, str(vlLiquido))
                 
                 self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
-                
 
-            else:
+            elif imposto == "":
+                print("Imposto vazio")
+                imposto = 0
                 self.valueLiquido.configure(state='normal', background='white', fg='black')
+            
+                valorTotal = int(total)
+                juros = int(juros)
+                vlLiquido = juros + valorTotal - imposto
                 self.valueLiquido.delete(0, END)
+                self.valueLiquido.insert(0, str(vlLiquido))
+                
+                self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
 
+            elif juros == "":
+                print("Juros vazio")
+                juros = 0
+                self.valueLiquido.configure(state='normal', background='white', fg='black')
+            
                 valorTotal = int(total)
                 imposto = int(imposto)
-                vlLiquido = valorTotal * (imposto/100)
+                vlLiquido = juros + valorTotal - imposto
+                self.valueLiquido.delete(0, END)
+                self.valueLiquido.insert(0, str(vlLiquido))
+                
+                self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
+
+            else:
+                print("Campos preenchidos")
+                self.valueLiquido.configure(state='normal', background='white', fg='black')
+                
+                valorTotal = int(total)
+                imposto = int(imposto)
+                juros = int(juros)
+                vlLiquido = juros + valorTotal - imposto
+                self.valueLiquido.delete(0, END)
                 self.valueLiquido.insert(0, str(vlLiquido))
                 
                 self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
@@ -2333,23 +2374,24 @@ class Zenix:
     def insertFinanceiro(self):
         dataPagamento = self.dataLancamento.get()
         descricao = self.describeLancamento.get()
-        valorTotal = self.valueTotal.get()
+        vlBruto = self.valueTotal.get()
         imposto = self.imposto.get()
-        valorPagar = self.valueLiquido.get()
+        juros = self.jurosMultaFinancas.get()
+        vlLiquido = self.valueLiquido.get()
         estimativa = self.estimativa.get()
         pagamento = self.idPagamentoLancamento
 
-        if dataPagamento == "" or descricao == "" or valorTotal == "":
-            messagebox.showerror("Aviso","Campos vazios", parent=self.novoLancamento)
+        if dataPagamento == "" or descricao == "" or vlBruto == "":
+            messagebox.showerror("Aviso","Campos vazios", parent=self.novoFinanceiro)
         
         else:
-            dao = self.dao.insertLancamento(dataPagamento, 0, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento)
+            dao = self.dao.insertFinanceiro(dataPagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento)
             if isinstance(dao, str):
-                messagebox.showerror("Erro", dao, parent=self.novoLancamento)
+                messagebox.showerror("Erro", dao, parent=self.novoFinanceiro)
                 
             else:
                 self.atualizaTreeLancamento()
-                self.novoLancamento.destroy()
+                self.novoFinanceiro.destroy()
 
     def telaForma_pagamento(self):
         messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.lancamentoRoot)

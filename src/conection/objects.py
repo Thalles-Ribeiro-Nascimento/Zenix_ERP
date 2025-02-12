@@ -577,4 +577,23 @@ class Dao:
 
         return rows
 
-# CURDATE()
+    def insertFinanceiro(self, data_pagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        try:
+            sql = f"INSERT INTO financeiro (dataPagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            self.cursor.execute(sql, (data_pagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento))
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print(e)
+            
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado
+   
+
+
+
+# INSERT INTO financeiro (dataPagamento, descricao, vlBruto, imposto, vlLiquido, estimativa, pagamento)
