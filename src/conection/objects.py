@@ -577,6 +577,16 @@ class Dao:
 
         return rows
 
+    def financeiro(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Financeiro"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def insertFinanceiro(self, data_pagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'

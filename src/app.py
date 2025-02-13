@@ -2149,44 +2149,30 @@ class Zenix:
 
         self.frameTvFinanceiro()
         self.treeviewFinanceiro = ttk.Treeview(self.frameviewFinanceiro, columns=(
-            'Cod.Lancamento', 'Data', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 
-            'Especialidade' ,'Forma de Pagamento', 'Tipo', 'Descricao',
-            'Vl.Bruto', 'Taxa','Imposto', 'Perc.(%)', 'Vl.Liquido', 'Estimativa', 'Status' 
-            ), show='headings')
+            'Data', 'Descricao', 'Vl.Bruto', 'Imposto', 'Juros', 'Vl.Liquido', 'Forma de Pagamento', 'Tipo',
+            'Taxa', 'Estimativa'), show='headings')
 
-        self.treeviewFinanceiro.heading('Cod.Lancamento', text='Cód.Lancamento')
         self.treeviewFinanceiro.heading('Data', text='Data')
-        self.treeviewFinanceiro.heading('Cod.Atendimento', text='Cod.Atendimento')
-        self.treeviewFinanceiro.heading('Funcionario', text='Funcionario')
-        self.treeviewFinanceiro.heading('Procedimento', text='Procedimento')
-        self.treeviewFinanceiro.heading('Especialidade', text='Especialidade')
-        self.treeviewFinanceiro.heading('Forma de Pagamento', text='Pagamento')
-        self.treeviewFinanceiro.heading('Tipo', text='Tipo')
         self.treeviewFinanceiro.heading('Descricao', text='Descricao')
         self.treeviewFinanceiro.heading('Vl.Bruto', text='Vl.Bruto')
-        self.treeviewFinanceiro.heading('Taxa', text='Taxa')
         self.treeviewFinanceiro.heading('Imposto', text='Imposto')
-        self.treeviewFinanceiro.heading('Perc.(%)', text='Perc.(%)')
+        self.treeviewFinanceiro.heading('Juros', text='Juros')
         self.treeviewFinanceiro.heading('Vl.Liquido', text='Vl.Liquido')
+        self.treeviewFinanceiro.heading('Forma de Pagamento', text='Pagamento')
+        self.treeviewFinanceiro.heading('Tipo', text='Tipo')
+        self.treeviewFinanceiro.heading('Taxa', text='Taxa')
         self.treeviewFinanceiro.heading('Estimativa', text='Estimativa')
-        self.treeviewFinanceiro.heading('Status', text='Status')
         
-        self.treeviewFinanceiro.column('Cod.Lancamento', stretch=False, width=90)
         self.treeviewFinanceiro.column('Data', stretch=False)
-        self.treeviewFinanceiro.column('Cod.Atendimento', stretch=False)
-        self.treeviewFinanceiro.column('Funcionario', stretch=False, width=100)
-        self.treeviewFinanceiro.column('Procedimento', stretch=False, width=100)
-        self.treeviewFinanceiro.column('Especialidade', stretch=False, width=100)
         self.treeviewFinanceiro.column('Forma de Pagamento', stretch=False, width=100)
-        self.treeviewFinanceiro.column('Tipo', stretch=False)
+        self.treeviewFinanceiro.column('Tipo', stretch=False, width=90)
+        self.treeviewFinanceiro.column('Juros', stretch=False, width=90)
         self.treeviewFinanceiro.column('Descricao', stretch=False)
         self.treeviewFinanceiro.column('Vl.Bruto', stretch=False, width=90)
         self.treeviewFinanceiro.column('Taxa', stretch=False, width=90)
-        self.treeviewFinanceiro.column('Imposto', stretch=False)
-        self.treeviewFinanceiro.column('Perc.(%)', stretch=False)
+        self.treeviewFinanceiro.column('Imposto', stretch=False, width=90)
         self.treeviewFinanceiro.column('Vl.Liquido', stretch=False, width=90)
         self.treeviewFinanceiro.column('Estimativa', stretch=False, width=90)
-        self.treeviewFinanceiro.column('Status', stretch=False, width=90)
                    
         verticalBar = ttk.Scrollbar(self.frameviewFinanceiro, orient='vertical', command=self.treeviewFinanceiro.yview)
         horizontalBar = ttk.Scrollbar(self.frameviewFinanceiro, orient='horizontal', command=self.treeviewFinanceiro.xview)
@@ -2196,7 +2182,7 @@ class Zenix:
         style.theme_use('clam')
         style.configure("self.treeviewFinanceiro", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
-        rows = self.dao.lancamentos()
+        rows = self.dao.financeiro()
 
         for row in rows:
             self.treeviewFinanceiro.insert("", tk.END, values=row)
@@ -2314,7 +2300,6 @@ class Zenix:
             return
         else:
             if imposto == "" and juros == "":
-                print("Imposto e Juros vazios")
                 imposto = 0
                 juros = 0
                 self.valueLiquido.configure(state='normal', background='white', fg='black')
@@ -2329,7 +2314,6 @@ class Zenix:
                 self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
 
             elif imposto == "":
-                print("Imposto vazio")
                 imposto = 0
                 self.valueLiquido.configure(state='normal', background='white', fg='black')
             
@@ -2342,7 +2326,6 @@ class Zenix:
                 self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
 
             elif juros == "":
-                print("Juros vazio")
                 juros = 0
                 self.valueLiquido.configure(state='normal', background='white', fg='black')
             
@@ -2355,7 +2338,6 @@ class Zenix:
                 self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
 
             else:
-                print("Campos preenchidos")
                 self.valueLiquido.configure(state='normal', background='white', fg='black')
                 
                 valorTotal = int(total)
@@ -2390,7 +2372,7 @@ class Zenix:
                 messagebox.showerror("Erro", dao, parent=self.novoFinanceiro)
                 
             else:
-                self.atualizaTreeLancamento()
+                self.atualizaTreeFinanceiro()
                 self.novoFinanceiro.destroy()
 
     def telaForma_pagamento(self):
@@ -2650,11 +2632,11 @@ class Zenix:
         #     self.exibir_sucesso(msn, self.formaPagamento) 
         pass
 
-    def atualizaTreeLancamento(self):
+    def atualizaTreeFinanceiro(self):
         self.treeviewFinanceiro.delete(*self.treeviewFinanceiro.get_children())
 
-        rowsLancamento = self.dao.lancamentos()        
-        for row in rowsLancamento:
+        rows = self.dao.financeiro()        
+        for row in rows:
             self.treeviewFinanceiro.insert("", END, values=row)
 
     def selectFormaPagamento(self, event):
