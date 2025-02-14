@@ -1995,8 +1995,8 @@ class Zenix:
 
 # Lançamento ------------------------------
     def frameLancamento(self):
-        self.frameLancamentos = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
-        self.frameLancamentos.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
+        self.frameLancamentos = tk.Frame(self.lancamentoRoot, background='white')
+        self.frameLancamentos.place(relx=0.02, rely=0.08, relheight=0.20, relwidth=0.96)
 
     def frameTvLancamento(self):
         self.frameviewLancamento = tk.Frame(self.lancamentoRoot, background='white')
@@ -2004,15 +2004,11 @@ class Zenix:
 
     def frameRelLancamento(self):
         self.relatorioLancamento = tk.Frame(self.lancamentoRoot, background='gray')
-        self.relatorioLancamento.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.96)
+        self.relatorioLancamento.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.45)
 
     def frameButtonsTelaLancamento(self):
         self.buttonsLancamento = tk.Frame(self.lancamentoRoot, background='gray')
         self.buttonsLancamento.place(relx=0.0, rely=0.0, relheight=0.07, relwidth=1)
-
-    def frameButtonNovoLancamento(self):
-        self.frameButtonLancamento = tk.Frame(self.modalLancamentoNovo, background='gray')
-        self.frameButtonLancamento.place(relx=0.0, rely=0.0, relheight=0.07, relwidth=1)
 
     def telaLancamento(self):
         self.lancamentoRoot = tk.Toplevel()
@@ -2024,30 +2020,43 @@ class Zenix:
         self.lancamentoRoot.resizable(False, False)
         
         # Menu superior
-        menu_bar = tk.Menu(self.lancamentoRoot, background='#808080')
+        self.frameButtonsTelaLancamento()
+        self.lancamentoRoot.grid_columnconfigure(0, weight=0)
+        self.lancamentoRoot.grid_columnconfigure(1, weight=0)
+        self.lancamentoRoot.grid_columnconfigure(2, weight=0)
+        self.lancamentoRoot.grid_columnconfigure(3, weight=0)
 
-        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
-        menuAuxiliar.add_separator()
-        menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
-        menuAuxiliar.add_separator()
-        # menuAuxiliar.add_command(label='Novo',command=self.modalNovoLancamento, font=('Arial', 10, 'bold'), foreground='black')
+        self.lancamentoRoot.grid_rowconfigure(0, weight=0)
+
+        self.buscarFunc = tk.Button(self.buttonsLancamento, text='Buscar' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', 
+                                    fg='white', font=('Arial', 12, 'bold'))
+        self.buscarFunc.grid(column=2, row=0, padx=10, pady=5)
+
+        buttonAddFormaPagamento = Button(self.buttonsLancamento, text='Forma de Pagamento', command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', 
+                                         fg='white', font=('Arial', 12, 'bold'))
+        buttonAddFormaPagamento.grid(column=3, row=0, padx=10, pady=5)
+        # menu_bar = tk.Menu(self.lancamentoRoot, background='#808080')
+
+        # menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        # menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
         # menuAuxiliar.add_separator()
-        menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
-        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+        # menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
+        # menuAuxiliar.add_separator()
+        # # menuAuxiliar.add_command(label='Novo',command=self.modalNovoLancamento, font=('Arial', 10, 'bold'), foreground='black')
+        # # menuAuxiliar.add_separator()
+        # menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
+        # menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
-        self.lancamentoRoot.config(menu=menu_bar)
+        # self.lancamentoRoot.config(menu=menu_bar)
         # Fim do menu superior
 
         self.frameLancamento()
-        texto_nome = tk.Label(self.frameLancamentos, text='NOME', background='#A9A9A9', fg='white', font=('Arial', 12, 'bold'))
-        texto_nome.place(relx=0.02, rely=0.35)
+        texto_nome = tk.Label(self.frameLancamentos, text='NOME', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        texto_nome.place(relx=0.02, rely=0.15)
 
         self.campo_nome = tk.Entry(self.frameLancamentos, width=25, bg='white', fg='black')
-        self.campo_nome.place(relx=0.02, rely=0.5)
+        self.campo_nome.place(relx=0.02, rely=0.35)
 
-        self.buscarFunc = tk.Button(self.frameLancamentos, text='BUSCAR' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        self.buscarFunc.place(relx=0.02, rely=0.7 ,relheight=0.2)
 
         self.frameTvLancamento()
         self.treeviewLancamento = ttk.Treeview(self.frameviewLancamento, columns=(
@@ -2074,7 +2083,7 @@ class Zenix:
         self.treeviewLancamento.heading('Status', text='Status')
         
         self.treeviewLancamento.column('Cod.Lancamento', stretch=False, width=90)
-        self.treeviewLancamento.column('Data', stretch=False)
+        self.treeviewLancamento.column('Data', stretch=False, width=90)
         self.treeviewLancamento.column('Cod.Atendimento', stretch=False)
         self.treeviewLancamento.column('Funcionario', stretch=False, width=100)
         self.treeviewLancamento.column('Procedimento', stretch=False, width=100)
@@ -2084,8 +2093,8 @@ class Zenix:
         self.treeviewLancamento.column('Descricao', stretch=False)
         self.treeviewLancamento.column('Vl.Bruto', stretch=False, width=90)
         self.treeviewLancamento.column('Taxa', stretch=False, width=90)
-        self.treeviewLancamento.column('Imposto', stretch=False)
-        self.treeviewLancamento.column('Perc.(%)', stretch=False)
+        self.treeviewLancamento.column('Imposto', stretch=False, width=90)
+        self.treeviewLancamento.column('Perc.(%)', stretch=False, width=90)
         self.treeviewLancamento.column('Vl.Liquido', stretch=False, width=90)
         self.treeviewLancamento.column('Estimativa', stretch=False, width=90)
         self.treeviewLancamento.column('Status', stretch=False, width=90)
@@ -2109,101 +2118,32 @@ class Zenix:
         horizontalBar.place(rely=0.972, relx=0, relwidth=1)
 
         self.frameRelLancamento()
+        self.relatorioLancamento.grid_columnconfigure(0, weight=1)
+        self.relatorioLancamento.grid_columnconfigure(1, weight=1)
+        self.relatorioLancamento.grid_columnconfigure(2, weight=1)
+        self.relatorioLancamento.grid_rowconfigure(0, weight=0)
+        self.relatorioLancamento.grid_rowconfigure(1, weight=0)
+
+        txtPrevisto = Label(self.relatorioLancamento, text='Previsto', background='gray', fg='black', font=('Arial', 12, 'bold'))
+        txtPrevisto.grid(column=0, row=0, pady=(5,0))
+
+        entryPrevisto = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=12)
+        entryPrevisto.grid(column=0, row=1, padx=10, pady=0)
+
+        txtRealizado = Label(self.relatorioLancamento, text='Realizado', background='gray', fg='black', font=('Arial', 12, 'bold'))
+        txtRealizado.grid(column=1, row=0, pady=(5,0))
+
+        entryRealizado = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=12)
+        entryRealizado.grid(column=1, row=1, padx=10, pady=0)
+
+        txtAtendimento = Label(self.relatorioLancamento, text='Qtd.Atendimento', background='gray', fg='black', font=('Arial', 12, 'bold'))
+        txtAtendimento.grid(column=2, row=0, pady=(5,0))
+
+        entryAtendimento = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=12)
+        entryAtendimento.grid(column=2, row=1, padx=10, pady=0)
+
                 
         self.lancamentoRoot.mainloop()
-
-    def modalnovoLancamento(self):
-        self.modalLancamentoNovo = tk.Toplevel()
-        self.modalLancamentoNovo.transient(self.lancamentoRoot)
-        self.modalLancamentoNovo.grab_set()
-        self.modalLancamentoNovo.lift()
-        self.modalLancamentoNovo.title('Lancamento - [Novo]')
-        self.modalLancamentoNovo.geometry('750x450')
-        self.modalLancamentoNovo.configure(background='#D3D3D3')
-        self.modalLancamentoNovo.resizable(False,False)
-
-        self.frameButtonNovoLancamento()
-
-        self.buttonnovoLancamento = tk.Button(self.frameButtonLancamento, text='INSERIR' , command=self.insertLancamento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        self.buttonnovoLancamento.place(relx= 0.01, rely=0.2, relwidth=0.14, relheight=0.6)
-
-        txtDataLancamento = tk.Label(self.modalLancamentoNovo, text='Data:', font='bold')
-        txtDataLancamento.place(relx= 0.06, rely=0.2)
-        txtDataLancamento.configure(background='#D3D3D3', fg='black')
-
-        self.dataLancamento = tk.Entry(self.modalLancamentoNovo,width=15)
-        self.dataLancamento.configure(background='white', fg='black')
-        self.dataLancamento.place(relx= 0.06, rely=0.245)
-
-        txtDescribe = tk.Label(self.modalLancamentoNovo, text='Descrição:', font='bold')
-        txtDescribe.place(relx= 0.3, rely=0.2)
-        txtDescribe.configure(background='#D3D3D3', fg='black')
-
-        self.describeLancamento = tk.Entry(self.modalLancamentoNovo, width=25)
-        self.describeLancamento.configure(background='white', fg='black')
-        self.describeLancamento.place(relx= 0.3, rely=0.245)
-                
-        txtVlBruto = tk.Label(self.modalLancamentoNovo, text='Vl.Bruto:', font='bold')
-        txtVlBruto.place(relx= 0.06, rely=0.33)
-        txtVlBruto.configure(background='#D3D3D3', fg='black')
-        
-        self.valueTotal = tk.Entry(self.modalLancamentoNovo, width=10)
-        self.valueTotal.configure(background='white', fg='black')
-        self.valueTotal.place(relx= 0.06, rely=0.38)
-
-        self.modalLancamentoNovo.bind('<F5>', self.setVlLiquido)
-
-        txtImposto = tk.Label(self.modalLancamentoNovo, text='Imposto:', font='bold')
-        txtImposto.place(relx= 0.3, rely=0.33)
-        txtImposto.configure(background='#D3D3D3', fg='black')
-
-        self.imposto = tk.Entry(self.modalLancamentoNovo, width=10)
-        self.imposto.configure(background='white', fg='black')
-        self.imposto.place(relx= 0.3, rely=0.38)
-        
-
-        titleFormaPagamento = tk.Label(self.modalLancamentoNovo, text='Pagamento:', font='bold')
-        titleFormaPagamento.place(relx= 0.6, rely=0.2)
-        titleFormaPagamento.configure(background='#D3D3D3', fg='black')
-
-        self.formaPagamento = self.dao.formaPagamentoAll()
-        formaPagamentoId = [item[0] for item in self.formaPagamento]
-        formaPagamento = [item[1] for item in self.formaPagamento]
-        formaPagamentoTipo = [item[2] for item in self.formaPagamento]
-        self.mapPagamentoLancamento = dict(zip(formaPagamento, formaPagamentoId))
-        
-        self.pagamentoOpcoes = StringVar(self.modalLancamentoNovo)
-        self.pagamentoOpcoes.set("Pagamento")
-        dropdown = tk.OptionMenu(self.modalLancamentoNovo, self.pagamentoOpcoes, *formaPagamento)
-        dropdown.configure(background='white', fg='black', activebackground='gray')
-        dropdown.place(relx= 0.6, rely=0.25)
-
-        self.pagamentoOpcoes.trace_add('write', self.formaPagamentoSet)
-
-        txtVlLiquido = tk.Label(self.modalLancamentoNovo, text='Vl.Líquido:', font='bold')
-        txtVlLiquido.place(relx= 0.45, rely=0.33)
-        txtVlLiquido.configure(background='#D3D3D3', fg='black')
-
-        self.valueLiquido = tk.Entry(self.modalLancamentoNovo, width=10)
-        self.valueLiquido.configure(background='white', fg='black', state='disabled', disabledbackground='white', disabledforeground='black')
-        self.valueLiquido.place(relx= 0.45, rely=0.38)
-
-        txtJuros = tk.Label(self.modalLancamentoNovo, text='Juros/Multa:', font='bold')
-        txtJuros.place(relx= 0.2, rely=0.53)
-        txtJuros.configure(background='#D3D3D3', fg='black')
-
-        self.jurosMultaFinancas = tk.Entry(self.modalLancamentoNovo, width=10)
-        self.jurosMultaFinancas.configure(background='white', fg='black')
-        self.jurosMultaFinancas.place(relx= 0.2, rely=0.58)
-        
-
-        self.estimativa = IntVar()
-        estimativaLancamento = Checkbutton(self.modalLancamentoNovo, text='Estimativa?', variable = self.estimativa)
-        estimativaLancamento.place(relx= 0.6, rely=0.38)
-        self.estimativa.set(1)
-        estimativaLancamento.configure(background='#D3D3D3')
-        
-        self.modalLancamentoNovo.mainloop()
 
 # Lançamento ------------------------------
 
