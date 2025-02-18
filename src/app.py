@@ -796,7 +796,7 @@ class Zenix:
                 indices.append(self.listaFuncionario.index(old))
             
         if len(indices) < 1:
-            messagebox.showinfo("Aviso","Nenhum campo  foi alterado!", parent=self.modalAtualizaFunc)
+            messagebox.showinfo("Aviso","Nenhum campo foi alterado!", parent=self.modalAtualizaFunc)
             return
         else:
             validacao = True
@@ -816,7 +816,6 @@ class Zenix:
                             else:
                                 validacao = True
                                 funcionarioUpgrade.update({c:listaUpgrade[i - 1]})
-                                
                                 continue  
                         else:
                             continue
@@ -1995,11 +1994,11 @@ class Zenix:
 
 # Lançamento ------------------------------
     def frameLancamento(self):
-        self.frameLancamentos = tk.Frame(self.lancamentoRoot, background='white')
+        self.frameLancamentos = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
         self.frameLancamentos.place(relx=0.02, rely=0.08, relheight=0.20, relwidth=0.96)
 
     def frameTvLancamento(self):
-        self.frameviewLancamento = tk.Frame(self.lancamentoRoot, background='white')
+        self.frameviewLancamento = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
         self.frameviewLancamento.place(relx=0.02, rely=0.25, relheight=0.6, relwidth=0.96)
 
     def frameRelLancamento(self):
@@ -2110,7 +2109,7 @@ class Zenix:
         rows = self.dao.lancamentos()
 
         for row in rows:
-            self.treeviewFinanceiro.insert("", tk.END, values=row)
+            self.treeviewLancamento.insert("", tk.END, values=row)
 
         self.treeviewLancamento.place(relx=0, rely=0, relheight=1, relwidth=1)
 
