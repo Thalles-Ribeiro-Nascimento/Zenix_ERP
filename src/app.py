@@ -208,7 +208,7 @@ class Zenix:
         self.main.mainloop()
 
     def frameFuncionario(self):
-        self.framefuncionarios = tk.Frame(self.funcionarios, background='#A9A9A9')
+        self.framefuncionarios = Frame(self.funcionarios, background='#A9A9A9')
         self.framefuncionarios.place(relx=0.02, rely=0.02, relheight=0.20, relwidth=0.96)
 
     def frameClientes(self):
@@ -2002,7 +2002,7 @@ class Zenix:
         self.frameviewLancamento.place(relx=0.02, rely=0.25, relheight=0.6, relwidth=0.96)
 
     def frameRelLancamento(self):
-        self.relatorioLancamento = tk.Frame(self.lancamentoRoot, background='gray')
+        self.relatorioLancamento = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
         self.relatorioLancamento.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.45)
 
     def frameButtonsTelaLancamento(self):
@@ -2027,14 +2027,13 @@ class Zenix:
 
         self.lancamentoRoot.grid_rowconfigure(0, weight=0)
 
-        self.buscarFunc = tk.Button(self.buttonsLancamento, text='Buscar' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', 
+        self.buscarFunc = tk.Button(self.buttonsLancamento, text='Buscar', command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', 
                                     fg='white', font=('Arial', 12, 'bold'))
         self.buscarFunc.grid(column=2, row=0, padx=10, pady=5)
 
         buttonAddFormaPagamento = Button(self.buttonsLancamento, text='Forma de Pagamento', command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', 
                                          fg='white', font=('Arial', 12, 'bold'))
         buttonAddFormaPagamento.grid(column=3, row=0, padx=10, pady=5)
-        # menu_bar = tk.Menu(self.lancamentoRoot, background='#808080')
 
         # menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
         # menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
@@ -2046,16 +2045,12 @@ class Zenix:
         # menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
         # menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
-        # self.lancamentoRoot.config(menu=menu_bar)
-        # Fim do menu superior
-
         self.frameLancamento()
         texto_nome = tk.Label(self.frameLancamentos, text='NOME', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
         texto_nome.place(relx=0.02, rely=0.15)
 
         self.campo_nome = tk.Entry(self.frameLancamentos, width=25, bg='white', fg='black')
         self.campo_nome.place(relx=0.02, rely=0.35)
-
 
         self.frameTvLancamento()
         self.treeviewLancamento = ttk.Treeview(self.frameviewLancamento, columns=(
@@ -2123,23 +2118,38 @@ class Zenix:
         self.relatorioLancamento.grid_rowconfigure(0, weight=0)
         self.relatorioLancamento.grid_rowconfigure(1, weight=0)
 
-        txtPrevisto = Label(self.relatorioLancamento, text='Previsto', background='gray', fg='black', font=('Arial', 12, 'bold'))
+        txtPrevisto = Label(self.relatorioLancamento, text='Previsto', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
         txtPrevisto.grid(column=0, row=0, pady=(5,0))
 
-        entryPrevisto = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=12)
+        entryPrevisto = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
         entryPrevisto.grid(column=0, row=1, padx=10, pady=0)
+        previsto = self.dao.previsto()
+        for soma in previsto:
+            entryPrevisto.configure(state='normal')
+            entryPrevisto.insert(0, soma[0])
+            entryPrevisto.configure(state='disabled')
 
-        txtRealizado = Label(self.relatorioLancamento, text='Realizado', background='gray', fg='black', font=('Arial', 12, 'bold'))
+        txtRealizado = Label(self.relatorioLancamento, text='Realizado', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
         txtRealizado.grid(column=1, row=0, pady=(5,0))
 
-        entryRealizado = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=12)
+        entryRealizado = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
         entryRealizado.grid(column=1, row=1, padx=10, pady=0)
+        realizado = self.dao.realizado()
+        for pago in realizado:
+            entryRealizado.configure(state='normal')
+            entryRealizado.insert(0, pago[0])
+            entryRealizado.configure(state='disabled')
 
-        txtAtendimento = Label(self.relatorioLancamento, text='Qtd.Atendimento', background='gray', fg='black', font=('Arial', 12, 'bold'))
+        txtAtendimento = Label(self.relatorioLancamento, text='Qtd.Atendimento', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
         txtAtendimento.grid(column=2, row=0, pady=(5,0))
 
-        entryAtendimento = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=12)
+        entryAtendimento = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=5, justify='center')
         entryAtendimento.grid(column=2, row=1, padx=10, pady=0)
+        atendimentos = self.dao.qtdAtendimento()
+        for qtd in atendimentos:
+            entryAtendimento.configure(state='normal')
+            entryAtendimento.insert(0, qtd[0])
+            entryAtendimento.configure(state='disabled')
 
                 
         self.lancamentoRoot.mainloop()

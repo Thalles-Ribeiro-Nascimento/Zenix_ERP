@@ -603,7 +603,35 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
    
+    def qtdAtendimento(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select count(`Cod.Atendimento`) from Vw_Lancamento"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row                                                
+
+    def previsto(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select sum(`Vl.Liquido`) from Vw_Lancamento where status = 0"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row                                                
 
 
+    def realizado(self):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select sum(`Vl.Liquido`) from Vw_Lancamento where status = 1"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row 
 
 # INSERT INTO financeiro (dataPagamento, descricao, vlBruto, imposto, vlLiquido, estimativa, pagamento)
