@@ -403,13 +403,11 @@ class Dao:
 
         return rows
 
-    def agenda(self):
+    def agenda(self, data):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        dataAtual = datetime.now().date()
-        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
-        sql = f'SELECT * FROM Vw_Agendamentos_Geral where Data = {dataAtualFormatada}'
+        sql = f'SELECT * FROM Vw_Agendamentos_Geral where Data = {data}'
         cr = self.cursor
         cr.execute(sql)
         rows = cr.fetchall()
@@ -603,7 +601,7 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
    
-    def qtdAtendimento(self):
+    def rel_qtdAtendimento(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
@@ -613,7 +611,7 @@ class Dao:
 
         return row                                                
 
-    def previsto(self):
+    def rel_previsto(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
@@ -624,7 +622,7 @@ class Dao:
         return row                                                
 
 
-    def realizado(self):
+    def rel_realizado(self):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         

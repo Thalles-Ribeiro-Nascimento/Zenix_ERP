@@ -2123,7 +2123,7 @@ class Zenix:
 
         entryPrevisto = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
         entryPrevisto.grid(column=0, row=1, padx=10, pady=0)
-        previsto = self.dao.previsto()
+        previsto = self.dao.rel_previsto()
         for soma in previsto:
             entryPrevisto.configure(state='normal')
             entryPrevisto.insert(0, soma[0])
@@ -2134,7 +2134,7 @@ class Zenix:
 
         entryRealizado = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
         entryRealizado.grid(column=1, row=1, padx=10, pady=0)
-        realizado = self.dao.realizado()
+        realizado = self.dao.rel_realizado()
         for pago in realizado:
             entryRealizado.configure(state='normal')
             entryRealizado.insert(0, pago[0])
@@ -2145,7 +2145,7 @@ class Zenix:
 
         entryAtendimento = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=5, justify='center')
         entryAtendimento.grid(column=2, row=1, padx=10, pady=0)
-        atendimentos = self.dao.qtdAtendimento()
+        atendimentos = self.dao.rel_qtdAtendimento()
         for qtd in atendimentos:
             entryAtendimento.configure(state='normal')
             entryAtendimento.insert(0, qtd[0])
@@ -2731,7 +2731,7 @@ class Zenix:
 
     def frameTvAgendaRoot(self):
         self.frameAgenda2 = tk.Frame(self.agendaRoot, background='#A9A9A9')
-        self.frameAgenda2.place(relx=0.01, rely=0.21, relheight=0.85, relwidth=0.75)
+        self.frameAgenda2.place(relx=0.0, rely=0.21, relheight=0.85, relwidth=1)
 
     def frameButtonAgenda(self):
         self.frameButton = tk.Frame(self.modalNovaAgenda, background='gray')
@@ -2745,6 +2745,13 @@ class Zenix:
         self.agendaRoot.configure(background='#A9A9A9')
         self.agendaRoot.geometry('1540x920')
         self.agendaRoot.resizable(False,False)
+
+        self.agendaRoot.grid_columnconfigure(0, weight=0)
+        self.agendaRoot.grid_columnconfigure(1, weight=0)
+
+        self.agendaRoot.grid_rowconfigure(0, weight=0)
+        self.agendaRoot.grid_rowconfigure(1, weight=0)
+        self.agendaRoot.grid_rowconfigure(2, weight=0)
     
         menu_bar = tk.Menu(self.agendaRoot, background='#808080')
         menu = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -2852,58 +2859,23 @@ class Zenix:
         style.theme_use('clam')
         style.configure("self.treeviewAgenda", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
         
-        self.treeviewAgenda.place(relx=0, rely=0, relheight=0.85, relwidth=0.959)
+        self.treeviewAgenda.place(relx=0, rely=0, relheight=0.85, relwidth=1)
         
-        verticalBar.place(relx=0.95 , rely=0, relheight=0.849)
-        horizontalBar.place(rely=0.85, relx=0, relwidth=0.962)
+        verticalBar.place(relx=0.992, rely=0, relheight=0.849)
+        horizontalBar.place(rely=0.85, relx=0, relwidth=1)
         
-        rowsAgenda = self.dao.agenda()
+        rowsAgenda = self.dao.agenda(self.entryDataAgendaFinal.get())
 
         for row in rowsAgenda:
             self.treeviewAgenda.insert("", tk.END, values=row)
             
         self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAgendamento)
-
-        buttonAdicionar = tk.Button(self.frameAgenda, text='Atendimento', command=self.adicionarAtendimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonAdicionar.place(relx=0.78, rely=0.68)
-        
-        self.treeviewClientAtendimento = ttk.Treeview(self.agendaRoot, columns=('Data', 'Hora','Cod.Atendimento', 'Protocolo','Cod.Cliente','Nome do Cliente','Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
-        
-        self.treeviewClientAtendimento.heading('Data', text='Data')
-        self.treeviewClientAtendimento.heading('Hora', text='Hora')
-        self.treeviewClientAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
-        self.treeviewClientAtendimento.heading('Protocolo', text='Protocolo')
-        self.treeviewClientAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
-        self.treeviewClientAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
-        self.treeviewClientAtendimento.heading('Funcionario', text='Funcionario')
-        self.treeviewClientAtendimento.heading('Procedimento', text='Procedimento')
-        self.treeviewClientAtendimento.heading('Valor', text='Valor')
-        self.treeviewClientAtendimento.heading('Status', text='Status')
-        
-        self.treeviewClientAtendimento.column('Data', stretch=False, width=100)
-        self.treeviewClientAtendimento.column('Hora', stretch=False, width=100)
-        self.treeviewClientAtendimento.column('Cod.Cliente', stretch=False, width=92)
-        self.treeviewClientAtendimento.column('Protocolo', stretch=False, width=92)
-        self.treeviewClientAtendimento.column('Cod.Atendimento', stretch=False, width=92)
-        self.treeviewClientAtendimento.column('Nome do Cliente', stretch=False, width=100)
-        self.treeviewClientAtendimento.column('Funcionario', stretch=False, width=100)
-        self.treeviewClientAtendimento.column('Procedimento', stretch=False, width=100)
-        self.treeviewClientAtendimento.column('Valor', stretch=False, width=100)
-        self.treeviewClientAtendimento.column('Status', stretch=False, width=90)
-        
-        verticalBarTreeview2 = ttk.Scrollbar(self.agendaRoot, orient='vertical', command=self.treeviewClientAtendimento.yview)
-        horizontalBarTreeview2 = ttk.Scrollbar(self.agendaRoot, orient='horizontal', command=self.treeviewClientAtendimento.xview)
-        self.treeviewClientAtendimento.configure(yscrollcommand=verticalBarTreeview2.set, xscrollcommand=horizontalBarTreeview2.set)
-        
-        self.treeviewClientAtendimento.place(relx=0.767, rely=0.226, relheight=0.35, relwidth=0.223)
-        verticalBarTreeview2.place(relx=0.981 , rely=0.226, relheight=0.34)
-        horizontalBarTreeview2.place(relx=0.767, rely=0.565, relwidth=0.223)
-        
-        styleTreeview2 = ttk.Style()
-        styleTreeview2.theme_use('clam')
-        styleTreeview2.configure("self.treeviewClientAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")        
+        self.treeviewAgenda.bind("<Double-1>", self.double_clickAgenda)       
         
         self.agendaRoot.mainloop()
+
+    def double_clickAgenda(self, event):
+        self.adicionarAtendimento()
 
     def selectAtendimento(self, event):
         try:
@@ -2941,7 +2913,6 @@ class Zenix:
             return
 
     def selectAgendamento(self, event):
-        self.treeviewClientAtendimento.delete(*self.treeviewClientAtendimento.get_children())
         try:
             # Id do item da Agenda selecionada
             self.item_idAgenda = self.treeviewAgenda.selection()[0]
@@ -2957,28 +2928,9 @@ class Zenix:
             
             # Id do Cliente
             self.idClientAgenda = self.listaAgenda[2]
-            rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
-            for row in rows:
-                self.treeviewClientAtendimento.insert("", END, values=row)
             
             # Nome do Cliente
             self.nomeClienteAgenda = self.listaAgenda[3]
-            
-        except IndexError as e:
-            return
-
-    def selectAtendeAgenda(self, event):
-        self.horaAtendimento.delete(0, END)
-        try:
-            # Id do item da Atendimento selecionado
-            self.item_idAtendimento = self.treeviewAtendimento2.selection()[0]
-            
-            # Lista Informações do Atendimento Selecionado
-            self.listaAtendimento = self.treeviewAtendimento2.item(self.item_idAtendimento, 'values')
-                        
-            # Hora Atendimento
-            self.horaAgendada = self.listaAtendimento[1]
-            self.horaAtendimento.insert(0, self.horaAgendada)
             
         except IndexError as e:
             return
