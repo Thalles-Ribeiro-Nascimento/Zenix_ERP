@@ -447,7 +447,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"select * from Vw_Agendamentos_Geral where Data = '{dataFim}'"
+        sql = f"select * from Vw_Agendamentos_Geral where `Data Agenda` = '{dataFim}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -457,7 +457,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by Data"
+        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(`Data Agenda`, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by `Data Agenda`"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -467,7 +467,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(Data, '%d/%m/%Y') = STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND `Nome do Cliente` like '{nome}%'"
+        sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(`Data Agenda`, '%d/%m/%Y') = STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND `Nome do Cliente` like '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
