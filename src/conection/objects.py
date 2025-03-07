@@ -407,10 +407,10 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f'SELECT * FROM Vw_Agendamentos_Geral where Data = {data}'
-        cr = self.cursor
-        cr.execute(sql)
-        rows = cr.fetchall()
+        sql = f"SELECT * FROM Vw_Agendamentos_Geral WHERE `Data Agenda` = '{data}'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
         return rows
 
     def AgendaNome(self, nome):

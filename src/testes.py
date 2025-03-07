@@ -71,10 +71,11 @@ from conection import objects
 # MinhaGUI()
 
 dao = objects.Dao("admin", "SysteM98")
-rows = dao.qtdAtendimento()
+rows = dao.agenda('07/03/2025')
+
 print(rows)
-for row in rows:
-    print(row[0])
+# for row in rows:
+#     print(row)
 
 
 # rows = dao.especialidadeView()

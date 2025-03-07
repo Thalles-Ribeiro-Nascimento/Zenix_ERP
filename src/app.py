@@ -2812,12 +2812,12 @@ class Zenix:
         self.frameTvAgendaRoot()
         
         self.treeviewAgenda = ttk.Treeview(self.frameAgenda2, columns=(
-            'Data', 'Protocolo', 'Cod.Cliente', 'Nome do Cliente','Data de Nascimento', 'Sexo', 'CPF', 'Telefone', 'Celular', 'Email',
+            'Data Agenda', 'Protocolo', 'Cod.Cliente', 'Nome do Cliente','Data de Nascimento', 'Sexo', 'CPF', 'Telefone', 'Celular', 'Email',
             'Rua', 'Bairro',
             'Nº', 'UF','Comp', 'Status' 
             ), show='headings')
 
-        self.treeviewAgenda.heading('Data', text='Data')
+        self.treeviewAgenda.heading('Data Agenda', text='Data')
         self.treeviewAgenda.heading('Cod.Cliente', text='Cód.Cliente')
         self.treeviewAgenda.heading('Protocolo', text='Protocolo')
         self.treeviewAgenda.heading('Nome do Cliente', text='Nome do Cliente')
@@ -2834,7 +2834,7 @@ class Zenix:
         self.treeviewAgenda.heading('Comp', text='Complemento')
         self.treeviewAgenda.heading('Status', text='Status')
         
-        self.treeviewAgenda.column('Data', stretch=False, width=100)
+        self.treeviewAgenda.column('Data Agenda', stretch=False, width=100)
         self.treeviewAgenda.column('Cod.Cliente', stretch=False, width=100)
         self.treeviewAgenda.column('Protocolo', stretch=False, width=100)
         self.treeviewAgenda.column('Nome do Cliente', stretch=False)
@@ -2864,7 +2864,10 @@ class Zenix:
         verticalBar.place(relx=0.992, rely=0, relheight=0.849)
         horizontalBar.place(rely=0.85, relx=0, relwidth=1)
         
-        rowsAgenda = self.dao.agenda(self.entryDataAgendaFinal.get())
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
+
+        rowsAgenda = self.dao.agenda(dataAtualFormatada)
 
         for row in rowsAgenda:
             self.treeviewAgenda.insert("", tk.END, values=row)
