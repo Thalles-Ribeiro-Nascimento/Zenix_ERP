@@ -467,7 +467,7 @@ class Dao:
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
         
-        sql = f"select * from Vw_Atendimentos where STR_TO_DATE(`Data`, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by `Data Agenda`"
+        sql = f"select * from Vw_Atendimentos where STR_TO_DATE(`Data`, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by `Data`"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 

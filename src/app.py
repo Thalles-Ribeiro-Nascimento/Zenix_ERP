@@ -2727,6 +2727,8 @@ class Zenix:
         self.frameTvAtd = tk.Frame(self.atendimento, background='#A9A9A9')
         self.frameTvAtd.place(relx=0.0, rely=0.21, relheight=0.85, relwidth=1)
 
+# Atendimento -----------------------------------
+
     def telaAtendimento(self):
         self.atendimento = tk.Toplevel()
         self.atendimento.transient(self.main)
@@ -2954,6 +2956,8 @@ class Zenix:
 
             for row in rows:
                 self.treeviewAtendimento.insert("", END, values=row)
+
+# Atendimento -----------------------------------
 
 # Agendamento --------------------------------
 
