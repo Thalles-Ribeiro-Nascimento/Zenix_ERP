@@ -413,6 +413,16 @@ class Dao:
 
         return rows
 
+    def atendimento(self, data):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Atendimentos WHERE Data = '{data}'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def AgendaNome(self, nome):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
@@ -620,7 +630,6 @@ class Dao:
         row = self.cursor.fetchall()
 
         return row                                                
-
 
     def rel_realizado(self):
         if self.erro:

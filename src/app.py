@@ -2719,9 +2719,191 @@ class Zenix:
     def telaFaturamento(self):
         pass
 
+    def frameBotoesAtendimento(self):
+        self.frameAtendimento = tk.Frame(self.atendimento, background='#A9A9A9')
+        self.frameAtendimento.place(relx=0.02, rely=0.02, relheight=0.25, relwidth=0.96)
+
+    def frameTvAtendimentos(self):
+        self.frameTvAtd = tk.Frame(self.atendimento, background='#A9A9A9')
+        self.frameTvAtd.place(relx=0.0, rely=0.21, relheight=0.85, relwidth=1)
+
     def telaAtendimento(self):
-        messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.main)
-        pass
+        self.atendimento = tk.Toplevel()
+        self.atendimento.transient(self.main)
+        self.atendimento.lift()
+        self.atendimento.title("Atendimento")
+        self.atendimento.configure(background='#A9A9A9')
+        self.atendimento.geometry('1540x920')
+        self.atendimento.resizable(False,False)
+
+        self.atendimento.grid_columnconfigure(0, weight=0)
+        self.atendimento.grid_columnconfigure(1, weight=0)
+
+        self.atendimento.grid_rowconfigure(0, weight=0)
+        self.atendimento.grid_rowconfigure(1, weight=0)
+        self.atendimento.grid_rowconfigure(2, weight=0)
+    
+        menu_bar = tk.Menu(self.atendimento, background='#808080')
+        menu = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        # menu.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Agenda',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_separator()
+        menu.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_separator()
+        menu.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Lançamentos',command=self.telaLancamento, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_separator()
+        menu.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
+        menu.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+        
+        menu_bar.add_cascade(label='Gerencial', menu=menu, font=('Arial', 12, 'bold'))
+        
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuAuxiliar.add_command(label='Novo Agendamento', command=self.adicionarAgendamento,font=('Arial', 10, 'bold'), foreground='black')
+
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+
+        self.atendimento.config(menu=menu_bar)
+
+        self.frameBotoesAtendimento()
+        
+        titleNomeAtd = tk.Label(self.frameAtendimento, text='Pesquisar:', background='#A9A9A9', fg='black', font='bold')
+        titleNomeAtd.place(relx=0.02 , rely=0.07)
+        
+        self.entryBuscarNomeAtendimento = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
+        self.entryBuscarNomeAtendimento.place(relx=0.02 , rely=0.15, width=170)
+        self.entryBuscarNomeAtendimento.bind('<Return>', self.buscarNomeAgenda)      
+        
+        buttonPesquisar = tk.Button(self.frameAtendimento, text='Buscar', command=self.buscarAgendaData, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonPesquisar.place(relx=0.02, rely=0.3)
+        
+        titleDataInicio = tk.Label(self.frameAtendimento, text='De:', background='#A9A9A9', fg='black', font='bold')
+        titleDataInicio.place(relx=0.2 , rely=0.07)
+        
+        self.entryDataAtendimento = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
+        self.entryDataAtendimento.place(relx=0.2 , rely=0.15, width=120)
+        
+        self.buttonCalendarAtendimento = tk.Button(self.frameAtendimento, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioIniAgenda)
+        self.buttonCalendarAtendimento.place(relx=0.266, rely=0.157, relwidth=0.015, relheight=0.103)
+        
+        titleDataFinal = tk.Label(self.frameAtendimento, text='Até:', background='#A9A9A9', fg='black', font='bold')
+        titleDataFinal.place(relx=0.3 , rely=0.07)
+
+        self.entryDataAtendimentoFinal = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
+        self.entryDataAtendimentoFinal.place(relx=0.3 , rely=0.15, width=120)
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
+        self.entryDataAtendimentoFinal.insert(0, dataAtualFormatada)
+                
+        self.buttonCalendarAtendimentoFinal = tk.Button(self.frameAtendimento, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioFimAgenda)
+        self.buttonCalendarAtendimentoFinal.place(relx=0.366, rely=0.157, relwidth=0.015, relheight=0.103)
+        
+        self.frameTvAtendimentos()
+        
+        self.treeviewAtendimento = ttk.Treeview(self.frameTvAtd, columns=(
+            'Data', 'Hora', 'Protocolo', 'Cod.Atendimento', 'Cod.Cliente', 'Nome do Cliente','Funcionario', 'Especialidade', 'Valor', 'F.Pagamento', 'Tipo Pagamento', 'Taxa',
+            'Parcelas', 'Status' 
+            ), show='headings')
+
+        self.treeviewAtendimento.heading('Data', text='Data')
+        self.treeviewAtendimento.heading('Hora', text='Hora')
+        self.treeviewAtendimento.heading('Protocolo', text='Protocolo')
+        self.treeviewAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
+        self.treeviewAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
+        self.treeviewAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
+        self.treeviewAtendimento.heading('Funcionario', text='Funcionário')
+        self.treeviewAtendimento.heading('Especialidade', text='Especialidade')
+        self.treeviewAtendimento.heading('Valor', text='Valor')
+        self.treeviewAtendimento.heading('F.Pagamento', text='F.Pagamento')
+        self.treeviewAtendimento.heading('Tipo Pagamento', text='Tipo Pagamento')
+        self.treeviewAtendimento.heading('Taxa', text='Taxa')
+        self.treeviewAtendimento.heading('Parcelas', text='Parcelas')
+        self.treeviewAtendimento.heading('Status', text='Status')
+        
+        self.treeviewAtendimento.column('Data', stretch=False, width=100)
+        self.treeviewAtendimento.column('Hora', stretch=False, width=92)
+        self.treeviewAtendimento.column('Protocolo', stretch=False, width=100)
+        self.treeviewAtendimento.column('Cod.Atendimento', stretch=False, width=92)
+        self.treeviewAtendimento.column('Cod.Cliente', stretch=False, width=92)
+        self.treeviewAtendimento.column('Nome do Cliente', stretch=False, width=100)
+        self.treeviewAtendimento.column('Funcionario', stretch=False, width=100)
+        self.treeviewAtendimento.column('Especialidade', stretch=False, width=120)
+        self.treeviewAtendimento.column('Valor', stretch=False, width=90)
+        self.treeviewAtendimento.column('F.Pagamento', stretch=False, width=120)
+        self.treeviewAtendimento.column('Tipo Pagamento', stretch=False, width=120)
+        self.treeviewAtendimento.column('Taxa', stretch=False, width=92)
+        self.treeviewAtendimento.column('Parcelas', stretch=False, width=92)
+        self.treeviewAtendimento.column('Status', stretch=False, width=92)
+
+        verticalBar = ttk.Scrollbar(self.frameTvAtd, orient='vertical', command=self.treeviewAtendimento.yview)
+        horizontalBar = ttk.Scrollbar(self.frameTvAtd, orient='horizontal', command=self.treeviewAtendimento.xview)
+        self.treeviewAtendimento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure("self.treeviewAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
+        
+        self.treeviewAtendimento.place(relx=0, rely=0, relheight=0.85, relwidth=1)
+        
+        verticalBar.place(relx=0.992, rely=0, relheight=0.849)
+        horizontalBar.place(rely=0.85, relx=0, relwidth=1)
+        
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
+
+        rows = self.dao.atendimento(dataAtualFormatada)
+
+        for row in rows:
+            self.treeviewAtendimento.insert("", tk.END, values=row)
+            
+        self.treeviewAtendimento.bind('<<TreeviewSelect>>', self.selectAtendimento)
+        self.treeviewAtendimento.bind("<Double-1>", self.double_clickAgenda)
+
+        self.atendimento.bind('<Return>', lambda event: self.adicionarAgendamento())       
+        
+        self.atendimento.mainloop()
+
+    def selectAtendimento(self, event):
+        try:
+            # Id do item da Agenda selecionada
+            self.item_idAtendimento = self.treeviewAtendimento.selection()[0]
+            
+            # Lista Informações da Agenda Selecionada
+            self.listaAtendimento = self.treeviewAtendimento.item(self.item_idAtendimento, 'values')
+                        
+            # Data agendamento
+            self.dataAtendimento2 = self.listaAtendimento[0]
+
+            # Hora Atendimentomento
+            self.horaAtendimento_2 = self.listaAtendimento[1]
+            
+            # Id do Atendimento
+            self.codAtendimento = self.listaAtendimento[2]
+
+            # Protocolo
+            self.protocoloAgenda = self.listaAtendimento[3]
+
+            # Id do Cliente
+            self.codClienteAtendimento = self.listaAtendimento[4]
+            
+            # Nome do Cliente
+            self.nameClientAtendimento = self.listaAtendimento[5]
+
+            # Nome Funcionario
+            self.nameFuncAtendimento = self.listaAtendimento[6]
+
+            # Procedimento
+            self.prcAtendimentoSelect = self.listaAtendimento[7]
+
+            # Valor do Procedimento
+            self.valorPrcAtd = self.listaAtendimento[8]
+
+            # Status
+            self.statusAtendimento = self.listaAtendimento[9]
+            
+        except IndexError as e:
+            return
 
 # Agendamento --------------------------------
 
@@ -2872,45 +3054,47 @@ class Zenix:
         for row in rowsAgenda:
             self.treeviewAgenda.insert("", tk.END, values=row)
             
-        self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAgendamento)
-        self.treeviewAgenda.bind("<Double-1>", self.double_clickAgenda)       
+        self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAtdAgenda)
+        self.treeviewAgenda.bind("<Double-1>", self.double_clickAgenda)
+
+        self.agendaRoot.bind('<Return>', lambda event: self.adicionarAgendamento())       
         
         self.agendaRoot.mainloop()
 
     def double_clickAgenda(self, event):
         self.adicionarAtendimento()
 
-    def selectAtendimento(self, event):
+    def selectAtdAgenda(self, event):
         try:
             # Id do item da Agenda selecionada
-            self.item_idAtendimento = self.treeviewAtendimento.selection()[0]
+            self.item_idAtdAgenda = self.treeviewAtdAgenda.selection()[0]
             
             # Lista Informações da Agenda Selecionada
-            self.listaAtendimento = self.treeviewAtendimento.item(self.item_idAtendimento, 'values')
+            self.listaAtdAgenda = self.treeviewAtdAgenda.item(self.item_idAtdAgenda, 'values')
                         
             # Data agendamento
-            self.dataAtendimento2 = self.listaAtendimento[0]
+            self.dataAtd = self.listaAtdAgenda[0]
 
             # Hora Atendimentomento
-            self.horaAtendimento_2 = self.listaAtendimento[1]
+            self.horaAtd = self.listaAtdAgenda[1]
             
             # Id do Cliente
-            self.nameClientAtd = self.listaAtendimento[2]
+            self.nameClienteAtdAgenda = self.listaAtdAgenda[2]
             
             # Nome do Cliente
-            self.codClienteAtd = self.listaAtendimento[3]
+            self.codClienteAtd = self.listaAtdAgenda[3]
 
             # Id do Atendimento
-            self.idAtendimentoAg = self.listaAtendimento[4]
+            self.idAtdAgenda = self.listaAtdAgenda[4]
 
             # Nome Funcionario
-            self.nameFuncAtd = self.listaAtendimento[5]
+            self.nameFuncAtd = self.listaAtdAgenda[5]
 
             # Procedimento
-            self.prcAtendimentoSelect = self.listaAtendimento[6]
+            self.prcAtdAgenda = self.listaAtdAgenda[6]
 
             # Valor do Procedimento
-            self.valorPrcAtdSelect = self.listaAtendimento[7]
+            self.valorPrcAtdSelect = self.listaAtdAgenda[7]
             
         except IndexError as e:
             return
@@ -3347,47 +3531,47 @@ class Zenix:
             buttonAdd = tk.Button(self.modalAtendimentoAdd, text='ADICIONAR', command=self.insertAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
             buttonAdd.place(relx=0.8, rely=0.25)
 
-            self.treeviewAtendimento = ttk.Treeview(self.modalAtendimentoAdd, columns=('Data', 'Hora', 'Cod.Atendimento', 'Protocolo', 'Cod.Cliente', 'Nome do Cliente', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
+            self.treeviewAtdAgenda = ttk.Treeview(self.modalAtendimentoAdd, columns=('Data', 'Hora', 'Cod.Atendimento', 'Protocolo', 'Cod.Cliente', 'Nome do Cliente', 'Funcionario', 'Procedimento', 'Valor', 'Status'), show='headings')       
             
-            self.treeviewAtendimento.heading('Data', text='Data')
-            self.treeviewAtendimento.heading('Hora', text='Hora')
-            self.treeviewAtendimento.heading('Cod.Atendimento', text='Cód.Atendimento')
-            self.treeviewAtendimento.heading('Protocolo', text='Protocolo')
-            self.treeviewAtendimento.heading('Cod.Cliente', text='Cód.Cliente')
-            self.treeviewAtendimento.heading('Nome do Cliente', text='Nome do Cliente')
-            self.treeviewAtendimento.heading('Funcionario', text='Funcionario')
-            self.treeviewAtendimento.heading('Procedimento', text='Procedimento')
-            self.treeviewAtendimento.heading('Valor', text='Valor')
-            self.treeviewAtendimento.heading('Status', text='Status')
+            self.treeviewAtdAgenda.heading('Data', text='Data')
+            self.treeviewAtdAgenda.heading('Hora', text='Hora')
+            self.treeviewAtdAgenda.heading('Cod.Atendimento', text='Cód.Atendimento')
+            self.treeviewAtdAgenda.heading('Protocolo', text='Protocolo')
+            self.treeviewAtdAgenda.heading('Cod.Cliente', text='Cód.Cliente')
+            self.treeviewAtdAgenda.heading('Nome do Cliente', text='Nome do Cliente')
+            self.treeviewAtdAgenda.heading('Funcionario', text='Funcionario')
+            self.treeviewAtdAgenda.heading('Procedimento', text='Procedimento')
+            self.treeviewAtdAgenda.heading('Valor', text='Valor')
+            self.treeviewAtdAgenda.heading('Status', text='Status')
             
-            self.treeviewAtendimento.column('Data', stretch=False, width=100)
-            self.treeviewAtendimento.column('Hora', stretch=False, width=100)
-            self.treeviewAtendimento.column('Cod.Cliente', stretch=False, width=92)
-            self.treeviewAtendimento.column('Protocolo', stretch=False, width=92)
-            self.treeviewAtendimento.column('Cod.Atendimento', stretch=False, width=92)
-            self.treeviewAtendimento.column('Nome do Cliente', stretch=False, width=100)
-            self.treeviewAtendimento.column('Funcionario', stretch=False, width=100)
-            self.treeviewAtendimento.column('Procedimento', stretch=False, width=100)
-            self.treeviewAtendimento.column('Valor', stretch=False, width=100)
-            self.treeviewAtendimento.column('Status', stretch=False, width=90)
+            self.treeviewAtdAgenda.column('Data', stretch=False, width=100)
+            self.treeviewAtdAgenda.column('Hora', stretch=False, width=100)
+            self.treeviewAtdAgenda.column('Cod.Cliente', stretch=False, width=92)
+            self.treeviewAtdAgenda.column('Protocolo', stretch=False, width=92)
+            self.treeviewAtdAgenda.column('Cod.Atendimento', stretch=False, width=92)
+            self.treeviewAtdAgenda.column('Nome do Cliente', stretch=False, width=100)
+            self.treeviewAtdAgenda.column('Funcionario', stretch=False, width=100)
+            self.treeviewAtdAgenda.column('Procedimento', stretch=False, width=100)
+            self.treeviewAtdAgenda.column('Valor', stretch=False, width=100)
+            self.treeviewAtdAgenda.column('Status', stretch=False, width=90)
             
-            self.treeviewAtendimento.place(relx=0.0, rely=0.4, relheight=0.573, relwidth=0.982)
-            verticalBarTreeview2 = ttk.Scrollbar(self.modalAtendimentoAdd, orient='vertical', command=self.treeviewAtendimento.yview)
-            horizontalBarTreeview2 = ttk.Scrollbar(self.modalAtendimentoAdd, orient='horizontal', command=self.treeviewAtendimento.xview)
-            self.treeviewAtendimento.configure(yscrollcommand=verticalBarTreeview2.set, xscrollcommand=horizontalBarTreeview2.set)
+            self.treeviewAtdAgenda.place(relx=0.0, rely=0.4, relheight=0.573, relwidth=0.982)
+            verticalBarTreeview2 = ttk.Scrollbar(self.modalAtendimentoAdd, orient='vertical', command=self.treeviewAtdAgenda.yview)
+            horizontalBarTreeview2 = ttk.Scrollbar(self.modalAtendimentoAdd, orient='horizontal', command=self.treeviewAtdAgenda.xview)
+            self.treeviewAtdAgenda.configure(yscrollcommand=verticalBarTreeview2.set, xscrollcommand=horizontalBarTreeview2.set)
             
             verticalBarTreeview2.place(relx=0.981, rely=0.4, relheight=0.57)
             horizontalBarTreeview2.place(relx=0.0, rely=0.97, relwidth=1)
             
             styleTreeview2 = ttk.Style()
             styleTreeview2.theme_use('clam')
-            styleTreeview2.configure("self.treeviewAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+            styleTreeview2.configure("self.treeviewAtdAgenda", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
             rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)
             for row in rows:
-                self.treeviewAtendimento.insert("", END, values=row)
+                self.treeviewAtdAgenda.insert("", END, values=row)
 
-            self.treeviewAtendimento.bind('<<TreeviewSelect>>', self.selectAtendimento)
+            self.treeviewAtdAgenda.bind('<<TreeviewSelect>>', self.selectAtendimento)
             
             self.modalAtendimentoAdd.mainloop()
 
@@ -3420,12 +3604,10 @@ class Zenix:
 
     def atualizaTreeAtendimento(self):
         self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
-        self.treeviewClientAtendimento.delete(*self.treeviewClientAtendimento.get_children())
 
         rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)        
         for row in rows:
             self.treeviewAtendimento.insert("", END, values=row)
-            self.treeviewClientAtendimento.insert("", END, values=row)
 
     def formatar_hora(self, event=None):
         hora = self.horaAtendimento.get()
