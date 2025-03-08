@@ -423,6 +423,56 @@ class Dao:
 
         return rows
 
+    def atdNome(self, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Atendimentos WHERE `Nome do Cliente` LIKE '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def atdAtendimento(self, atendimento):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"SELECT * FROM Vw_Atendimentos WHERE `Cod.Atendimento` = {atendimento}"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def atdDataNome(self, dataInicio, nome):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select * from Vw_Atendimentos where STR_TO_DATE(`Data`, '%d/%m/%Y') = STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND `Nome do Cliente` like '{nome}%'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def atdDataFim(self, dataFim):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select * from Vw_Atendimentos where `Data` = '{dataFim}'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def atdData(self, dataInicio, dataFim):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select * from Vw_Atendimentos where STR_TO_DATE(`Data`, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by `Data Agenda`"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def AgendaNome(self, nome):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'

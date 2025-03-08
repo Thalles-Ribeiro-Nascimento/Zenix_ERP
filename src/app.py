@@ -2773,9 +2773,9 @@ class Zenix:
         
         self.entryBuscarNomeAtendimento = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
         self.entryBuscarNomeAtendimento.place(relx=0.02 , rely=0.15, width=170)
-        self.entryBuscarNomeAtendimento.bind('<Return>', self.buscarNomeAgenda)      
+        self.entryBuscarNomeAtendimento.bind('<Return>', self.buscarNomeAtd)      
         
-        buttonPesquisar = tk.Button(self.frameAtendimento, text='Buscar', command=self.buscarAgendaData, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonPesquisar = tk.Button(self.frameAtendimento, text='Buscar', command=self.buscarDataAtd, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonPesquisar.place(relx=0.02, rely=0.3)
         
         titleDataInicio = tk.Label(self.frameAtendimento, text='De:', background='#A9A9A9', fg='black', font='bold')
@@ -2859,8 +2859,6 @@ class Zenix:
             
         self.treeviewAtendimento.bind('<<TreeviewSelect>>', self.selectAtendimento)
         self.treeviewAtendimento.bind("<Double-1>", self.double_clickAgenda)
-
-        self.atendimento.bind('<Return>', lambda event: self.adicionarAgendamento())       
         
         self.atendimento.mainloop()
 
@@ -2904,6 +2902,58 @@ class Zenix:
             
         except IndexError as e:
             return
+
+    def buscarDataAtd(self):
+        nomeCliente = self.entryBuscarNomeAtendimento.get()
+        dataIni = self.entryDataAtendimento.get()
+        dataFim = self.entryDataAtendimentoFinal.get()
+
+        if dataIni != "" and dataFim != "" and nomeCliente == "":
+            self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+            rows = self.dao.atdData(dataIni, dataFim)
+            for row in rows:
+                self.treeviewAtendimento.insert("", END, values=row)
+        
+        elif dataIni == "" and dataFim != "":
+            self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+            rows = self.dao.atdDataFim(dataFim)
+            for row in rows:
+                self.treeviewAtendimento.insert("", END, values=row) 
+
+        elif dataIni != "" and nomeCliente != "":
+            self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+            rows = self.dao.atdDataNome(dataIni, nomeCliente)
+            for row in rows:
+                self.treeviewAtendimento.insert("", END, values=row)            
+
+    def buscarNomeAtd(self, event):
+        dataIni = self.entryDataAtendimento.get()
+
+        # Buscar pelo Codigo do Atendimento:
+        if self.entryBuscarNomeAtendimento.get().isnumeric():
+            self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+            codAtd = self.entryBuscarNomeAtendimento.get()
+            codAtdInt = int(codAtd)
+            rows = self.dao.atdAtendimento(codAtdInt)
+
+            for row in rows:
+                self.treeviewAtendimento.insert("", END, values=row)
+        
+        # Buscar pela Data e Nome
+        elif dataIni != "" and self.entryBuscarNomeAtendimento.get() != "":
+            self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+            rows = self.dao.atdDataNome(dataIni, self.entryBuscarNomeAtendimento.get())
+            for row in rows:
+                self.treeviewAtendimento.insert("", END, values=row)             
+
+        # Buscar pelo Nome:
+        else:
+            self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+            nome = self.entryBuscarNomeAtendimento.get()
+            rows = self.dao.atdNome(nome)
+
+            for row in rows:
+                self.treeviewAtendimento.insert("", END, values=row)
 
 # Agendamento --------------------------------
 
