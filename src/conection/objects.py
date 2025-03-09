@@ -393,6 +393,16 @@ class Dao:
 
         return rows
 
+    def atendimentosAtendidos(self, protocolo, data):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+       
+        sql = f"SELECT * FROM Vw_Atendimentos_Atendidos WHERE Protocolo = {protocolo} and `Data`= '{data}'"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def atendimentoCliente(self, nomeCliente):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
