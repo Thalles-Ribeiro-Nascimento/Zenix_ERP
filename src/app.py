@@ -2871,10 +2871,11 @@ class Zenix:
 
     def selectAtendimento(self, event):
         try:
-            # Id do item da Agenda selecionada
+            # Id do item do Atendimento selecionado
             self.item_idAtendimento = self.treeviewAtendimento.selection()[0]
+            print(self.treeviewAtendimento.selection())
             
-            # Lista Informações da Agenda Selecionada
+            # Lista Informações do Atendimento Selecionado
             self.listaAtendimento = self.treeviewAtendimento.item(self.item_idAtendimento, 'values')
                         
             # Data agendamento
@@ -2884,7 +2885,7 @@ class Zenix:
             self.horaAtendimento_2 = self.listaAtendimento[1]
             
             # Protocolo
-            self.protocoloAgenda = self.listaAtendimento[2]
+            self.protocoloAgendaAtendimento = self.listaAtendimento[2]
 
             # Id do Atendimento
             self.codAtendimento = self.listaAtendimento[3]
@@ -2977,6 +2978,18 @@ class Zenix:
             for row in rows:
                 self.treeviewAtendimento.insert("", END, values=row)
 
+    def setAtendimentoAtendido(self):
+        if len(self.treeviewAtendimento.selection()) > 1:
+            listVlBruto = []
+
+            for id in self.treeviewAtendimento.selection():
+                values = self.treeviewFunc.item(id, 'values')
+                vlBruto = values[9]
+                listVlBruto.append(vlBruto)
+
+                
+
+
     def atdAtendido(self):
         self.modalLancamentoAtd = tk.Toplevel()
         self.modalLancamentoAtd.transient(self.main)
@@ -3063,11 +3076,12 @@ class Zenix:
         # button = tk.Button(self.modalLancamentoAtd, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         # button.place(relx=0.15, rely=0.28)   
         
-        self.treeviewModalAtdAtendido = ttk.Treeview(self.modalLancamentoAtd, columns=("Data", "Hora", "Protocolo", "Cod.Cliente", "Nome do Cliente", 
+        self.treeviewModalAtdAtendido = ttk.Treeview(self.modalLancamentoAtd, columns=("Data", "Hora", "Protocolo", "Cod.Atendimento", "Cod.Cliente", "Nome do Cliente", 
                                                                                        "Procedimento", "Valor"), show='headings')
         self.treeviewModalAtdAtendido.heading("Data", text="Dt.Atendimento")
         self.treeviewModalAtdAtendido.heading("Hora", text="Hora")
         self.treeviewModalAtdAtendido.heading("Protocolo", text="Cod.Agenda")
+        self.treeviewModalAtdAtendido.heading("Cod.Atendimento", text="Cod.Atendimento")
         self.treeviewModalAtdAtendido.heading("Cod.Cliente", text="Cod.Cliente")
         self.treeviewModalAtdAtendido.heading("Nome do Cliente", text="Nome do Cliente")
         self.treeviewModalAtdAtendido.heading("Procedimento", text="Procedimento")
@@ -3086,7 +3100,7 @@ class Zenix:
         verticalBar.place(relx=0.98 , rely=0.5, relheight=0.47)
         horizontalBar.place(rely=0.968, relx=0, relwidth=1)
         
-        resultado = self.dao.especialidadeView()
+        resultado = self.dao.atendimentosAtendidos(self.codAtendimento, self.dataAtendimento2)
         for row in resultado:
             self.treeviewModalAtdAtendido.insert("", END, values=row)
         
