@@ -2788,6 +2788,7 @@ class Zenix:
         
         self.entryDataAtendimento = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
         self.entryDataAtendimento.place(relx=0.2 , rely=0.15, width=120)
+        self.entryDataAtendimento.insert(0, "01/03/2025")
         
         self.buttonCalendarAtendimento = tk.Button(self.frameAtendimento, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioIniAgenda)
         self.buttonCalendarAtendimento.place(relx=0.266, rely=0.157, relwidth=0.015, relheight=0.103)
@@ -2873,7 +2874,6 @@ class Zenix:
         try:
             # Id do item do Atendimento selecionado
             self.item_idAtendimento = self.treeviewAtendimento.selection()[0]
-            print(self.treeviewAtendimento.selection())
             
             # Lista Informações do Atendimento Selecionado
             self.listaAtendimento = self.treeviewAtendimento.item(self.item_idAtendimento, 'values')
@@ -3001,6 +3001,10 @@ class Zenix:
         self.modalLancamentoAtd.resizable(False,False)
         self.modalLancamentoAtd.colormapwindows(self.modalLancamentoAtd)
 
+        FuncAtendimento = self.dao.funcionarioNome(self.nameFuncAtendimento)
+        FuncAtendimentoId = [item[0] for item in FuncAtendimento]
+        percentil = [item[13] for item in FuncAtendimento]
+
         titleCodFuncionario = tk.Label(self.modalLancamentoAtd, text='Cód.Func.:', font='bold')
         titleCodFuncionario.configure(background='#D3D3D3', fg='black')
         titleCodFuncionario.place(relx= 0.03, rely=0.05)
@@ -3008,6 +3012,7 @@ class Zenix:
         self.ModalCodFuncionarioAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalCodFuncionarioAtd.configure(background='white', fg='black', width=7)
         self.ModalCodFuncionarioAtd.place(relx= 0.032, rely=0.1)
+        self.ModalCodFuncionarioAtd.insert(0, FuncAtendimentoId)
 
         titleModalNomeFuncionarioAtd = tk.Label(self.modalLancamentoAtd, text='Funcionário:', font='bold')
         titleModalNomeFuncionarioAtd.configure(background='#D3D3D3', fg='black')
@@ -3015,7 +3020,8 @@ class Zenix:
 
         self.ModalNomeFuncionarioAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalNomeFuncionarioAtd.configure(background='white', fg='black', width=20)
-        self.ModalNomeFuncionarioAtd.place(relx= 0.2, rely=0.1)                
+        self.ModalNomeFuncionarioAtd.place(relx= 0.2, rely=0.1)
+        self.ModalNomeFuncionarioAtd.insert(0, self.nameFuncAtendimento)
 
         titleFormaPagamento = tk.Label(self.modalLancamentoAtd, text='Forma de Pagamento:', font='bold')
         titleFormaPagamento.configure(background='#D3D3D3', fg='black')
@@ -3032,6 +3038,7 @@ class Zenix:
         self.ModalVlBrutoAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalVlBrutoAtd.configure(background='white', fg='black', width=7)
         self.ModalVlBrutoAtd.place(relx= 0.032, rely=0.25)
+        self.ModalVlBrutoAtd.insert(0, self.valorPrcAtd)
 
         titlePercentualFunc = tk.Label(self.modalLancamentoAtd, text='Perc. (%):', font='bold')
         titlePercentualFunc.configure(background='#D3D3D3', fg='black')
@@ -3040,6 +3047,7 @@ class Zenix:
         self.ModalPercentualFuncAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalPercentualFuncAtd.configure(background='white', fg='black', width=7)
         self.ModalPercentualFuncAtd.place(relx= 0.2, rely=0.25)
+        self.ModalPercentualFuncAtd.insert(0, percentil)
 
         titleTaxa = tk.Label(self.modalLancamentoAtd, text='Taxa:', font='bold')
         titleTaxa.configure(background='#D3D3D3', fg='black')
@@ -3055,7 +3063,13 @@ class Zenix:
 
         self.ModalVlLiquidoAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalVlLiquidoAtd.configure(background='white', fg='black', width=7)
-        self.ModalVlLiquidoAtd.place(relx= 0.5, rely=0.25)      
+        self.ModalVlLiquidoAtd.place(relx= 0.5, rely=0.25)
+        vlBruto = self.ModalVlBrutoAtd.get()
+        percentil2 = self.ModalPercentualFuncAtd.get()
+        percFloat = float(percentil2)
+        vlBrutoFloat = float(vlBruto)
+        vlLiquido = vlBrutoFloat * (percFloat/100)
+        self.ModalVlLiquidoAtd.insert(0, vlLiquido)
 
         titlePercentualFatura = tk.Label(self.modalLancamentoAtd, text='Loja (%):', font='bold')
         titlePercentualFatura.configure(background='#D3D3D3', fg='black')
@@ -3064,6 +3078,9 @@ class Zenix:
         self.ModalPercentualFaturaAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalPercentualFaturaAtd.configure(background='white', fg='black', width=7)
         self.ModalPercentualFaturaAtd.place(relx= 0.032, rely=0.37)
+        percLoja = 100 - percFloat
+        vlLoja = vlBrutoFloat * (percLoja/100)
+        self.ModalPercentualFaturaAtd.insert(0, percLoja)
 
         titleVlLoja = tk.Label(self.modalLancamentoAtd, text='VL.Loja:', font='bold')
         titleVlLoja.configure(background='#D3D3D3', fg='black')
@@ -3071,7 +3088,8 @@ class Zenix:
 
         self.ModalVlLojaAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalVlLojaAtd.configure(background='white', fg='black', width=7)
-        self.ModalVlLojaAtd.place(relx= 0.2, rely=0.37)  
+        self.ModalVlLojaAtd.place(relx= 0.2, rely=0.37)
+        self.ModalVlLojaAtd.insert(0, vlLoja)
 
         # button = tk.Button(self.modalLancamentoAtd, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         # button.place(relx=0.15, rely=0.28)   
