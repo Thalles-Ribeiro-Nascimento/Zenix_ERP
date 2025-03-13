@@ -3643,23 +3643,6 @@ class Zenix:
         self.idSelecaoPrcAtendimento = self.prcAtendimentoMap.get(self.selecaoIdPrc)
         self.inserirCampoValor(self.selecaoIdPrc)
 
-    def inserirParcelasAtd(self):
-            if self.widgetVw == True:
-                self.parcelasAtd.configure(state='normal')
-
-            else:
-                self.parcelasAtd.configure(state='disabled', disabledbackground='gray', disabledforeground='black')
-
-    def setIdFormaPagamentoAtd(self, *args):
-        self.selecaoFormaPagamento = self.opcoesFormaPagamento.get()
-        self.idFormaPagamento = self.formaPagamentoMap.get(self.selecaoFormaPagamento)
-        self.widgetVw = False
-        if "PARCELADO" in self.selecaoFormaPagamento:
-            self.widgetVw = True
-            self.inserirParcelasAtd()
-        else:
-            self.inserirParcelasAtd()
-
     def adicionarAtendimento(self):
         if self.item_idAgenda == "":
             messagebox.showerror("Erro", "Selecione um agendamento", parent=self.agendaRoot)
@@ -3734,32 +3717,6 @@ class Zenix:
             self.valorPrc.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='white', disabledforeground='black')
             self.valorPrc.place(relx= 0.45, rely=0.25)
 
-            titleParcelas = tk.Label(self.modalAtendimentoAdd, text='PARCELAS:', font='bold')
-            titleParcelas.configure(background='#D3D3D3', fg='black')
-            titleParcelas.place(relx= 0.6, rely=0.2)
-
-            self.parcelasAtd = tk.Entry(self.modalAtendimentoAdd)
-            self.parcelasAtd.configure(background='white', fg='black', width=10, state='disabled', disabledbackground='gray', disabledforeground='black')
-            self.parcelasAtd.place(relx= 0.6, rely=0.25)
-
-            titleFormaPagamento = tk.Label(self.modalAtendimentoAdd, text='PAGAMENTO:', font='bold')
-            titleFormaPagamento.place(relx= 0.75, rely=0.05)
-            titleFormaPagamento.configure(background='#D3D3D3', fg='black')
-
-            self.formaPagamento = self.dao.formaPagamentoAll()
-            self.formaPagamentoName = [item[1] for item in self.formaPagamento]
-            self.formaPagamentoId = [item[0] for item in self.formaPagamento]
-            self.formaPagamentoTipo = [item[2] for item in self.formaPagamento]
-            self.formaPagamentoMap = dict(zip(self.formaPagamentoName, self.formaPagamentoId))
-            
-            self.opcoesFormaPagamento = StringVar(self.modalAtendimentoAdd)
-            self.opcoesFormaPagamento.set("Pagamento")
-            self.dropdownFuncAtd = tk.OptionMenu(self.modalAtendimentoAdd, self.opcoesFormaPagamento, *self.formaPagamentoName)
-            self.dropdownFuncAtd.configure(background='white', fg='black', activebackground='gray')
-            self.dropdownFuncAtd.place(relx= 0.75, rely=0.1)
-
-            self.opcoesFormaPagamento.trace_add('write', self.setIdFormaPagamentoAtd)
-
             buttonAdd = tk.Button(self.modalAtendimentoAdd, text='ADICIONAR', command=self.insertAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
             buttonAdd.place(relx=0.8, rely=0.25)
 
@@ -3811,9 +3768,7 @@ class Zenix:
         hora = self.horaAtendimento.get()
         idProcedimento = self.idSelecaoPrcAtendimento
         idAgenda = self.protocoloAgenda
-        idFormaPagamento = self.idFormaPagamento
         idFuncionario = self.idSelecaoFuncAtendimento
-        numParcelas = self.parcelasAtd.get()
 
         if hora == "":
             messagebox.showerror("Aviso","O campo Hora está vazio")
@@ -3821,13 +3776,8 @@ class Zenix:
         elif idProcedimento == "":
             messagebox.showerror("Aviso","O Procedimento está vazio")
 
-        elif idFormaPagamento == "":
-            messagebox.showerror("Aviso","A Forma de pagamento está vazia")
-        
-        elif numParcelas == "":
-            numParcelas = 0
 
-        dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFormaPagamento, idFuncionario, numParcelas)
+        dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
         if isinstance(dao, str):
             messagebox.showerror("Erro",dao , parent=self.modalAtendimentoAdd)
             
@@ -3835,11 +3785,11 @@ class Zenix:
             self.atualizaTreeAtendimento()
 
     def atualizaTreeAtendimento(self):
-        self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
+        self.treeviewAtdAgenda.delete(*self.treeviewAtdAgenda.get_children())
 
         rows = self.dao.atendimentosAgenda(self.idClientAgenda, self.dataAgendada)        
         for row in rows:
-            self.treeviewAtendimento.insert("", END, values=row)
+            self.treeviewAtdAgenda.insert("", END, values=row)
 
     def formatar_hora(self, event=None):
         hora = self.horaAtendimento.get()

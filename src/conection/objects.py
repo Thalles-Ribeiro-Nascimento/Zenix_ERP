@@ -551,9 +551,9 @@ class Dao:
         except mysql.connector.Error as e:
             print(e)
 
-    def addAtendimento(self, horaAtendimento, procedimento, agenda, formaPagamento, idFunc, parcelas):
+    def addAtendimento(self, horaAtendimento, procedimento, agenda, idFunc):
         try:
-            sql = f"INSERT INTO atendimentos (hora, idProcedimento, idAgenda, forma_pagamento, idFuncionario, parcelas) VALUES ('{horaAtendimento}', {procedimento}, {agenda}, {formaPagamento}, {idFunc}, {parcelas})"
+            sql = f"INSERT INTO atendimentos (hora, idProcedimento, idAgenda, idFuncionario) VALUES ('{horaAtendimento}', {procedimento}, {agenda}, {idFunc})"
             self.cursor.execute(sql)
             self.conecta.commit()
         except mysql.connector.Error as e:
