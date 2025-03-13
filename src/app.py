@@ -3080,6 +3080,7 @@ class Zenix:
         self.ModalPercentualFaturaAtd.place(relx= 0.032, rely=0.37)
         percLoja = 100 - percFloat
         vlLoja = vlBrutoFloat * (percLoja/100)
+        vlLojaFormatado = "{:.2f}".format(vlLoja)
         self.ModalPercentualFaturaAtd.insert(0, percLoja)
 
         titleVlLoja = tk.Label(self.modalLancamentoAtd, text='VL.Loja:', font='bold')
@@ -3089,7 +3090,7 @@ class Zenix:
         self.ModalVlLojaAtd = tk.Entry(self.modalLancamentoAtd)
         self.ModalVlLojaAtd.configure(background='white', fg='black', width=7)
         self.ModalVlLojaAtd.place(relx= 0.2, rely=0.37)
-        self.ModalVlLojaAtd.insert(0, vlLoja)
+        self.ModalVlLojaAtd.insert(0, vlLojaFormatado)
 
         # button = tk.Button(self.modalLancamentoAtd, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         # button.place(relx=0.15, rely=0.28)   
@@ -3283,7 +3284,7 @@ class Zenix:
         for row in rowsAgenda:
             self.treeviewAgenda.insert("", tk.END, values=row)
             
-        self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAtdAgenda)
+        self.treeviewAgenda.bind('<<TreeviewSelect>>', self.selectAgendamento)
         self.treeviewAgenda.bind("<Double-1>", self.double_clickAgenda)
 
         self.agendaRoot.bind('<Return>', lambda event: self.adicionarAgendamento())       
@@ -3294,44 +3295,46 @@ class Zenix:
         self.adicionarAtendimento()
 
     def selectAtdAgenda(self, event):
-        try:
-            # Id do item da Agenda selecionada
-            self.item_idAtdAgenda = self.treeviewAtdAgenda.selection()[0]
+        # try:
+        #     # Id do item da Agenda selecionada
+        #     self.item_idAtdAgenda = self.treeviewAgenda.selection()[0]
             
-            # Lista Informações da Agenda Selecionada
-            self.listaAtdAgenda = self.treeviewAtdAgenda.item(self.item_idAtdAgenda, 'values')
+        #     # Lista Informações da Agenda Selecionada
+        #     self.listaAtdAgenda = self.treeviewAgenda.item(self.item_idAtdAgenda, 'values')
                         
-            # Data agendamento
-            self.dataAtd = self.listaAtdAgenda[0]
+        #     # Data agendamento
+        #     self.dataAtd = self.listaAtdAgenda[0]
 
-            # Hora Atendimentomento
-            self.horaAtd = self.listaAtdAgenda[1]
+        #     # Hora Atendimentomento
+        #     self.horaAtd = self.listaAtdAgenda[1]
             
-            # Id do Cliente
-            self.nameClienteAtdAgenda = self.listaAtdAgenda[2]
+        #     # Id do Cliente
+        #     self.nameClienteAtdAgenda = self.listaAtdAgenda[2]
             
-            # Nome do Cliente
-            self.codClienteAtd = self.listaAtdAgenda[3]
+        #     # Nome do Cliente
+        #     self.codClienteAtd = self.listaAtdAgenda[3]
 
-            # Id do Atendimento
-            self.idAtdAgenda = self.listaAtdAgenda[4]
+        #     # Id do Atendimento
+        #     self.idAtdAgenda = self.listaAtdAgenda[4]
 
-            # Nome Funcionario
-            self.nameFuncAtd = self.listaAtdAgenda[5]
+        #     # Nome Funcionario
+        #     self.nameFuncAtd = self.listaAtdAgenda[5]
 
-            # Procedimento
-            self.prcAtdAgenda = self.listaAtdAgenda[6]
+        #     # Procedimento
+        #     self.prcAtdAgenda = self.listaAtdAgenda[6]
 
-            # Valor do Procedimento
-            self.valorPrcAtdSelect = self.listaAtdAgenda[7]
+        #     # Valor do Procedimento
+        #     self.valorPrcAtdSelect = self.listaAtdAgenda[7]
             
-        except IndexError as e:
-            return
+        # except IndexError as e:
+        #     return
+        pass
 
     def selectAgendamento(self, event):
         try:
             # Id do item da Agenda selecionada
             self.item_idAgenda = self.treeviewAgenda.selection()[0]
+            print(self.item_idAgenda)
             
             # Lista Informações da Agenda Selecionada
             self.listaAgenda = self.treeviewAgenda.item(self.item_idAgenda, 'values')
