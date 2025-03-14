@@ -2735,7 +2735,7 @@ class Zenix:
         self.atendimento.lift()
         self.atendimento.title("Atendimento")
         self.atendimento.configure(background='#A9A9A9')
-        self.atendimento.geometry('1540x920')
+        self.atendimento.geometry('1024x720')
         self.atendimento.resizable(False,False)
 
         self.atendimento.grid_columnconfigure(0, weight=0)
@@ -2774,43 +2774,41 @@ class Zenix:
         self.frameBotoesAtendimento()
         
         titleNomeAtd = tk.Label(self.frameAtendimento, text='Pesquisar:', background='#A9A9A9', fg='black', font='bold')
-        titleNomeAtd.place(relx=0.02 , rely=0.07)
+        titleNomeAtd.place(relx=0.02, rely=0.07)
         
         self.entryBuscarNomeAtendimento = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
-        self.entryBuscarNomeAtendimento.place(relx=0.02 , rely=0.15, width=170)
+        self.entryBuscarNomeAtendimento.place(relx=0.02 , rely=0.2, width=170)
         self.entryBuscarNomeAtendimento.bind('<Return>', self.buscarNomeAtd)      
         
         buttonPesquisar = tk.Button(self.frameAtendimento, text='Buscar', command=self.buscarDataAtd, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonPesquisar.place(relx=0.02, rely=0.3)
+        buttonPesquisar.place(relx=0.02, rely=0.4)
         
         titleDataInicio = tk.Label(self.frameAtendimento, text='De:', background='#A9A9A9', fg='black', font='bold')
         titleDataInicio.place(relx=0.2 , rely=0.07)
         
         self.entryDataAtendimento = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
-        self.entryDataAtendimento.place(relx=0.2 , rely=0.15, width=120)
+        self.entryDataAtendimento.place(relx=0.2 , rely=0.2, width=120)
         self.entryDataAtendimento.insert(0, "01/03/2025")
         
         self.buttonCalendarAtendimento = tk.Button(self.frameAtendimento, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioIniAgenda)
-        self.buttonCalendarAtendimento.place(relx=0.266, rely=0.157, relwidth=0.015, relheight=0.103)
+        self.buttonCalendarAtendimento.place(relx=0.302, rely=0.212, relwidth=0.02, relheight=0.13)
         
         titleDataFinal = tk.Label(self.frameAtendimento, text='Até:', background='#A9A9A9', fg='black', font='bold')
-        titleDataFinal.place(relx=0.3 , rely=0.07)
+        titleDataFinal.place(relx=0.35, rely=0.07)
 
         self.entryDataAtendimentoFinal = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
-        self.entryDataAtendimentoFinal.place(relx=0.3 , rely=0.15, width=120)
+        self.entryDataAtendimentoFinal.place(relx=0.35, rely=0.2, width=120)
         dataAtual = datetime.now().date()
         dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
         self.entryDataAtendimentoFinal.insert(0, dataAtualFormatada)
                 
         self.buttonCalendarAtendimentoFinal = tk.Button(self.frameAtendimento, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioFimAgenda)
-        self.buttonCalendarAtendimentoFinal.place(relx=0.366, rely=0.157, relwidth=0.015, relheight=0.103)
+        self.buttonCalendarAtendimentoFinal.place(relx=0.452, rely=0.212, relwidth=0.02, relheight=0.13)
         
         self.frameTvAtendimentos()
         
         self.treeviewAtendimento = ttk.Treeview(self.frameTvAtd, columns=(
-            'Data', 'Hora', 'Protocolo', 'Cod.Atendimento', 'Cod.Cliente', 'Nome do Cliente','Procedimento' ,'Funcionario', 'Especialidade', 'Valor', 'F.Pagamento', 'Tipo Pagamento', 'Taxa',
-            'Parcelas', 'Status' 
-            ), show='headings')
+            'Data', 'Hora', 'Protocolo', 'Cod.Atendimento', 'Cod.Cliente', 'Nome do Cliente','Procedimento' ,'Funcionario', 'Especialidade', 'Valor', 'Status'), show='headings')
 
         self.treeviewAtendimento.heading('Data', text='Data')
         self.treeviewAtendimento.heading('Hora', text='Hora')
@@ -2822,10 +2820,6 @@ class Zenix:
         self.treeviewAtendimento.heading('Funcionario', text='Funcionário')
         self.treeviewAtendimento.heading('Especialidade', text='Especialidade')
         self.treeviewAtendimento.heading('Valor', text='Valor')
-        self.treeviewAtendimento.heading('F.Pagamento', text='F.Pagamento')
-        self.treeviewAtendimento.heading('Tipo Pagamento', text='Tipo Pagamento')
-        self.treeviewAtendimento.heading('Taxa', text='Taxa')
-        self.treeviewAtendimento.heading('Parcelas', text='Parcelas')
         self.treeviewAtendimento.heading('Status', text='Status')
         
         self.treeviewAtendimento.column('Data', stretch=False, width=100)
@@ -2838,10 +2832,6 @@ class Zenix:
         self.treeviewAtendimento.column('Procedimento', stretch=False, width=120)
         self.treeviewAtendimento.column('Especialidade', stretch=False, width=120)
         self.treeviewAtendimento.column('Valor', stretch=False, width=90)
-        self.treeviewAtendimento.column('F.Pagamento', stretch=False, width=120)
-        self.treeviewAtendimento.column('Tipo Pagamento', stretch=False, width=120)
-        self.treeviewAtendimento.column('Taxa', stretch=False, width=92)
-        self.treeviewAtendimento.column('Parcelas', stretch=False, width=92)
         self.treeviewAtendimento.column('Status', stretch=False, width=92)
 
         verticalBar = ttk.Scrollbar(self.frameTvAtd, orient='vertical', command=self.treeviewAtendimento.yview)
@@ -2987,81 +2977,91 @@ class Zenix:
                 vlBruto = values[9]
                 listVlBruto.append(vlBruto)
 
-                
-
-
     def atdAtendido(self):
-        self.modalLancamentoAtd = tk.Toplevel()
-        self.modalLancamentoAtd.transient(self.main)
-        self.modalLancamentoAtd.grab_set()
-        self.modalLancamentoAtd.lift()
-        self.modalLancamentoAtd.title('Atendimento - [Atendido]')
-        self.modalLancamentoAtd.geometry('650x450')
-        self.modalLancamentoAtd.configure(background='#D3D3D3')
-        self.modalLancamentoAtd.resizable(False,False)
-        self.modalLancamentoAtd.colormapwindows(self.modalLancamentoAtd)
+        self.ModalAtAtendido = tk.Toplevel()
+        self.ModalAtAtendido.transient(self.main)
+        self.ModalAtAtendido.grab_set()
+        self.ModalAtAtendido.lift()
+        self.ModalAtAtendido.title('Atendimento - [Atendido]')
+        self.ModalAtAtendido.geometry('650x450')
+        self.ModalAtAtendido.configure(background='#D3D3D3')
+        self.ModalAtAtendido.resizable(False,False)
+        self.ModalAtAtendido.colormapwindows(self.ModalAtAtendido)
 
         FuncAtendimento = self.dao.funcionarioNome(self.nameFuncAtendimento)
         FuncAtendimentoId = [item[0] for item in FuncAtendimento]
         percentil = [item[13] for item in FuncAtendimento]
 
-        titleCodFuncionario = tk.Label(self.modalLancamentoAtd, text='Cód.Func.:', font='bold')
+        titleCodFuncionario = tk.Label(self.ModalAtAtendido, text='Cód.Func.:', font='bold')
         titleCodFuncionario.configure(background='#D3D3D3', fg='black')
         titleCodFuncionario.place(relx= 0.03, rely=0.05)
 
-        self.ModalCodFuncionarioAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalCodFuncionarioAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalCodFuncionarioAtd.configure(background='white', fg='black', width=7)
         self.ModalCodFuncionarioAtd.place(relx= 0.032, rely=0.1)
         self.ModalCodFuncionarioAtd.insert(0, FuncAtendimentoId)
+        self.ModalCodFuncionarioAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
-        titleModalNomeFuncionarioAtd = tk.Label(self.modalLancamentoAtd, text='Funcionário:', font='bold')
+        titleModalNomeFuncionarioAtd = tk.Label(self.ModalAtAtendido, text='Funcionário:', font='bold')
         titleModalNomeFuncionarioAtd.configure(background='#D3D3D3', fg='black')
         titleModalNomeFuncionarioAtd.place(relx= 0.2, rely=0.05)
 
-        self.ModalNomeFuncionarioAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalNomeFuncionarioAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalNomeFuncionarioAtd.configure(background='white', fg='black', width=20)
         self.ModalNomeFuncionarioAtd.place(relx= 0.2, rely=0.1)
         self.ModalNomeFuncionarioAtd.insert(0, self.nameFuncAtendimento)
+        self.ModalNomeFuncionarioAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
-        titleFormaPagamento = tk.Label(self.modalLancamentoAtd, text='Forma de Pagamento:', font='bold')
+        titleFormaPagamento = tk.Label(self.ModalAtAtendido, text='Forma de Pagamento:', font='bold')
         titleFormaPagamento.configure(background='#D3D3D3', fg='black')
         titleFormaPagamento.place(relx= 0.5, rely=0.05)
 
-        self.ModalFormaPagamentoAtd = tk.Entry(self.modalLancamentoAtd)
-        self.ModalFormaPagamentoAtd.configure(background='white', fg='black', width=20)
-        self.ModalFormaPagamentoAtd.place(relx= 0.5, rely=0.1)
+        formaPagamento = self.dao.formaPagamentoAll()
+        self.formaPagamentoId = [item[0] for item in formaPagamento]
+        self.formaPagamentoName = [item[1] for item in formaPagamento]
+        self.MapFormaPagamento = dict(zip(self.formaPagamentoName, self.formaPagamentoId))
+        
+        self.OpFormaPagamento = StringVar(self.ModalAtAtendido)
+        self.OpFormaPagamento.set("Forma Pagamento")
+        self.OpFormaPagamento.trace_add('write', self.setIdPagamentoAtendido)
 
-        titleVlBruto = tk.Label(self.modalLancamentoAtd, text='VL.Bruto:', font='bold')
+        self.dropdownFuncAtd = tk.OptionMenu(self.ModalAtAtendido, self.OpFormaPagamento, *self.formaPagamentoName)
+        self.dropdownFuncAtd.configure(background='white', fg='black', activebackground='gray')
+        self.dropdownFuncAtd.place(relx= 0.5, rely=0.1)
+
+        titleVlBruto = tk.Label(self.ModalAtAtendido, text='VL.Bruto:', font='bold')
         titleVlBruto.configure(background='#D3D3D3', fg='black')
         titleVlBruto.place(relx= 0.03, rely=0.2)
 
-        self.ModalVlBrutoAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalVlBrutoAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalVlBrutoAtd.configure(background='white', fg='black', width=7)
         self.ModalVlBrutoAtd.place(relx= 0.032, rely=0.25)
         self.ModalVlBrutoAtd.insert(0, self.valorPrcAtd)
 
-        titlePercentualFunc = tk.Label(self.modalLancamentoAtd, text='Perc. (%):', font='bold')
+        titlePercentualFunc = tk.Label(self.ModalAtAtendido, text='Perc. (%):', font='bold')
         titlePercentualFunc.configure(background='#D3D3D3', fg='black')
         titlePercentualFunc.place(relx= 0.2, rely=0.2)
 
-        self.ModalPercentualFuncAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalPercentualFuncAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalPercentualFuncAtd.configure(background='white', fg='black', width=7)
         self.ModalPercentualFuncAtd.place(relx= 0.2, rely=0.25)
         self.ModalPercentualFuncAtd.insert(0, percentil)
+        self.ModalPercentualFuncAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
-        titleTaxa = tk.Label(self.modalLancamentoAtd, text='Taxa:', font='bold')
+        titleTaxa = tk.Label(self.ModalAtAtendido, text='Taxa:', font='bold')
         titleTaxa.configure(background='#D3D3D3', fg='black')
         titleTaxa.place(relx= 0.37, rely=0.2)
 
-        self.ModalTaxaAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalTaxaAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalTaxaAtd.configure(background='white', fg='black', width=7)
-        self.ModalTaxaAtd.place(relx= 0.37, rely=0.25)  
+        self.ModalTaxaAtd.place(relx= 0.37, rely=0.25)
+        self.ModalTaxaAtd.insert(0, 0)
 
-        titleVlLiquido = tk.Label(self.modalLancamentoAtd, text='VL.Líquido:', font='bold')
+        titleVlLiquido = tk.Label(self.ModalAtAtendido, text='VL.Líquido:', font='bold')
         titleVlLiquido.configure(background='#D3D3D3', fg='black')
         titleVlLiquido.place(relx= 0.5, rely=0.2)
 
-        self.ModalVlLiquidoAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalVlLiquidoAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalVlLiquidoAtd.configure(background='white', fg='black', width=7)
         self.ModalVlLiquidoAtd.place(relx= 0.5, rely=0.25)
         vlBruto = self.ModalVlBrutoAtd.get()
@@ -3070,32 +3070,35 @@ class Zenix:
         vlBrutoFloat = float(vlBruto)
         vlLiquido = vlBrutoFloat * (percFloat/100)
         self.ModalVlLiquidoAtd.insert(0, vlLiquido)
+        self.ModalVlLiquidoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
-        titlePercentualFatura = tk.Label(self.modalLancamentoAtd, text='Loja (%):', font='bold')
+        titlePercentualFatura = tk.Label(self.ModalAtAtendido, text='Loja (%):', font='bold')
         titlePercentualFatura.configure(background='#D3D3D3', fg='black')
         titlePercentualFatura.place(relx= 0.03, rely=0.32)
 
-        self.ModalPercentualFaturaAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalPercentualFaturaAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalPercentualFaturaAtd.configure(background='white', fg='black', width=7)
         self.ModalPercentualFaturaAtd.place(relx= 0.032, rely=0.37)
         percLoja = 100 - percFloat
         vlLoja = vlBrutoFloat * (percLoja/100)
         vlLojaFormatado = "{:.2f}".format(vlLoja)
         self.ModalPercentualFaturaAtd.insert(0, percLoja)
+        self.ModalPercentualFaturaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
-        titleVlLoja = tk.Label(self.modalLancamentoAtd, text='VL.Loja:', font='bold')
+        titleVlLoja = tk.Label(self.ModalAtAtendido, text='VL.Loja:', font='bold')
         titleVlLoja.configure(background='#D3D3D3', fg='black')
         titleVlLoja.place(relx= 0.2, rely=0.32)
 
-        self.ModalVlLojaAtd = tk.Entry(self.modalLancamentoAtd)
+        self.ModalVlLojaAtd = tk.Entry(self.ModalAtAtendido)
         self.ModalVlLojaAtd.configure(background='white', fg='black', width=7)
         self.ModalVlLojaAtd.place(relx= 0.2, rely=0.37)
         self.ModalVlLojaAtd.insert(0, vlLojaFormatado)
+        self.ModalVlLojaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
-        # button = tk.Button(self.modalLancamentoAtd, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+        # button = tk.Button(self.ModalAtAtendido, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
         # button.place(relx=0.15, rely=0.28)   
         
-        self.treeviewModalAtdAtendido = ttk.Treeview(self.modalLancamentoAtd, columns=("Data", "Hora", "Protocolo", "Cod.Atendimento", "Cod.Cliente", "Nome do Cliente", 
+        self.treeviewModalAtdAtendido = ttk.Treeview(self.ModalAtAtendido, columns=("Data", "Hora", "Protocolo", "Cod.Atendimento", "Cod.Cliente", "Nome do Cliente", 
                                                                                        "Procedimento", "Valor"), show='headings')
         self.treeviewModalAtdAtendido.heading("Data", text="Dt.Atendimento")
         self.treeviewModalAtdAtendido.heading("Hora", text="Hora")
@@ -3106,8 +3109,8 @@ class Zenix:
         self.treeviewModalAtdAtendido.heading("Procedimento", text="Procedimento")
         self.treeviewModalAtdAtendido.heading("Valor", text="Valor")
         
-        verticalBar = ttk.Scrollbar(self.modalLancamentoAtd, orient='vertical', command=self.treeviewModalAtdAtendido.yview)
-        horizontalBar = ttk.Scrollbar(self.modalLancamentoAtd, orient='horizontal', command=self.treeviewModalAtdAtendido.xview)
+        verticalBar = ttk.Scrollbar(self.ModalAtAtendido, orient='vertical', command=self.treeviewModalAtdAtendido.yview)
+        horizontalBar = ttk.Scrollbar(self.ModalAtAtendido, orient='horizontal', command=self.treeviewModalAtdAtendido.xview)
         self.treeviewModalAtdAtendido.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         style = ttk.Style(self.treeviewModalAtdAtendido)
@@ -3123,15 +3126,19 @@ class Zenix:
         for row in resultado:
             self.treeviewModalAtdAtendido.insert("", END, values=row)
         
-        # buttonBuscar = tk.Button(self.modalLancamentoAtd, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+        # buttonBuscar = tk.Button(self.ModalAtAtendido, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
         # buttonBuscar.place(relx=0.02, rely=0.28)
         
         # self.treeviewModalAtdAtendido.bind('<<TreeviewSelect>>', self.selectItemTreeviewModalAtdAtendido)
         
-        # self.modalLancamentoAtd.bind("<F5>", lambda event: buttonBuscar.invoke())
-        # self.modalLancamentoAtd.bind('<Return>', lambda event: button.invoke())
+        # self.ModalAtAtendido.bind("<F5>", lambda event: buttonBuscar.invoke())
+        # self.ModalAtAtendido.bind('<Return>', lambda event: button.invoke())
 
-        self.modalLancamentoAtd.mainloop()
+        self.ModalAtAtendido.mainloop()
+
+    def setIdPagamentoAtendido(self, *args):
+        self.selectPagamentoAtendido = self.OpFormaPagamento.get()
+        self.idSelecaoPagamento = self.MapFormaPagamento.get(self.selectPagamentoAtendido)
 
 # Atendimento -----------------------------------
 
