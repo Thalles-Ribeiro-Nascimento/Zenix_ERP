@@ -107,11 +107,11 @@ class Zenix:
         senhaAlterada = self.senhaAlterar.get()
                 
         if novaSenha != senhaAlterada or len(novaSenha) < 8:
-            messagebox.showinfo("Aviso","Senha incorreta!", parent=self.modalTrocaSenha)
+            messagebox.showinfo("Zenix","Senha incorreta!", parent=self.modalTrocaSenha)
         else:
             resultado = self.dao.trocaPwd(novaSenha, self.usuarioTrocaSenha)
             if isinstance(resultado, str):
-                messagebox.showinfo("Aviso",resultado, parent=self.modalTrocaSenha)
+                messagebox.showinfo("Zenix",resultado, parent=self.modalTrocaSenha)
             else:
                 self.modalTrocaSenha.destroy()
 
@@ -120,7 +120,7 @@ class Zenix:
         senha = self.senha.get()
 
         if self.login.get() == "":
-            messagebox.showinfo("Aviso","Insira um usuário", parent=self.root_login)
+            messagebox.showinfo("Zenix","Insira um usuário", parent=self.root_login)
             
         else:
             self.dao = Dao(login, senha)
@@ -128,7 +128,7 @@ class Zenix:
 
             if isinstance(self.resultado, str):
                 self.senha.delete(0,END)
-                messagebox.showerror("Acesso Negado", self.resultado)
+                messagebox.showerror("Zenix", "Acesso Negado", parent=self.root_login)
 
             else:
                 with open("zenix.txt", "w") as arquivo:
@@ -344,7 +344,7 @@ class Zenix:
     def atualizarModal(self):
     
         if self.item_id == "":
-            messagebox.showinfo("Aviso","Selecione um funcionário para ser atualizado!", parent=self.funcionarios)
+            messagebox.showinfo("Zenix","Selecione um funcionário para ser atualizado!", parent=self.funcionarios)
 
         else:
             self.modalAtualizaFunc = tk.Toplevel()
@@ -597,7 +597,7 @@ class Zenix:
 
     def reativacaoFuncionario(self):
         if self.item_id == "":
-            messagebox.showerror("Erro", "Selecione o funcionário", parent=self.funcionarios)
+            messagebox.showerror("Zenix", "Selecione o funcionário", parent=self.funcionarios)
         
         else:
             self.dao.reativarFuncionario(self.funcId)
@@ -796,7 +796,7 @@ class Zenix:
                 indices.append(self.listaFuncionario.index(old))
             
         if len(indices) < 1:
-            messagebox.showinfo("Aviso","Nenhum campo foi alterado!", parent=self.modalAtualizaFunc)
+            messagebox.showinfo("Zenix","Nenhum campo foi alterado!", parent=self.modalAtualizaFunc)
             return
         else:
             validacao = True
@@ -824,7 +824,7 @@ class Zenix:
                             
         if validacao == False:
             self.modalAtualizaFunc.destroy()
-            messagebox.showinfo("Aviso","Não foi possível fazer as alterações", parent=self.funcionarios)
+            messagebox.showinfo("Zenix","Não foi possível fazer as alterações", parent=self.funcionarios)
             indices.clear()
             funcionarioUpgrade.clear()
             
@@ -848,7 +848,7 @@ class Zenix:
                 self.modalAtualizaFunc.destroy()
 
             else:
-                messagebox.showerror("Erro", resultado, parent=self.modalAtualizaFunc)
+                messagebox.showerror("Zenix", resultado, parent=self.modalAtualizaFunc)
                      
         listaUpgrade.clear()
         colunas.clear()  
@@ -875,28 +875,28 @@ class Zenix:
         percentil = self.PercentilFunc.get()
 
         if nome == "":
-            messagebox.showinfo("Aviso","O campo Nome está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo Nome está vazio", parent=self.modalNovoFunc)
             
         elif cpf == "":
-            messagebox.showinfo("Aviso","O campo CPF está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo CPF está vazio", parent=self.modalNovoFunc)
             
         elif nascimento == "":
-            messagebox.showinfo("Aviso","O campo Data de Nascimento está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo Data de Nascimento está vazio", parent=self.modalNovoFunc)
             
         elif celular == "":
-            messagebox.showinfo("Aviso","O campo Celular está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo Celular está vazio", parent=self.modalNovoFunc)
             
         elif rua == "":
-            messagebox.showinfo("Aviso","O campo Rua está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo Rua está vazio", parent=self.modalNovoFunc)
             
         elif bairro == "":
-            messagebox.showinfo("Aviso","O campo Bairro está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo Bairro está vazio", parent=self.modalNovoFunc)
             
         elif email == "":
-            messagebox.showinfo("Aviso","O campo Email está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo Email está vazio", parent=self.modalNovoFunc)
             
         elif percentil == "":
-            messagebox.showinfo("Aviso","O campo Porcentagem está vazio", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","O campo Porcentagem está vazio", parent=self.modalNovoFunc)
         
         if "@" in email and ".com" in email:
             dao = self.dao.inserirFuncionario(
@@ -904,14 +904,14 @@ class Zenix:
             rua, bairro, estado, numero, comp, email, percentil
             )
             if isinstance(dao, str):
-                messagebox.showerror("Erro", dao, parent=self.modalNovoFunc)
+                messagebox.showerror("Zenix", dao, parent=self.modalNovoFunc)
                 
             else:
                 self.atualizaTreeFunc()
                 self.modalNovoFunc.destroy()
 
         else:
-            messagebox.showinfo("Aviso","Email incompleto: Escreva -> exemplo@email.com", parent=self.modalNovoFunc)
+            messagebox.showinfo("Zenix","Email incompleto: Escreva -> exemplo@email.com", parent=self.modalNovoFunc)
 
     def atualizaTreeFunc(self):
         self.treeviewFunc.delete(*self.treeviewFunc.get_children())
@@ -922,7 +922,7 @@ class Zenix:
 
     def confirmarExclusao(self):
         if self.item_id == "":
-            messagebox.showinfo("Aviso","Selecione um funcionário", parent=self.funcionarios)
+            messagebox.showinfo("Zenix","Selecione um funcionário", parent=self.funcionarios)
         else:
             resultado = messagebox.askyesno("Excluir funcionário", f"Tem certeza da exclusão do funcionário {self.nomeFuncionario}?", parent=self.funcionarios)
             if resultado:
@@ -938,7 +938,7 @@ class Zenix:
                 resultado = self.dao.deleteLogicoFuncionario(values[0])
                 
                 if isinstance(resultado, str):
-                    messagebox.showerror("Erro", resultado, parent=self.funcionarios)
+                    messagebox.showerror("Zenix", resultado, parent=self.funcionarios)
                     validar = False
                     break
                 else:
@@ -1323,11 +1323,11 @@ class Zenix:
             if len(row) == 14:
                 self.treeviewClientes.insert("", END, values=row)
             else:
-                messagebox.showinfo("Aviso", "Erro de tupla")
+                messagebox.showinfo("Zenix", "Erro de tupla")
 
     def atualizarClientesModal(self):
         if self.item_idCliente == "":
-            messagebox.showinfo("Aviso","Selecione um cliente!", parent=self.clientes)
+            messagebox.showinfo("Zenix","Selecione um cliente!", parent=self.clientes)
 
         else:
             self.modalAtualizaCliente = tk.Toplevel()
@@ -1484,7 +1484,7 @@ class Zenix:
                 indices.append(self.listaCliente.index(old))
             
         if len(indices) < 1:
-            messagebox.showinfo("Aviso","Nenhum campo foi alterado!")
+            messagebox.showinfo("Zenix","Nenhum campo foi alterado!")
             return
         else:
             validacao = True
@@ -1512,7 +1512,7 @@ class Zenix:
                             
         if validacao == False:
             self.modalAtualizaCliente.destroy()
-            messagebox.showinfo("Aviso","Não foi possível fazer as alterações")
+            messagebox.showinfo("Zenix","Não foi possível fazer as alterações")
             indices.clear()
             clienteUpgrade.clear()
             return
@@ -1533,7 +1533,7 @@ class Zenix:
                 self.modalAtualizaCliente.destroy() 
 
             else:
-                messagebox.showerror("Erro",resultado)
+                messagebox.showerror("Zenix",resultado)
                      
         listaUpgrade.clear()
         colunas.clear()
@@ -1720,7 +1720,7 @@ class Zenix:
             )
             if isinstance(dao, str):
                 self.modalNovoClientes.destroy()
-                messagebox.showerror("Erro",dao)
+                messagebox.showerror("Zenix",dao)
                 
             else:
                 self.atualizaTreeClient()
@@ -1792,9 +1792,9 @@ class Zenix:
 
 # Organizar essa tela -----------------------
     def adicionarAgendamentoCliente(self):
-        messagebox.showinfo("Aviso", "Em manutenção", parent=self.clientes)
+        messagebox.showinfo("Zenix", "Em manutenção", parent=self.clientes)
         # if self.item_idCliente == "":
-        #     messagebox.showinfo("Aviso","Selecione um cliente!", parent=self.clientes)
+        #     messagebox.showinfo("Zenix","Selecione um cliente!", parent=self.clientes)
         # else:
         #     self.modalAgendaCliente = tk.Toplevel()
         #     self.modalAgendaCliente.transient(self.clientes)
@@ -1983,7 +1983,7 @@ class Zenix:
         # dao = self.dao.addAgendamento(data, idCliente, idFuncionario)
         # if isinstance(dao, str):
         #     self.modalAgendaCliente.destroy()
-        #     messagebox.showerror("Erro",dao , parent=self.modalAgendaCliente)
+        #     messagebox.showerror("Zenix",dao , parent=self.modalAgendaCliente)
             
         # else:
         #     self.modalAgendaCliente.destroy()             
@@ -2419,7 +2419,7 @@ class Zenix:
         else:
             dao = self.dao.insertFinanceiro(dataPagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento)
             if isinstance(dao, str):
-                messagebox.showerror("Erro", dao, parent=self.novoFinanceiro)
+                messagebox.showerror("Zenix", dao, parent=self.novoFinanceiro)
                 
             else:
                 self.atualizaTreeFinanceiro()
@@ -2540,7 +2540,7 @@ class Zenix:
     def adicionarParcela(self):
         messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.formaPagamento)
         # if self.tipoPagamentoSelect == "À VISTA" or self.tipoPagamentoSelect == "A VISTA":
-        #     messagebox.showerror("Erro", "Forma de pagamento incorreta", parent=self.formaPagamento)
+        #     messagebox.showerror("Zenix", "Forma de pagamento incorreta", parent=self.formaPagamento)
         #     return
         # else:
         #     self.modalNovaParcela = tk.Toplevel()
@@ -2646,7 +2646,7 @@ class Zenix:
 
         # dao = self.dao.insertParcelas(numParcela, tipoPagamento, taxa)
         # if isinstance(dao, str):
-        #     messagebox.showerror("Erro",dao, parent=self.formaPagamento)           
+        #     messagebox.showerror("Zenix",dao, parent=self.formaPagamento)           
         # else:
         #     self.atualizaTreeFormaPagamento()
         #     msn = f'Parcela inserida com sucesso'
@@ -2673,7 +2673,7 @@ class Zenix:
         # dao = self.dao.insertFormaPagamento(nomeFormaPagamento, tipoPagamento, taxa)
         # if isinstance(dao, str):
         #     self.modalNovaFormaPagamento.destroy()
-        #     messagebox.showerror("Erro",dao, parent=self.formaPagamento)
+        #     messagebox.showerror("Zenix",dao, parent=self.formaPagamento)
             
         # else:
         #     self.atualizaTreeFormaPagamento()
@@ -2856,7 +2856,7 @@ class Zenix:
             self.treeviewAtendimento.insert("", tk.END, values=row)
             
         self.treeviewAtendimento.bind('<<TreeviewSelect>>', self.selectAtendimento)
-        self.treeviewAtendimento.bind("<Double-1>", self.double_clickAgenda)
+        # self.treeviewAtendimento.bind("<Double-1>", self.double_clickAgenda)
         
         self.atendimento.mainloop()
 
@@ -2991,10 +2991,6 @@ class Zenix:
             self.ModalAtAtendido.resizable(False,False)
             self.ModalAtAtendido.colormapwindows(self.ModalAtAtendido)
 
-            FuncAtendimento = self.dao.funcionarioNome(self.nameFuncAtendimento)
-            FuncAtendimentoId = [item[0] for item in FuncAtendimento]
-            percentil = [item[13] for item in FuncAtendimento]
-
             titleCodFuncionario = tk.Label(self.ModalAtAtendido, text='Cód.Func.:', font='bold')
             titleCodFuncionario.configure(background='#D3D3D3', fg='black')
             titleCodFuncionario.place(relx= 0.03, rely=0.05)
@@ -3002,7 +2998,6 @@ class Zenix:
             self.ModalCodFuncionarioAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalCodFuncionarioAtd.configure(background='white', fg='black', width=7)
             self.ModalCodFuncionarioAtd.place(relx= 0.032, rely=0.1)
-            self.ModalCodFuncionarioAtd.insert(0, FuncAtendimentoId)
             self.ModalCodFuncionarioAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
             titleModalNomeFuncionarioAtd = tk.Label(self.ModalAtAtendido, text='Funcionário:', font='bold')
@@ -3012,7 +3007,6 @@ class Zenix:
             self.ModalNomeFuncionarioAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalNomeFuncionarioAtd.configure(background='white', fg='black', width=20)
             self.ModalNomeFuncionarioAtd.place(relx= 0.2, rely=0.1)
-            self.ModalNomeFuncionarioAtd.insert(0, self.nameFuncAtendimento)
             self.ModalNomeFuncionarioAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
             titleFormaPagamento = tk.Label(self.ModalAtAtendido, text='Forma de Pagamento:', font='bold')
@@ -3022,6 +3016,7 @@ class Zenix:
             formaPagamento = self.dao.formaPagamentoAll()
             self.formaPagamentoId = [item[0] for item in formaPagamento]
             self.formaPagamentoName = [item[1] for item in formaPagamento]
+            self.formaPagamentoTaxa = [item[3] for item in formaPagamento]
             self.MapFormaPagamento = dict(zip(self.formaPagamentoName, self.formaPagamentoId))
             
             self.OpFormaPagamento = StringVar(self.ModalAtAtendido)
@@ -3039,7 +3034,7 @@ class Zenix:
             self.ModalVlBrutoAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalVlBrutoAtd.configure(background='white', fg='black', width=7)
             self.ModalVlBrutoAtd.place(relx= 0.032, rely=0.25)
-            self.ModalVlBrutoAtd.insert(0, self.valorPrcAtd)
+            
 
             titlePercentualFunc = tk.Label(self.ModalAtAtendido, text='Perc. (%):', font='bold')
             titlePercentualFunc.configure(background='#D3D3D3', fg='black')
@@ -3048,7 +3043,6 @@ class Zenix:
             self.ModalPercentualFuncAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalPercentualFuncAtd.configure(background='white', fg='black', width=7)
             self.ModalPercentualFuncAtd.place(relx= 0.2, rely=0.25)
-            self.ModalPercentualFuncAtd.insert(0, percentil)
             self.ModalPercentualFuncAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
             titleTaxa = tk.Label(self.ModalAtAtendido, text='Taxa:', font='bold')
@@ -3058,7 +3052,6 @@ class Zenix:
             self.ModalTaxaAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalTaxaAtd.configure(background='white', fg='black', width=7)
             self.ModalTaxaAtd.place(relx= 0.37, rely=0.25)
-            self.ModalTaxaAtd.insert(0, 0)
 
             titleVlLiquido = tk.Label(self.ModalAtAtendido, text='VL.Líquido:', font='bold')
             titleVlLiquido.configure(background='#D3D3D3', fg='black')
@@ -3067,12 +3060,6 @@ class Zenix:
             self.ModalVlLiquidoAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalVlLiquidoAtd.configure(background='white', fg='black', width=7)
             self.ModalVlLiquidoAtd.place(relx= 0.5, rely=0.25)
-            vlBruto = self.ModalVlBrutoAtd.get()
-            percentil2 = self.ModalPercentualFuncAtd.get()
-            percFloat = float(percentil2)
-            vlBrutoFloat = float(vlBruto)
-            vlLiquido = vlBrutoFloat * (percFloat/100)
-            self.ModalVlLiquidoAtd.insert(0, vlLiquido)
             self.ModalVlLiquidoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
             titlePercentualFatura = tk.Label(self.ModalAtAtendido, text='Loja (%):', font='bold')
@@ -3082,10 +3069,6 @@ class Zenix:
             self.ModalPercentualFaturaAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalPercentualFaturaAtd.configure(background='white', fg='black', width=7)
             self.ModalPercentualFaturaAtd.place(relx= 0.032, rely=0.37)
-            percLoja = 100 - percFloat
-            vlLoja = vlBrutoFloat * (percLoja/100)
-            vlLojaFormatado = "{:.2f}".format(vlLoja)
-            self.ModalPercentualFaturaAtd.insert(0, percLoja)
             self.ModalPercentualFaturaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
             titleVlLoja = tk.Label(self.ModalAtAtendido, text='VL.Loja:', font='bold')
@@ -3095,20 +3078,20 @@ class Zenix:
             self.ModalVlLojaAtd = tk.Entry(self.ModalAtAtendido)
             self.ModalVlLojaAtd.configure(background='white', fg='black', width=7)
             self.ModalVlLojaAtd.place(relx= 0.2, rely=0.37)
-            self.ModalVlLojaAtd.insert(0, vlLojaFormatado)
             self.ModalVlLojaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
             # button = tk.Button(self.ModalAtAtendido, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             # button.place(relx=0.15, rely=0.28)   
             
             self.treeviewModalAtdAtendido = ttk.Treeview(self.ModalAtAtendido, columns=("Data", "Hora", "Protocolo", "Cod.Atendimento", "Cod.Cliente", "Nome do Cliente", 
-                                                                                        "Procedimento", "Valor"), show='headings')
+                                                                                        "Nome do Funcionário", "Procedimento", "Valor"), show='headings')
             self.treeviewModalAtdAtendido.heading("Data", text="Dt.Atendimento")
             self.treeviewModalAtdAtendido.heading("Hora", text="Hora")
             self.treeviewModalAtdAtendido.heading("Protocolo", text="Cod.Agenda")
             self.treeviewModalAtdAtendido.heading("Cod.Atendimento", text="Cod.Atendimento")
             self.treeviewModalAtdAtendido.heading("Cod.Cliente", text="Cod.Cliente")
             self.treeviewModalAtdAtendido.heading("Nome do Cliente", text="Nome do Cliente")
+            self.treeviewModalAtdAtendido.heading("Nome do Funcionário", text="Nome do Funcionario")
             self.treeviewModalAtdAtendido.heading("Procedimento", text="Procedimento")
             self.treeviewModalAtdAtendido.heading("Valor", text="Valor")
 
@@ -3118,6 +3101,7 @@ class Zenix:
             self.treeviewModalAtdAtendido.column("Cod.Atendimento", stretch=False, width=90)
             self.treeviewModalAtdAtendido.column("Cod.Cliente", stretch=False, width=90)
             self.treeviewModalAtdAtendido.column("Nome do Cliente", stretch=False, width=100)
+            self.treeviewModalAtdAtendido.column("Nome do Funcionário", stretch=False, width=100)
             self.treeviewModalAtdAtendido.column("Procedimento", stretch=False, width=100)
             self.treeviewModalAtdAtendido.column("Valor", stretch=False, width=95)
             
@@ -3134,47 +3118,121 @@ class Zenix:
             verticalBar.place(relx=0.98 , rely=0.5, relheight=0.47)
             horizontalBar.place(rely=0.968, relx=0, relwidth=1)
             
-            resultado = self.dao.atendimentosAtendidos(self.codAtendimento, self.dataAtendimento2)
+            resultado = self.dao.atendimentosAtendidos(self.protocoloAgendaAtendimento, self.dataAtendimento2)
             for row in resultado:
                 self.treeviewModalAtdAtendido.insert("", END, values=row)
             
             # buttonBuscar = tk.Button(self.ModalAtAtendido, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
             # buttonBuscar.place(relx=0.02, rely=0.28)
             
-            # self.treeviewModalAtdAtendido.bind('<<TreeviewSelect>>', self.selectItemTreeviewModalAtdAtendido)
+            self.treeviewModalAtdAtendido.bind('<<TreeviewSelect>>', self.selectItemTreeviewModalAtdAtendido)
             
             # self.ModalAtAtendido.bind("<F5>", lambda event: buttonBuscar.invoke())
             # self.ModalAtAtendido.bind('<Return>', lambda event: button.invoke())
 
             self.ModalAtAtendido.mainloop()
 
+    def selectItemTreeviewModalAtdAtendido(self, event):
+        try:
+
+            # Id do item do Atendimento selecionado
+            self.item_idAtendimentoAtendido = self.treeviewModalAtdAtendido.selection()[0]
+            
+            # Lista Informações do Atendimento Selecionado
+            self.listAtendido = self.treeviewModalAtdAtendido.item(self.item_idAtendimentoAtendido, 'values')
+
+            self.ModalCodFuncionarioAtd.configure(state='normal')
+            self.ModalNomeFuncionarioAtd.configure(state='normal')
+            self.ModalPercentualFuncAtd.configure(state='normal')
+            self.ModalVlLiquidoAtd.configure(state='normal')
+            self.ModalPercentualFaturaAtd.configure(state='normal')
+            self.ModalVlLojaAtd.configure(state='normal')
+
+            self.ModalCodFuncionarioAtd.delete(0, END)
+            self.ModalNomeFuncionarioAtd.delete(0, END)
+            self.ModalPercentualFuncAtd.delete(0, END)
+            self.ModalVlLiquidoAtd.delete(0, END)
+            self.ModalPercentualFaturaAtd.delete(0, END)
+            self.ModalVlLojaAtd.delete(0, END)
+            self.ModalVlBrutoAtd.delete(0, END)
+
+            # Nome Funcionario
+            self.nameFuncAtdAtendido = self.listAtendido[6]
+            FuncAtendimento = self.dao.funcionarioNome(self.nameFuncAtdAtendido)
+            FuncAtendimentoId = [item[0] for item in FuncAtendimento]
+            percentil = [item[13] for item in FuncAtendimento]
+
+            self.ModalCodFuncionarioAtd.insert(0, FuncAtendimentoId)
+            self.ModalNomeFuncionarioAtd.insert(0, self.nameFuncAtdAtendido)
+            self.ModalPercentualFuncAtd.insert(0, percentil)
+
+            # Procedimento e Valor
+            self.prcAtendimentoSelect = self.listAtendido[7]
+            self.valorPrcSelecionado = self.listAtendido[8]
+
+            self.ModalVlBrutoAtd.insert(0, self.valorPrcSelecionado)
+
+            vlBruto = float(self.ModalVlBrutoAtd.get())
+            percentil2 = float(self.ModalPercentualFuncAtd.get())
+            vlLiquido = vlBruto * (percentil2/100)
+            self.ModalVlLiquidoAtd.insert(0, vlLiquido)
+
+            percLoja = 100 - percentil2
+            vlLoja = vlBruto * (percLoja/100)
+            vlLojaFormatado = "{:.2f}".format(vlLoja)
+            self.ModalPercentualFaturaAtd.insert(0, percLoja)
+            self.ModalVlLojaAtd.insert(0, vlLojaFormatado)
+            
+        except IndexError as e:
+            return
+
     def setIdPagamentoAtendido(self, *args):
         self.selectPagamentoAtendido = self.OpFormaPagamento.get()
         self.idSelecaoPagamento = self.MapFormaPagamento.get(self.selectPagamentoAtendido)
+        self.taxaPagamento(self.idSelecaoPagamento)
+
+    def taxaPagamento(self, id):
+        self.ModalTaxaAtd.delete(0, END)
+        rows = self.dao.formaPagamentoId(id)
+
+        for row in rows:
+            self.ModalTaxaAtd.insert(0, row[2])
 
     def insertAtdAtendido(self):
         id_atendimento = self.codAtendimento
         id_formaPagamento = self.idSelecaoPagamento
         descricao = "Pagamento de Funcionário"
-        valorBruto = float(self.ModalVlBrutoAtd.get())
+        valorBruto = self.ModalVlBrutoAtd.get()
         imposto = 0
-        valorPagar = float(self.ModalVlLiquidoAtd.get())
+        valorPagar = self.ModalVlLiquidoAtd.get()
+        percentilLoja = self.ModalPercentualFaturaAtd.get()
+        vlLoja = self.ModalVlLojaAtd.get()
 
         if id_atendimento == "" or id_formaPagamento == "":
             messagebox.showerror("Aviso","Campo vazio")
 
         # dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
         if isinstance(dao, str):
-            messagebox.showerror("Erro", dao, parent=self.modalAtendimentoAdd)
+            messagebox.showerror("Zenix", dao, parent=self.modalAtendimentoAdd)
             
         else:
-            self.insertLancamentoAtd(id_atendimento, descricao, valorBruto, imposto, valorPagar)
+            insercaoLancamento = self.insertLancamentoAtd(id_atendimento, descricao, valorBruto, imposto, valorPagar)
+            insercaoFaturamento = self.insertFaturamentoAtd(id_atendimento, valorBruto, percentilLoja, vlLoja)
 
-    def insertLancamentoAtd(self, id_atendimento, descricao, vlTotal, imposto, vlLiquido):
+    def triggerLancamentoAtd(self, id_atendimento, descricao, vlTotal, imposto, vlLiquido):
 
         # dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
         if isinstance(dao, str):
-            messagebox.showerror("Erro", dao, parent=self.modalAtendimentoAdd)
+            messagebox.showerror("Zenix", dao, parent=self.modalAtendimentoAdd)
+            
+        else:
+            self.atualizaTreeAtendimento()
+
+    def triggerFaturamentoAtd(self, id_atendimento, vlTotal, percentil, vlLiquido):
+
+        # dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
+        if isinstance(dao, str):
+            messagebox.showerror("Zenix", dao, parent=self.modalAtendimentoAdd)
             
         else:
             self.atualizaTreeAtendimento()
@@ -3577,7 +3635,7 @@ class Zenix:
                 atualizaNome = self.dao.atualizaCliente(self.codClienteAgendamento.get(), nomeEditar, "nome_cliente")
 
                 if isinstance(atualizaNome, str):
-                    messagebox.showerror("Erro", atualizaNome, parent=self.modalNovaAgenda)
+                    messagebox.showerror("Zenix", atualizaNome, parent=self.modalNovaAgenda)
                 else:
                     self.nomeClienteAgendamento.delete(0, END)
                     self.nomeClienteAgendamento.insert(0, nomeEditar)
@@ -3587,7 +3645,7 @@ class Zenix:
                 atualizaCPF = self.dao.atualizaCliente(self.codClienteAgendamento.get(), cpfEditar, "cpf")
 
                 if isinstance(atualizaCPF, str):
-                    messagebox.showerror("Erro", atualizaCPF, parent=self.modalNovaAgenda)
+                    messagebox.showerror("Zenix", atualizaCPF, parent=self.modalNovaAgenda)
                 else:
                     self.cpfClienteAgendamento.delete(0, END)
                     self.cpfClienteAgendamento.insert(0, cpfEditar)
@@ -3597,7 +3655,7 @@ class Zenix:
                 atualizaTelefone = self.dao.atualizaCliente(self.codClienteAgendamento.get(), telefoneEditar, "telefone")
 
                 if isinstance(atualizaTelefone, str):
-                    messagebox.showerror("Erro", atualizaTelefone, parent=self.modalNovaAgenda)
+                    messagebox.showerror("Zenix", atualizaTelefone, parent=self.modalNovaAgenda)
                 else:
                     self.telefoneClienteAgendamento.delete(0, END)
                     self.telefoneClienteAgendamento.insert(0, telefoneEditar)
@@ -3607,7 +3665,7 @@ class Zenix:
                 atualizaCelular = self.dao.atualizaCliente(self.codClienteAgendamento.get(), celularEditar, "celular")
 
                 if isinstance(atualizaCelular, str):
-                    messagebox.showerror("Erro", atualizaCelular, parent=self.modalNovaAgenda)
+                    messagebox.showerror("Zenix", atualizaCelular, parent=self.modalNovaAgenda)
                 else:
                     self.celularClienteAgendamento.delete(0, END)
                     self.celularClienteAgendamento.insert(0, celularEditar)
@@ -3617,13 +3675,13 @@ class Zenix:
                 atualizaEmail = self.dao.atualizaCliente(self.codClienteAgendamento.get(), emailEditar, "email")
 
                 if isinstance(atualizaEmail, str):
-                    messagebox.showerror("Erro", atualizaEmail, parent=self.modalNovaAgenda)
+                    messagebox.showerror("Zenix", atualizaEmail, parent=self.modalNovaAgenda)
                 else:
                     self.EmailClienteAgendamento.delete(0, END)
                     self.EmailClienteAgendamento.insert(0, emailEditar)
                     return
 
-            aviso = messagebox.showinfo("Aviso", "Nenhum campo alterado", parent=self.modalNovaAgenda)
+            aviso = messagebox.showinfo("Zenix", "Nenhum campo alterado", parent=self.modalNovaAgenda)
 
             return aviso
 
@@ -3638,7 +3696,7 @@ class Zenix:
             dao = self.dao.addAgendamento(dataAgenda, idCliente)
             if isinstance(dao, str):
                 self.modalNovaAgenda.destroy()
-                messagebox.showerror("Erro", dao, parent=self.modalNovaAgenda)
+                messagebox.showerror("Zenix", dao, parent=self.modalNovaAgenda)
                 
             else:
                 self.atualizaTreevwAgendamento()
@@ -3691,7 +3749,7 @@ class Zenix:
 
     def adicionarAtendimento(self):
         if self.item_idAgenda == "":
-            messagebox.showerror("Erro", "Selecione um agendamento", parent=self.agendaRoot)
+            messagebox.showerror("Zenix", "Selecione um agendamento", parent=self.agendaRoot)
 
         else:
             self.modalAtendimentoAdd = tk.Toplevel()
@@ -3825,7 +3883,7 @@ class Zenix:
 
         dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
         if isinstance(dao, str):
-            messagebox.showerror("Erro",dao , parent=self.modalAtendimentoAdd)
+            messagebox.showerror("Zenix",dao , parent=self.modalAtendimentoAdd)
             
         else:
             self.atualizaTreeAtendimento()
@@ -3878,7 +3936,7 @@ class Zenix:
     def addParcelas(self):
         messagebox.showerror("Em Contrução", "Estamos em manutenção!", parent=self.modalAtendimentoAdd)
         # if self.valorPrc.get() == "" or self.opcoesPrcAtendimento.get() == "Procedimento":
-        #     messagebox.showerror("Erro", "Preencha todos os campos!")
+        #     messagebox.showerror("Zenix", "Preencha todos os campos!")
         #     return
         # else:
         #     self.modalAddParcela = tk.Toplevel()
@@ -3964,7 +4022,7 @@ class Zenix:
 
     def insertClienteDados(self, event):
         if self.nomeClienteAgendamento.get() == "":
-            messagebox.showinfo("Aviso","Preencha o campo Nome!", parent=self.modalNovaAgenda)
+            messagebox.showinfo("Zenix","Preencha o campo Nome!", parent=self.modalNovaAgenda)
             return
         else:
             rows = self.dao.clienteNomeAtendimento(self.nomeClienteAgendamento.get())
@@ -4096,12 +4154,12 @@ class Zenix:
 
     def insertEspecialidadeNovo(self):
         if self.nomeEspecialidade.get() == "":
-            messagebox.showinfo("Aviso","Preencha o campo Nome!", parent=self.modalEspecialidade)
+            messagebox.showinfo("Zenix","Preencha o campo Nome!", parent=self.modalEspecialidade)
         else:
             resultado = self.dao.insertEspecialidade(self.nomeEspecialidade.get())
 
             if isinstance(resultado, str):
-                messagebox.showerror("Erro", resultado, parent=self.modalEspecialidade)
+                messagebox.showerror("Zenix", resultado, parent=self.modalEspecialidade)
 
             else:
                 self.atualizaTreeEspecialidade()
@@ -4143,11 +4201,11 @@ class Zenix:
             if len(row) == 3:
                 self.treeviewEspecialidade.insert("", END, values=row)
             else:
-                messagebox.showinfo("Aviso","Erro de tupla")
+                messagebox.showinfo("Zenix","Erro de tupla")
 
     def deleteEspecialidade(self):
         if self.ItemSelecionadoEspecialidade == "":
-            messagebox.showinfo("Aviso","Selecione uma Especialidade")
+            messagebox.showinfo("Zenix","Selecione uma Especialidade")
         else:
             if len(self.selecao_itemEspecialidade) > 1:
                 validar = True
@@ -4157,7 +4215,7 @@ class Zenix:
                     resultado = self.dao.deleteLogicoEspecialidade(values[0])
                     
                     if isinstance(resultado, str):
-                        messagebox.showerror("Erro",resultado)
+                        messagebox.showerror("Zenix",resultado)
                         validar = False
                         break
                     else:
@@ -4172,7 +4230,7 @@ class Zenix:
                 resultado = self.dao.deleteLogicoEspecialidade(self.idEspecialidadeSelecionado)
         
                 if isinstance(resultado, str):
-                    messagebox.showerror("Erro",resultado)
+                    messagebox.showerror("Zenix",resultado)
 
                 else:
                     self.atualizaTreeEspecialidade()
@@ -4182,7 +4240,7 @@ class Zenix:
 
     def atualizarEspecialidadeModal(self):
         if self.ItemSelecionadoEspecialidade  == "":
-            messagebox.showinfo("Aviso", "Selecione uma especialidade!", parent=self.modalEspecialidade)
+            messagebox.showinfo("Zenix", "Selecione uma especialidade!", parent=self.modalEspecialidade)
 
         else:
             self.modalAtualizaEspecialidade = tk.Toplevel()
@@ -4227,13 +4285,13 @@ class Zenix:
         ativo = self.checkvar1.get()
         
         if especialidade == self.nomeEspecialidadeSelecionado or especialidade == "" and ativo == self.statusEspecialidade:
-            messagebox.showinfo("Aviso", "Não foi possível alterar!", parent=self.modalAtualizaEspecialidade)
+            messagebox.showinfo("Zenix", "Não foi possível alterar!", parent=self.modalAtualizaEspecialidade)
 
         elif ativo == self.statusEspecialidade:
            resultado = self.dao.atualizaEspecialidade(especialidade, idEspecialidade)
             
            if isinstance(resultado, str):
-                messagebox.showerror("Erro", resultado, parent=self.modalAtualizaEspecialidade)
+                messagebox.showerror("Zenix", resultado, parent=self.modalAtualizaEspecialidade)
             
            else:
                self.atualizaTreeEspecialidade()
@@ -4244,7 +4302,7 @@ class Zenix:
             delete = self.dao.deleteLogicoEspecialidade(idEspecialidade)
 
             if isinstance(resultado2, str) and isinstance(delete, str):
-                messagebox.showerror("Erro", "Não foi possível alterar!", parent=self.modalAtualizaEspecialidade)
+                messagebox.showerror("Zenix", "Não foi possível alterar!", parent=self.modalAtualizaEspecialidade)
             
             else:
                 self.atualizaTreeEspecialidade()
@@ -4365,7 +4423,7 @@ class Zenix:
 
     def insertProcedimento(self):
         if self.opcoesEspecialidadeProcedimento.get() == "Especialidade" or self.nomeProcedimento.get() == "" or self.valorProcedimento.get() == "":
-            messagebox.showinfo("Aviso", "Preencha todos os campos!", parent=self.modalProcedimentos)
+            messagebox.showinfo("Zenix", "Preencha todos os campos!", parent=self.modalProcedimentos)
         else:
             resultado = self.dao.insertProcedimento(self.nomeProcedimento.get(), self.idEspecialidadeProcSelecao, self.valorProcedimento.get())
             if isinstance(resultado, str):
@@ -4427,7 +4485,7 @@ class Zenix:
 
     def deleteProcedimento(self):
         if self.ItemSelecionadoProcedimento == "":
-            messagebox.showinfo("Aviso","Selecione um Procedimento")
+            messagebox.showinfo("Zenix","Selecione um Procedimento")
         else:
             if len(self.selecao_itemProcedimento) > 1:
                 validar = True
@@ -4458,7 +4516,7 @@ class Zenix:
 
     def atualizarProcedimentoModal(self):
         if self.ItemSelecionadoProcedimento  == "":
-            messagebox.showinfo("Aviso","Selecione um procedimento!", parent=self.modalProcedimentos)
+            messagebox.showinfo("Zenix","Selecione um procedimento!", parent=self.modalProcedimentos)
 
         else:
             self.modalAtualizaProcedimento = tk.Toplevel()
@@ -4538,7 +4596,7 @@ class Zenix:
                 
 
         if len(indices) < 1:
-            messagebox.showinfo("Aviso","Nenhum campo foi alterado!", parent=self.modalAtualizaProcedimento)
+            messagebox.showinfo("Zenix","Nenhum campo foi alterado!", parent=self.modalAtualizaProcedimento)
             return
 
         else:
@@ -4567,7 +4625,7 @@ class Zenix:
                 self.modalAtualizaProcedimento.destroy() 
                 
             else:
-                messagebox.showerror("Erro",resultado, parent=self.modalAtualizaProcedimento)
+                messagebox.showerror("Zenix",resultado, parent=self.modalAtualizaProcedimento)
 
         listaUpgrade.clear()
         colunas.clear()

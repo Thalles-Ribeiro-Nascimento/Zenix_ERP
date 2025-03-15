@@ -71,7 +71,7 @@ from conection import objects
 # MinhaGUI()
 
 dao = objects.Dao("admin", "SysteM98")
-rows = dao.agenda('07/03/2025')
+rows = dao.clientesAll()
 
 print(rows)
 # for row in rows:

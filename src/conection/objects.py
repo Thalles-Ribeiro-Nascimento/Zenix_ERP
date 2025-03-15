@@ -393,11 +393,11 @@ class Dao:
 
         return rows
 
-    def atendimentosAtendidos(self, codAtendimento, data):
+    def atendimentosAtendidos(self, protocolo, data):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
        
-        sql = f"SELECT * FROM Vw_Atendimentos_Atendidos WHERE `Cod.Atendimento` = {codAtendimento} and `Data`= '{data}'"
+        sql = f"SELECT * FROM Vw_Atendimentos_Atendidos WHERE Protocolo = {protocolo} and `Data`= '{data}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -608,6 +608,16 @@ class Dao:
         rows = self.cursor.fetchall()
 
         return rows  
+
+    def formaPagamentoId(self, id):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f'SELECT `Forma de Pagamento`, `Tipo de Pagamento`, Taxa FROM Vw_FormaPagamento WHERE Id = {id}'
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
 
     def formaPagamentoNome(self, nome):
         if self.erro:
