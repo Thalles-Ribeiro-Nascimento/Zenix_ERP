@@ -2128,7 +2128,7 @@ class Zenix:
             entryPrevisto.configure(state='normal')
             entryPrevisto.insert(0, soma[0])
             entryPrevisto.configure(state='disabled')
-
+            
         txtRealizado = Label(self.relatorioLancamento, text='Realizado', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
         txtRealizado.grid(column=1, row=0, pady=(5,0))
 
@@ -3035,7 +3035,6 @@ class Zenix:
             self.ModalVlBrutoAtd.configure(background='white', fg='black', width=7)
             self.ModalVlBrutoAtd.place(relx= 0.032, rely=0.25)
             
-
             titlePercentualFunc = tk.Label(self.ModalAtAtendido, text='Perc. (%):', font='bold')
             titlePercentualFunc.configure(background='#D3D3D3', fg='black')
             titlePercentualFunc.place(relx= 0.2, rely=0.2)
@@ -3122,6 +3121,12 @@ class Zenix:
             for row in resultado:
                 self.treeviewModalAtdAtendido.insert("", END, values=row)
             
+            vlBruto = self.dao.vlBrutoAtd(self.protocoloAgendaAtendimento)
+            for bruto in vlBruto:
+                self.ModalVlBrutoAtd.configure(state='normal')
+                self.ModalVlBrutoAtd.insert(0, bruto[0])
+                self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+                
             # buttonBuscar = tk.Button(self.ModalAtAtendido, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
             # buttonBuscar.place(relx=0.02, rely=0.28)
             
@@ -3154,7 +3159,6 @@ class Zenix:
             self.ModalVlLiquidoAtd.delete(0, END)
             self.ModalPercentualFaturaAtd.delete(0, END)
             self.ModalVlLojaAtd.delete(0, END)
-            self.ModalVlBrutoAtd.delete(0, END)
 
             # Nome Funcionario
             self.nameFuncAtdAtendido = self.listAtendido[6]
@@ -3170,18 +3174,23 @@ class Zenix:
             self.prcAtendimentoSelect = self.listAtendido[7]
             self.valorPrcSelecionado = self.listAtendido[8]
 
-            self.ModalVlBrutoAtd.insert(0, self.valorPrcSelecionado)
-
-            vlBruto = float(self.ModalVlBrutoAtd.get())
+            vlPrc = float(self.valorPrcSelecionado)
             percentil2 = float(self.ModalPercentualFuncAtd.get())
-            vlLiquido = vlBruto * (percentil2/100)
+            vlLiquido = vlPrc * (percentil2/100)
             self.ModalVlLiquidoAtd.insert(0, vlLiquido)
 
             percLoja = 100 - percentil2
-            vlLoja = vlBruto * (percLoja/100)
+            vlLoja = vlPrc * (percLoja/100)
             vlLojaFormatado = "{:.2f}".format(vlLoja)
             self.ModalPercentualFaturaAtd.insert(0, percLoja)
             self.ModalVlLojaAtd.insert(0, vlLojaFormatado)
+
+            self.ModalCodFuncionarioAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+            self.ModalNomeFuncionarioAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+            self.ModalPercentualFuncAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+            self.ModalVlLiquidoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+            self.ModalPercentualFaturaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+            self.ModalVlLojaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
             
         except IndexError as e:
             return
@@ -3192,11 +3201,26 @@ class Zenix:
         self.taxaPagamento(self.idSelecaoPagamento)
 
     def taxaPagamento(self, id):
+        self.ModalVlBrutoAtd.configure(state='normal')
         self.ModalTaxaAtd.delete(0, END)
+    
         rows = self.dao.formaPagamentoId(id)
 
         for row in rows:
-            self.ModalTaxaAtd.insert(0, row[2])
+            taxa = row[2]
+            self.ModalTaxaAtd.insert(0, taxa)
+        
+        if taxa == 0.0:
+            self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+            return
+        
+        else:
+            vlBruto = float(self.ModalVlBrutoAtd.get())
+            resultado = vlBruto + (vlBruto * taxa/100)
+            self.ModalVlBrutoAtd.delete(0, END)
+            self.ModalVlBrutoAtd.insert(0, resultado)
+            self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+        
 
     def insertAtdAtendido(self):
         id_atendimento = self.codAtendimento

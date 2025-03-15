@@ -453,6 +453,16 @@ class Dao:
 
         return rows
 
+    def vlBrutoAtd(self, protocolo):
+        if self.erro:
+           return f'Houve erro de conexão: {self.erro}'
+        
+        sql = f"select sum(Valor) as Bruto from Vw_Atendimentos_Atendidos where Protocolo = {protocolo}"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row
+
     def atdDataNome(self, dataInicio, nome):
         if self.erro:
            return f'Houve erro de conexão: {self.erro}'
