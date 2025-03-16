@@ -1,34 +1,27 @@
-import conection.conexao as c
+from conection.conexao import Conexao
 import mysql.connector
 from datetime import datetime
 import re
 
 class Dao:
-    def __init__(self, login, key):
-        self.conecta = c.Conexao().Conecta(login, key)
+    def conexao(self, login, key):
+        conecta = Conexao().Conecta(login, key)
         
-    # Erro de conexão 
-        if isinstance(self.conecta, str):
-            self.erro = self.conecta
-            
+        if isinstance(conecta, str):
+            return conecta
+
         else:
-            self.erro = None
+            self.conecta = conecta
             self.cursor = self.conecta.cursor()
 
-    def funcionarioAllAtivos(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def funcionarioAllAtivos(self):    
         sql = 'SELECT * FROM Vw_FuncionariosAtivos'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
-
+        
         return rows
 
     def funcionarioAtdAll(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = "SELECT * FROM Vw_FuncionariosAtivos WHERE Especialidade <> 'Gerente'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -36,9 +29,6 @@ class Dao:
         return rows
 
     def funcionarioAll(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = 'SELECT * FROM Vw_Funcionarios'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -46,9 +36,6 @@ class Dao:
         return rows
 
     def funcionarioNome(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Funcionarios WHERE `Nome do Funcionario` LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -56,9 +43,6 @@ class Dao:
         return rows
 
     def especialidadeView(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = 'SELECT * FROM Vw_Especialidade'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -66,20 +50,13 @@ class Dao:
         return rows
 
     def especialidadeViewNome(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Especialidade WHERE Especialidade LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def atualizaEspecialidade(self, nome, id):
-
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def atualizaEspecialidade(self, nome, id):   
         sql = f"UPDATE especialidade SET nomeEspecialidade = %s WHERE idEspecialidade = %s"
         try:
             self.cursor.execute(sql, (nome, id))
@@ -96,9 +73,6 @@ class Dao:
                 return error.split(":")[1]
        
     def deleteLogicoEspecialidade(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-
         try:
             sql = f'UPDATE especialidade SET status = 0 WHERE idEspecialidade= {id}'
             self.cursor.execute(sql)
@@ -113,8 +87,6 @@ class Dao:
             return resultado
   
     def inserirFuncionario(self, nome, especialidade, cpf, nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
         try:
             sql = f"INSERT INTO funcionarios (nome_funcionario, idEspecialidade, cpf, data_nascimento, telefone, celular, rua, bairro, uf, numero, complemento, email, percentil) VALUES ('{nome}', {especialidade}, '{cpf}', '{nascimento}', '{telefone}', '{celular}', '{rua}', '{bairro}', '{uf}', '{numero}' , '{complemento}', '{email}', '{percentil}')"
             self.cursor.execute(sql)
@@ -133,9 +105,6 @@ class Dao:
                 return error.split(":")[1]
 
     def reativarFuncionario(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-
         try:
             sql = f'UPDATE funcionarios SET status = 1 WHERE id_funcionario = {id}'
             self.cursor.execute(sql)
@@ -150,9 +119,6 @@ class Dao:
             return erroReativacao
 
     def deleteLogicoFuncionario(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-
         try:
             sql = f'UPDATE funcionarios SET status = 0 WHERE id_funcionario = {id}'
             self.cursor.execute(sql)
@@ -167,8 +133,6 @@ class Dao:
             return erroDeleteFunc
 
     def insertEspecialidade(self, especialidade):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
         try:
             sql = f"INSERT INTO especialidade (nomeEspecialidade) VALUES ('{especialidade}')"
             self.cursor.execute(sql)
@@ -183,10 +147,6 @@ class Dao:
             return f"Erro: {resultado.group(0)}"
 
     def atualizaFuncionario(self, id, dado, coluna):
-        
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"UPDATE funcionarios SET {coluna} = %s WHERE id_funcionario = %s"
         try:
             self.cursor.execute(sql, (dado, id))
@@ -204,9 +164,6 @@ class Dao:
                 return error.split(":")[1]
     
     def clientesAll(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = 'SELECT * FROM Vw_Clientes'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -214,9 +171,6 @@ class Dao:
         return rows
 
     def clienteNome(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Clientes WHERE `Nome do Cliente` LIKE '%{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -224,9 +178,6 @@ class Dao:
         return rows
     
     def clienteId(self, id):
-        if self.erro:
-            return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Clientes WHERE `Cod.Cliente` = {id}"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -234,8 +185,6 @@ class Dao:
         return rows
 
     def inserirCliente(self, nome, cpf, nascimento, sexo, telefone, celular, rua, bairro, uf, numero, complemento, email):
-        if self.erro:
-            return f'Houve erro de conexão: {self.erro}'
         try:
             sql = f"INSERT INTO cliente (nome_cliente, cpf, data_nascimento, sexo, rua, bairro, uf, numero, complemento, telefone, email, celular)  VALUES ('{nome}', '{cpf}', '{nascimento}', '{sexo}', '{rua}', '{bairro}', '{uf}', '{numero}' , '{complemento}', '{telefone}', '{email}', '{celular}')"
             self.cursor.execute(sql)
@@ -253,10 +202,6 @@ class Dao:
                 return error.split(":")[1]   
 
     def atualizaCliente(self, id, dado, coluna):
-        
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"UPDATE cliente SET {coluna} = %s WHERE cod_cliente = %s"
         try:
             self.cursor.execute(sql, (dado, id))
@@ -274,8 +219,6 @@ class Dao:
                 return error.split(":")[1]
 
     def insertProcedimento(self, nomeProc, especialidade, valor):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
         try:
             sql = f"INSERT INTO procedimentos (nome_procedimento, idEspecialidade, valor) VALUES (%s, %s, %s)"
             self.cursor.execute(sql, (nomeProc, especialidade, valor))
@@ -289,30 +232,21 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
 
-    def procedimentosAtivos(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def procedimentosAtivos(self):   
         sql = 'SELECT * FROM Vw_ProcedimentosAtivos'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def procedimentosAll(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def procedimentosAll(self):  
         sql = 'SELECT * FROM Vw_ProcedimentosAll'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def procedimentoEspecialidade(self, especialidade):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def procedimentoEspecialidade(self, especialidade):  
         sql = f"SELECT * FROM Vw_ProcedimentosAtivos WHERE Especialidade = '{especialidade}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -320,9 +254,6 @@ class Dao:
         return rows
 
     def procedimentoNome(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_ProcedimentosAtivos WHERE Procedimento LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -330,9 +261,6 @@ class Dao:
         return rows
 
     def deleteLogicoProcedimento(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-
         try:
             sql = f'UPDATE procedimentos SET status = 0 WHERE cod_procedimento= {id}'
             self.cursor.execute(sql)
@@ -347,10 +275,6 @@ class Dao:
             return resultado
 
     def atualizaProcedimento(self, id, coluna, dado):
-
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"UPDATE procedimentos SET {coluna} = %s WHERE cod_procedimento = %s"
         try:
             self.cursor.execute(sql, (dado, id))
@@ -368,9 +292,6 @@ class Dao:
                 return error.split(":")[1]
 
     def trocaPwd(self, newPdw, user):
-        if self.erro:
-            return f'Houve erro de conexão: {self.erro}'
-        
         try:        
             sql = f'ALTER USER "{user}"@"localhost" IDENTIFIED BY "{newPdw}"'
             bd = self.conecta
@@ -384,9 +305,6 @@ class Dao:
             return erro
 
     def atendimentosAgenda(self, codClient, data):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-       
         sql = f"SELECT * FROM Vw_Atendimentos_Agenda WHERE `Cod.Cliente` = {codClient} and `Data`= '{data}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -394,9 +312,6 @@ class Dao:
         return rows
 
     def atendimentosAtendidos(self, protocolo, data):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-       
         sql = f"SELECT * FROM Vw_Atendimentos_Atendidos WHERE Protocolo = {protocolo} and `Data`= '{data}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -404,9 +319,6 @@ class Dao:
         return rows
 
     def atendimentoCliente(self, nomeCliente):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-       
         sql = f"SELECT * FROM Vw_Atendimentos_Cliente WHERE `Nome do Cliente` = {nomeCliente}"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -414,9 +326,6 @@ class Dao:
         return rows
 
     def agenda(self, data):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Agendamentos_Geral WHERE `Data Agenda` = '{data}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -424,9 +333,6 @@ class Dao:
         return rows
 
     def atendimento(self, data):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Atendimentos WHERE Data = '{data}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -434,9 +340,6 @@ class Dao:
         return rows
 
     def atdNome(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Atendimentos WHERE `Nome do Cliente` LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -444,9 +347,6 @@ class Dao:
         return rows
 
     def atdAtendimento(self, atendimento):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"SELECT * FROM Vw_Atendimentos WHERE `Cod.Atendimento` = {atendimento}"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -454,9 +354,6 @@ class Dao:
         return rows
 
     def vlBrutoAtd(self, protocolo):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"select sum(Valor) as Bruto from Vw_Atendimentos_Atendidos where Protocolo = {protocolo}"
         self.cursor.execute(sql)
         row = self.cursor.fetchall()
@@ -464,9 +361,6 @@ class Dao:
         return row
 
     def atdDataNome(self, dataInicio, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"select * from Vw_Atendimentos where STR_TO_DATE(`Data`, '%d/%m/%Y') = STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND `Nome do Cliente` like '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -474,79 +368,55 @@ class Dao:
         return rows
 
     def atdDataFim(self, dataFim):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
         sql = f"select * from Vw_Atendimentos where `Data` = '{dataFim}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def atdData(self, dataInicio, dataFim):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def atdData(self, dataInicio, dataFim):      
         sql = f"select * from Vw_Atendimentos where STR_TO_DATE(`Data`, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by `Data`"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def AgendaNome(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def AgendaNome(self, nome):           
         sql = f"SELECT * FROM Vw_Agendamentos_Geral WHERE `Nome do Cliente` LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def agendaAll(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def agendaAll(self):             
         sql = f"SELECT * FROM Vw_Agendamentos_Geral"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def agendaProtocolo(self, protocolo):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def agendaProtocolo(self, protocolo):            
         sql = f"SELECT * FROM Vw_Agendamentos_Geral WHERE Protocolo = {protocolo}"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def AgendaDataFim(self, dataFim):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def AgendaDataFim(self, dataFim):          
         sql = f"select * from Vw_Agendamentos_Geral where `Data Agenda` = '{dataFim}'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def AgendaData(self, dataInicio, dataFim):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def AgendaData(self, dataInicio, dataFim):              
         sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(`Data Agenda`, '%d/%m/%Y') BETWEEN STR_TO_DATE('{dataInicio}','%d/%m/%Y') AND STR_TO_DATE('{dataFim}','%d/%m/%Y') order by `Data Agenda`"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def AgendaDataNome(self, dataInicio, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def AgendaDataNome(self, dataInicio, nome):              
         sql = f"select * from Vw_Agendamentos_Geral where STR_TO_DATE(`Data Agenda`, '%d/%m/%Y') = STR_TO_DATE('{dataInicio}','%d/%m/%Y')  AND `Nome do Cliente` like '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -573,10 +443,7 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado            
 
-    def clienteNomeAtendimento(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def clienteNomeAtendimento(self, nome):               
         sql = f"SELECT * FROM Vw_Clientes WHERE `Nome do Cliente` LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -584,8 +451,6 @@ class Dao:
         return rows
 
     def insertFormaPagamento(self, formaPagamento, tipoPagamento, taxa):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
         try:
             sql = f"INSERT INTO pagamento (forma_pagamento, tipo_pagamento, taxa) VALUES (%s, %s, %s)"
             self.cursor.execute(sql, (formaPagamento, tipoPagamento, taxa))
@@ -599,40 +464,28 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado      
 
-    def formaPagamentoAll(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def formaPagamentoAll(self):              
         sql = 'SELECT * FROM Vw_FormaPagamento'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows        
 
-    def formaPagamento(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def formaPagamento(self):              
         sql = 'SELECT `Forma de Pagamento`, `Tipo de Pagamento`, Taxa FROM Vw_FormaPagamento'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows  
 
-    def formaPagamentoId(self, id):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def formaPagamentoId(self, id):              
         sql = f'SELECT `Forma de Pagamento`, `Tipo de Pagamento`, Taxa FROM Vw_FormaPagamento WHERE Id = {id}'
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def formaPagamentoNome(self, nome):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def formaPagamentoNome(self, nome):               
         sql = f"SELECT * FROM Vw_FormaPagamento WHERE `Forma de Pagamento` LIKE '{nome}%'"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -640,8 +493,6 @@ class Dao:
         return rows
     
     def insertLancamento(self, data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
         try:
             sql = f"INSERT INTO lancamento (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
             self.cursor.execute(sql, (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento))
@@ -655,20 +506,14 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
    
-    def lancamentos(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def lancamentos(self):              
         sql = f"SELECT * FROM Vw_Lancamento"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
         return rows
 
-    def financeiro(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def financeiro(self):             
         sql = f"SELECT * FROM Vw_Financeiro"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
@@ -676,8 +521,6 @@ class Dao:
         return rows
 
     def insertFinanceiro(self, data_pagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
         try:
             sql = f"INSERT INTO financeiro (dataPagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
             self.cursor.execute(sql, (data_pagamento, descricao, vlBruto, imposto, juros, vlLiquido, estimativa, pagamento))
@@ -691,30 +534,21 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
    
-    def rel_qtdAtendimento(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def rel_qtdAtendimento(self):              
         sql = f"select count(`Cod.Atendimento`) from Vw_Lancamento"
         self.cursor.execute(sql)
         row = self.cursor.fetchall()
 
         return row                                                
 
-    def rel_previsto(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def rel_previsto(self):              
         sql = f"select sum(`Vl.Liquido`) from Vw_Lancamento where status = 0"
         self.cursor.execute(sql)
         row = self.cursor.fetchall()
 
         return row                                                
 
-    def rel_realizado(self):
-        if self.erro:
-           return f'Houve erro de conexão: {self.erro}'
-        
+    def rel_realizado(self):              
         sql = f"select sum(`Vl.Liquido`) from Vw_Lancamento where status = 1"
         self.cursor.execute(sql)
         row = self.cursor.fetchall()

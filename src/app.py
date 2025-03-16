@@ -116,6 +116,7 @@ class Zenix:
                 self.modalTrocaSenha.destroy()
 
     def conectar(self):
+        self.dao = Dao()
         login = self.login.get()
         senha = self.senha.get()
 
@@ -123,10 +124,9 @@ class Zenix:
             messagebox.showinfo("Zenix","Insira um usuário", parent=self.root_login)
             
         else:
-            self.dao = Dao(login, senha)
-            self.resultado = self.dao.erro
+            resultado = self.dao.conexao(login, senha)
 
-            if isinstance(self.resultado, str):
+            if isinstance(resultado, str):
                 self.senha.delete(0,END)
                 messagebox.showerror("Zenix", "Acesso Negado", parent=self.root_login)
 
@@ -1189,12 +1189,9 @@ class Zenix:
         self.modalNovoClientes.grab_set()
         self.modalNovoClientes.lift()
         self.modalNovoClientes.title('Cliente - [Novo]')
-        self.modalNovoClientes.geometry('750x550')
+        self.modalNovoClientes.geometry('550x350')
         self.modalNovoClientes.configure(background='#D3D3D3')
         self.modalNovoClientes.resizable(False,False)
-              
-        titulo = tk.Label(self.modalNovoClientes, text='ADICIONAR NOVO CLIENTE', font=('Arial', 18, 'bold'), background='#D3D3D3', fg='black')
-        titulo.place(relx= 0.25, rely=0.07)
 
         txtNome = tk.Label(self.modalNovoClientes, text='*NOME:', font='bold')
         txtNome.place(relx= 0.06, rely=0.2)
@@ -2737,6 +2734,7 @@ class Zenix:
         self.atendimento.configure(background='#A9A9A9')
         self.atendimento.geometry('1024x720')
         self.atendimento.resizable(False,False)
+        self.item_idAtendimento = ""
 
         self.atendimento.grid_columnconfigure(0, weight=0)
         self.atendimento.grid_columnconfigure(1, weight=0)
@@ -3211,7 +3209,12 @@ class Zenix:
             self.ModalTaxaAtd.insert(0, taxa)
         
         if taxa == 0.0:
-            self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+            vlBruto = self.dao.vlBrutoAtd(self.protocoloAgendaAtendimento)
+            for bruto in vlBruto:
+                self.ModalVlBrutoAtd.configure(state='normal')
+                self.ModalVlBrutoAtd.delete(0, END)
+                self.ModalVlBrutoAtd.insert(0, bruto[0])
+                self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
             return
         
         else:
@@ -3221,7 +3224,6 @@ class Zenix:
             self.ModalVlBrutoAtd.insert(0, resultado)
             self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
         
-
     def insertAtdAtendido(self):
         id_atendimento = self.codAtendimento
         id_formaPagamento = self.idSelecaoPagamento
@@ -4678,4 +4680,4 @@ class Zenix:
         telaSucesso.bind('<Return>', lambda event: buttonOk.invoke())
         telaSucesso.mainloop() 
 
-Zenix()               
+Zenix()              
