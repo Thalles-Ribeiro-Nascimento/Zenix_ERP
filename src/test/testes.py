@@ -1,7 +1,8 @@
 from tkinter import *
 from tkinter import messagebox
-from conection import objects
+from ..conection.objects import Dao
 
+dao = Dao()
 # class MinhaGUI:
 #     def __init__(self):
 #         # Cria janela principal
@@ -70,8 +71,8 @@ from conection import objects
 
 # MinhaGUI()
 
-dao = objects.Dao("admin", "SysteM98")
-rows = dao.clientesAll()
+con = dao.conexao("admin", "SysteM98")
+rows = dao.rel_previsto()
 
 print(rows)
 # for row in rows:

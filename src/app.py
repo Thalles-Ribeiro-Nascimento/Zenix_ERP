@@ -16,15 +16,10 @@ class Zenix:
         self.root_login.geometry('550x350')
         self.root_login.configure(background='#D3D3D3')
         self.root_login.resizable(False,False)
-        self.root_login.colormapwindows(self.root_login)
-        self.item_id = ""
-        self.selecao_itemFunc = ()
-        self.idSelecao = ""
-        self.item_idCliente = ""
-        self.item_idAgenda = ""
-        self.item_idFormaPagamento = ""
-        self.formaPagamentoDsc = ""
-        self.ItemSelecionadoEspecialidade = ""
+        self.root_login.colormapwindows(self.root_login)     
+        # self.item_idFormaPagamento = ""
+        # self.formaPagamentoDsc = ""
+        
 
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
@@ -233,7 +228,10 @@ class Zenix:
         self.funcionarios.configure(background='#A9A9A9')
         self.funcionarios.geometry('1024x720')
         self.funcionarios.resizable(False, False)
-        
+        self.item_id = ""
+        self.multiSelecao_itemFunc = ()
+        self.idSelecao = ""
+
         # Menu superior
         menu_bar = tk.Menu(self.funcionarios, background='#808080')
         menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -511,7 +509,7 @@ class Zenix:
         try:
             # Id do item selecionado
             self.item_id = self.treeviewFunc.selection()[0]
-            self.selecao_itemFunc = self.treeviewFunc.selection()
+            self.multiSelecao_itemFunc = self.treeviewFunc.selection()
             
             # Lista Informações Funcionário Selecionado
             self.listaFuncionario = self.treeviewFunc.item(self.item_id, 'values')
@@ -931,9 +929,9 @@ class Zenix:
                 return
 
     def excluirItemFuncionario(self):
-        if len(self.selecao_itemFunc) > 1:
+        if len(self.multiSelecao_itemFunc) > 1:
             validar = True
-            for id in self.selecao_itemFunc:
+            for id in self.multiSelecao_itemFunc:
                 values = self.treeviewFunc.item(id, 'values')
                 resultado = self.dao.deleteLogicoFuncionario(values[0])
                 
@@ -1095,6 +1093,7 @@ class Zenix:
         self.clientes.configure(background='#A9A9A9')
         self.clientes.geometry('1024x720')
         self.clientes.resizable(False, False)
+        self.item_idCliente = ""
         
         # Menu superior
         menu_bar = tk.Menu(self.clientes, background='#808080')
@@ -2051,8 +2050,7 @@ class Zenix:
 
         self.frameTvLancamento()
         self.treeviewLancamento = ttk.Treeview(self.frameviewLancamento, columns=(
-            'Cod.Lancamento', 'Data', 'Cod.Atendimento', 'Funcionario', 'Procedimento', 
-            'Especialidade' ,'Forma de Pagamento', 'Tipo', 'Descricao',
+            'Cod.Lancamento', 'Data', 'Cod.Atendimento', 'Funcionario', 'Forma de Pagamento', 'Tipo', 'Descricao',
             'Vl.Bruto', 'Taxa','Imposto', 'Perc.(%)', 'Vl.Liquido', 'Estimativa', 'Status' 
             ), show='headings')
 
@@ -2060,8 +2058,6 @@ class Zenix:
         self.treeviewLancamento.heading('Data', text='Data')
         self.treeviewLancamento.heading('Cod.Atendimento', text='Cod.Atendimento')
         self.treeviewLancamento.heading('Funcionario', text='Funcionario')
-        self.treeviewLancamento.heading('Procedimento', text='Procedimento')
-        self.treeviewLancamento.heading('Especialidade', text='Especialidade')
         self.treeviewLancamento.heading('Forma de Pagamento', text='Pagamento')
         self.treeviewLancamento.heading('Tipo', text='Tipo')
         self.treeviewLancamento.heading('Descricao', text='Descricao')
@@ -2077,8 +2073,6 @@ class Zenix:
         self.treeviewLancamento.column('Data', stretch=False, width=90)
         self.treeviewLancamento.column('Cod.Atendimento', stretch=False)
         self.treeviewLancamento.column('Funcionario', stretch=False, width=100)
-        self.treeviewLancamento.column('Procedimento', stretch=False, width=100)
-        self.treeviewLancamento.column('Especialidade', stretch=False, width=100)
         self.treeviewLancamento.column('Forma de Pagamento', stretch=False, width=100)
         self.treeviewLancamento.column('Tipo', stretch=False)
         self.treeviewLancamento.column('Descricao', stretch=False)
@@ -3287,6 +3281,7 @@ class Zenix:
         self.agendaRoot.configure(background='#A9A9A9')
         self.agendaRoot.geometry('1540x920')
         self.agendaRoot.resizable(False,False)
+        self.item_idAgenda = ""
 
         self.agendaRoot.grid_columnconfigure(0, weight=0)
         self.agendaRoot.grid_columnconfigure(1, weight=0)
@@ -4112,6 +4107,7 @@ class Zenix:
         self.modalEspecialidade.configure(background='#D3D3D3')
         self.modalEspecialidade.resizable(False,False)
         self.modalEspecialidade.colormapwindows(self.modalEspecialidade)
+        self.ItemSelecionadoEspecialidade = ""
         
         menu_bar = tk.Menu(self.modalEspecialidade, background='#808080')
         

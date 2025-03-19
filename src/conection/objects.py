@@ -4,6 +4,7 @@ from datetime import datetime
 import re
 
 class Dao:
+
     def conexao(self, login, key):
         conecta = Conexao().Conecta(login, key)
         
@@ -140,11 +141,12 @@ class Dao:
             return
         
         except mysql.connector.Error as e:
-            print(e)
-
-            erroInsercao = str(e)
-            resultado = re.search(r"Duplicate entry '([^']+)'", erroInsercao)
-            return f"Erro: {resultado.group(0)}"
+            error = str(e)
+            if "1062 (23000)" in error:
+                msg = error.split(":")[1]
+                return f"Campo Duplicado\n{msg}"
+            else:
+                return error.split(":")[1]
 
     def atualizaFuncionario(self, id, dado, coluna):
         sql = f"UPDATE funcionarios SET {coluna} = %s WHERE id_funcionario = %s"
