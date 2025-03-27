@@ -2115,10 +2115,16 @@ class Zenix:
         entryPrevisto = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
         entryPrevisto.grid(column=0, row=1, padx=10, pady=0)
         previsto = self.dao.rel_previsto()
+
         for soma in previsto:
-            entryPrevisto.configure(state='normal')
-            entryPrevisto.insert(0, soma[0])
-            entryPrevisto.configure(state='disabled')
+            if soma[0] == None:
+                entryPrevisto.configure(state='normal')
+                entryPrevisto.insert(0, 0)
+                entryPrevisto.configure(state='disabled')
+            else:
+                entryPrevisto.configure(state='normal')
+                entryPrevisto.insert(0, soma[0])
+                entryPrevisto.configure(state='disabled')
             
         txtRealizado = Label(self.relatorioLancamento, text='Realizado', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
         txtRealizado.grid(column=1, row=0, pady=(5,0))
@@ -2126,17 +2132,24 @@ class Zenix:
         entryRealizado = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
         entryRealizado.grid(column=1, row=1, padx=10, pady=0)
         realizado = self.dao.rel_realizado()
+
         for pago in realizado:
-            entryRealizado.configure(state='normal')
-            entryRealizado.insert(0, pago[0])
-            entryRealizado.configure(state='disabled')
+            if pago[0] == None:
+                entryRealizado.configure(state='normal')
+                entryRealizado.insert(0, 0)
+                entryRealizado.configure(state='disabled')
+            else:
+                entryRealizado.configure(state='normal')
+                entryRealizado.insert(0, pago[0])
+                entryRealizado.configure(state='disabled')
 
         txtAtendimento = Label(self.relatorioLancamento, text='Qtd.Atendimento', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
         txtAtendimento.grid(column=2, row=0, pady=(5,0))
 
-        entryAtendimento = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=5, justify='center')
+        entryAtendimento = Entry(self.relatorioLancamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
         entryAtendimento.grid(column=2, row=1, padx=10, pady=0)
         atendimentos = self.dao.rel_qtdAtendimento()
+
         for qtd in atendimentos:
             entryAtendimento.configure(state='normal')
             entryAtendimento.insert(0, qtd[0])
