@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-from ..conection.objects import Dao
+from conection.objects import Dao
 
 dao = Dao()
 # class MinhaGUI:
@@ -75,8 +75,8 @@ con = dao.conexao("admin", "SysteM98")
 rows = dao.rel_previsto()
 
 print(rows)
-# for row in rows:
-#     print(row)
+for row in rows:
+    print(row[0])
 
 
 # rows = dao.especialidadeView()
