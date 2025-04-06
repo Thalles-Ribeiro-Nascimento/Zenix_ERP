@@ -3089,8 +3089,12 @@ class Zenix:
             self.ModalDataAtd.insert(0, self.dataAtendimento2)
             self.ModalDataAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
+            button = tk.Button(self.abaPagamento, text='Finalizar', command=self.insertTrigger, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button.place(relx= 0.032, rely=0.71)
+
 # Aba Cliente
 
+# Aba Funcionario
             titleModalNomeFuncionarioAtd = tk.Label(self.abaValores, text='Funcionário:', font='bold')
             titleModalNomeFuncionarioAtd.configure(fg='black')
             titleModalNomeFuncionarioAtd.place(relx= 0.03, rely=0.05)
@@ -3153,9 +3157,9 @@ class Zenix:
             self.ModalVlLojaAtd.configure(background='white', fg='black', width=7)
             self.ModalVlLojaAtd.place(relx= 0.2, rely=0.75)
             self.ModalVlLojaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
+# Aba Funcionario
 
-            # button = tk.Button(self.ModalAtAtendido, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            # button.place(relx=0.15, rely=0.28)   
+   
             self.frameTvAtdAtendidos()
 
             self.treeviewModalAtdAtendido = ttk.Treeview(self.fmTvAtdAtendidos, columns=("Data", "Hora", "Protocolo", "Cod.Atendimento", "Cod.Cliente", "Nome do Cliente", 
@@ -3215,6 +3219,10 @@ class Zenix:
             # self.ModalAtAtendido.bind('<Return>', lambda event: button.invoke())
 
             self.ModalAtAtendido.mainloop()
+            
+# TODO: Insert trigger so será chamada se tiver forma de pagamento
+    def insertTrigger(self):
+        messagebox.showinfo("Zenix", "Em Construção", parent=self.ModalAtAtendido)
 
     def selectItemTreeviewModalAtdAtendido(self, event):
         try:
