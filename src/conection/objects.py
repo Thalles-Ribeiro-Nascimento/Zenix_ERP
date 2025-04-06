@@ -2,11 +2,15 @@ from conection.conexao import Conexao
 import mysql.connector
 from datetime import datetime
 import re
+import dotenv as dt
+import os
+
+dt.load_dotenv()
 
 class Dao:
 
     def conexao(self, login, key):
-        conecta = Conexao().Conecta(login, key)
+        conecta = Conexao().Conecta(login, key, os.getenv("DB_HOST"), os.getenv("DB_NAME"))
         
         if isinstance(conecta, str):
             return conecta

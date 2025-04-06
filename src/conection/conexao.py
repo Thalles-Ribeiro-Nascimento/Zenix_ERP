@@ -1,13 +1,13 @@
 import mysql.connector
 
 class Conexao:
-    def Conecta(self, login, key):
+    def Conecta(self, login, key, host, database):
         try:
             self.conn = mysql.connector.connect(
-                host='localhost', 
+                host=host, 
                 user=login, 
                 password=key, 
-                database='projeto_verao'
+                database=database
                 )
             
             print("Usuário:", login.upper())
