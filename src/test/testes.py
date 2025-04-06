@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-from conection.objects import Dao
+from ..database.objects import Dao
 
 dao = Dao()
 # class MinhaGUI:

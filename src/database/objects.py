@@ -1,4 +1,4 @@
-from conection.conexao import Conexao
+from database.conexao import Conexao
 import mysql.connector
 from datetime import datetime
 import re
