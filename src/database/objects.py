@@ -324,6 +324,35 @@ class Dao:
 
         return rows
 
+    def insertAtdAtendido(self, idAtendimento, idFormaPagamento):
+        try:
+            sql = f"INSERT INTO atendimento_atendido (at_atendimento_id, at_forma_pagamento_id) VALUES ({idAtendimento}, {idFormaPagamento})"
+            self.cursor.execute(sql)
+            self.conecta.commit()
+        except mysql.connector.Error as e:
+            print(e)
+
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado 
+
+    def allAtdAtendido(self):
+        sql = f"SELECT * FROM atendimento_atendido"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
+    def atualizarAtendimento(self, id):
+        sql = f"UPDATE atendimentos SET status = 1 WHERE idAtendimento = {id}"
+        try:
+            self.cursor.execute(sql)
+            self.conecta.commit()
+            
+        except Exception as e:
+            print(e)
+            return str(e)
+
     def atendimentoCliente(self, nomeCliente):
         sql = f"SELECT * FROM Vw_Atendimentos_Cliente WHERE `Nome do Cliente` = {nomeCliente}"
         self.cursor.execute(sql)
@@ -498,10 +527,10 @@ class Dao:
 
         return rows
     
-    def insertLancamento(self, data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento):
+    def insertLancamento(self, data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa):
         try:
-            sql = f"INSERT INTO lancamento (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            self.cursor.execute(sql, (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa, pagamento))
+            sql = f"INSERT INTO lancamento (data_pagamento, atendimento_id, descricao, valorTotal, imposto, valorPagar, estimativa) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            self.cursor.execute(sql, (data_pagamento, atendimento, descricao, valorTotal, imposto, valorPagar, estimativa))
             self.conecta.commit()
             return
         
@@ -511,7 +540,21 @@ class Dao:
             erroInsercao = str(e)
             resultado = erroInsercao.split(":")[1]
             return resultado
-   
+
+    def insertFaturamento(self, data_pagamento, atendimento, valorTotal, valorPagar):
+        try:
+            sql = f"INSERT INTO faturamento (fat_data_fatura, at_atendido_id, fat_valorBruto, fat_valorLiquido) VALUES (%s, %s, %s, %s)"
+            self.cursor.execute(sql, (data_pagamento, atendimento, valorTotal, valorPagar))
+            self.conecta.commit()
+            return
+        
+        except mysql.connector.Error as e:
+            print(e)
+            
+            erroInsercao = str(e)
+            resultado = erroInsercao.split(":")[1]
+            return resultado
+
     def lancamentos(self):              
         sql = f"SELECT * FROM Vw_Lancamento"
         self.cursor.execute(sql)
@@ -561,4 +604,3 @@ class Dao:
 
         return row 
 
-# INSERT INTO financeiro (dataPagamento, descricao, vlBruto, imposto, vlLiquido, estimativa, pagamento)

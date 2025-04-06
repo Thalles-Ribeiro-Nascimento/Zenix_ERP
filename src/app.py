@@ -3089,7 +3089,7 @@ class Zenix:
             self.ModalDataAtd.insert(0, self.dataAtendimento2)
             self.ModalDataAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
 
-            button = tk.Button(self.abaPagamento, text='Finalizar', command=self.insertTrigger, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button = tk.Button(self.abaPagamento, text='Finalizar', command=self.updateAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             button.place(relx= 0.032, rely=0.71)
 
 # Aba Cliente
@@ -3219,10 +3219,41 @@ class Zenix:
             # self.ModalAtAtendido.bind('<Return>', lambda event: button.invoke())
 
             self.ModalAtAtendido.mainloop()
+
+    def updateAtendimento(self):
+        if self.OpFormaPagamento.get() == "Forma Pagamento":
+            messagebox.showerror("Zenix", "Selecione a forma de pagamento", parent=self.ModalAtAtendido)
+        else:
+            atendimento = []
+            protocolo = int(self.protocoloAgendaAtendimento)
+            data = self.dataAtendimento2
+            rows = self.dao.atendimentosAtendidos(protocolo, data)
             
-# TODO: Insert trigger so será chamada se tiver forma de pagamento
-    def insertTrigger(self):
-        messagebox.showinfo("Zenix", "Em Construção", parent=self.ModalAtAtendido)
+            for row in rows:
+                atendimento.append(row[3])
+            
+            for id in atendimento:
+                # print(type(id))
+                result = self.dao.atualizarAtendimento(id)
+                if isinstance(result, str):
+                    messagebox.showerror("Zenix", result, parent=self.ModalAtAtendido)
+                    return
+                else:
+                    continue
+
+            self.triggerAtendido(atendimento)
+            
+    def triggerAtendido(self, list: list):
+        for id in list:
+            result = self.dao.insertAtdAtendido(id, self.idSelecaoPagamento)
+            if isinstance(result, str):
+                messagebox.showerror("Zenix", result, parent=self.ModalAtAtendido)
+                return
+            else:
+                continue
+        
+        
+        # rows = self.dao.allAtdAtendidos()
 
     def selectItemTreeviewModalAtdAtendido(self, event):
         try:
@@ -3355,28 +3386,8 @@ class Zenix:
             self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
             self.modalVlLiquidoCliente.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
         
-    def insertAtdAtendido(self):
-        id_atendimento = self.codAtendimento
-        id_formaPagamento = self.idSelecaoPagamento
-        descricao = "Pagamento de Funcionário"
-        valorBruto = self.ModalVlBrutoAtd.get()
-        imposto = 0
-        valorPagar = self.ModalVlLiquidoAtd.get()
-        percentilLoja = self.ModalPercentualFaturaAtd.get()
-        vlLoja = self.ModalVlLojaAtd.get()
-
-        if id_atendimento == "" or id_formaPagamento == "":
-            messagebox.showerror("Aviso","Campo vazio")
-
-        # dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
-        if isinstance(dao, str):
-            messagebox.showerror("Zenix", dao, parent=self.modalAtendimentoAdd)
-            
-        else:
-            insercaoLancamento = self.insertLancamentoAtd(id_atendimento, descricao, valorBruto, imposto, valorPagar)
-            insercaoFaturamento = self.insertFaturamentoAtd(id_atendimento, valorBruto, percentilLoja, vlLoja)
-
-    def triggerLancamentoAtd(self, id_atendimento, descricao, vlTotal, imposto, vlLiquido):
+    def triggerLancamentoAtd(sel id_atendimento:list):
+        result = self.dao.allAtdAtendido()
 
         # dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
         if isinstance(dao, str):
