@@ -336,8 +336,8 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado 
 
-    def allAtdAtendido(self):
-        sql = f"SELECT * FROM atendimento_atendido"
+    def allAtdAtendido(self, id):
+        sql = f"SELECT * FROM atendimento_atendido WHERE at_atendimento_id = {id}"
         self.cursor.execute(sql)
         rows = self.cursor.fetchall()
 
@@ -541,10 +541,10 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
 
-    def insertFaturamento(self, data_pagamento, atendimento, valorTotal, valorPagar):
+    def insertFaturamento(self, data_pagamento, atendimento, valorTotal, percentil,  valorPagar):
         try:
-            sql = f"INSERT INTO faturamento (fat_data_fatura, at_atendido_id, fat_valorBruto, fat_valorLiquido) VALUES (%s, %s, %s, %s)"
-            self.cursor.execute(sql, (data_pagamento, atendimento, valorTotal, valorPagar))
+            sql = f"INSERT INTO faturamento (fat_data_fatura, at_atendido_id, fat_valorBruto, fat_percentil, fat_valorLiquido) VALUES (%s, %s, %s, %s, %s)"
+            self.cursor.execute(sql, (data_pagamento, atendimento, valorTotal, percentil, valorPagar))
             self.conecta.commit()
             return
         

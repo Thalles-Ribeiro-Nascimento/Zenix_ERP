@@ -2123,7 +2123,8 @@ class Zenix:
                 entryPrevisto.configure(state='disabled')
             else:
                 entryPrevisto.configure(state='normal')
-                entryPrevisto.insert(0, soma[0])
+                somaFormatada = "{:.2f}".format(soma[0])
+                entryPrevisto.insert(0, somaFormatada)
                 entryPrevisto.configure(state='disabled')
             
         txtRealizado = Label(self.relatorioLancamento, text='Realizado', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
@@ -2140,7 +2141,8 @@ class Zenix:
                 entryRealizado.configure(state='disabled')
             else:
                 entryRealizado.configure(state='normal')
-                entryRealizado.insert(0, pago[0])
+                pagamentoFormatado = "{:.2f}".format(pago[0])
+                entryRealizado.insert(0, pagamentoFormatado)
                 entryRealizado.configure(state='disabled')
 
         txtAtendimento = Label(self.relatorioLancamento, text='Qtd.Atendimento', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
@@ -3225,7 +3227,6 @@ class Zenix:
             messagebox.showerror("Zenix", "Selecione a forma de pagamento", parent=self.ModalAtAtendido)
         else:
             atendimento = []
-            # itens = {"percentil":}
             protocolo = int(self.protocoloAgendaAtendimento)
             data = self.dataAtendimento2
             rows = self.dao.atendimentosAtendidos(protocolo, data)
@@ -3234,7 +3235,6 @@ class Zenix:
                 atendimento.append(row[3])
             
             for id in atendimento:
-                # print(type(id))
                 result = self.dao.atualizarAtendimento(id)
                 if isinstance(result, str):
                     messagebox.showerror("Zenix", result, parent=self.ModalAtAtendido)
@@ -3245,6 +3245,7 @@ class Zenix:
             self.triggerAtendido(atendimento)
             
     def triggerAtendido(self, list: list):
+        
         for id in list:
             result = self.dao.insertAtdAtendido(id, self.idSelecaoPagamento)
             if isinstance(result, str):
@@ -3252,7 +3253,7 @@ class Zenix:
                 return
             else:
                 continue
-        self.triggerLancamentoAtd()
+        self.triggerLancamentoAtd(list)
         
         # rows = self.dao.allAtdAtendidos()
 
@@ -3387,7 +3388,14 @@ class Zenix:
             self.ModalVlBrutoAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
             self.modalVlLiquidoCliente.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
         
-    def triggerLancamentoAtd(self):
+    def triggerLancamentoAtd(self, atendimento: list):
+        atdAtendidoId = []
+
+        for id in atendimento:
+            dao = self.dao.allAtdAtendido(id)
+            for idAtendido in dao:
+                atdAtendidoId.append(idAtendido[0])
+        
         percentilList = []
         vlBruto = []
         protocolo = int(self.protocoloAgendaAtendimento)
@@ -3411,19 +3419,41 @@ class Zenix:
             vlLojaFormatado = "{:.2f}".format(vlLoja)
             percentilLojaList.append(percLoja)
             vlLojaList.append(vlLojaFormatado)
+
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
+
+        for id, vlTotal, vlAPagar in zip(atdAtendidoId, vlBruto, vlFuncionarioList):
+            # print(f"ID: {id}")
+            lancamento = self.dao.insertLancamento(dataAtualFormatada, id, "Pagamento de Funcionário", vlTotal, 0, vlAPagar, 1)
+
+            if isinstance(lancamento, str):
+                messagebox.showerror("Zenix", lancamento, parent=self.ModalAtAtendido)
+                return
+            else:
+                continue
         
+        self.triggerFaturamentoAtd(atdAtendidoId, vlBruto, percentilLojaList, vlLojaList)
 
+        # self.atualizaTreeAtendimento()
 
-        #     self.atualizaTreeAtendimento()
+    def triggerFaturamentoAtd(self, id: list, vlBruto: list, percentil: list, vlLiquido: list):
+        dataAtual = datetime.now().date()
+        dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
 
-    def triggerFaturamentoAtd(self, id_atendimento, vlTotal, percentil, vlLiquido):
-
-        # dao = self.dao.addAtendimento(hora, idProcedimento, idAgenda, idFuncionario)
-        if isinstance(dao, str):
-            messagebox.showerror("Zenix", dao, parent=self.modalAtendimentoAdd)
-            
-        else:
-            self.atualizaTreeAtendimento()
+        for idAtd, vlTotal, perc, vlLoja in zip(id, vlBruto, percentil, vlLiquido):
+            result = self.dao.insertFaturamento(dataAtualFormatada, idAtd, vlTotal, perc, vlLoja)
+            if isinstance(result, str):
+                messagebox.showerror("Zenix", result, parent=self.ModalAtAtendido)
+                return
+            else:
+                continue
+        
+        # self.atualizaTreeAtendimento()
+    
+        messagebox.showinfo("Zenix", "Cliente Atendido", parent=self.ModalAtAtendido)
+                
+        self.ModalAtAtendido.destroy()
 
 # Atendimento -----------------------------------
 
