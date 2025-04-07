@@ -2993,8 +2993,11 @@ class Zenix:
         self.fmTvAtdAtendidos.place(relx=0.0, rely=0.52, relheight=1, relwidth=1)
 
     def atdAtendido(self):
+
         if self.item_idAtendimento == "":
             messagebox.showerror("Zenix", "Selecione um atendimento", parent=self.atendimento)
+        # elif self.statusAtendimento == 1:
+        #     messagebox.showinfo("Zenix", "Atendimento já realizado", parent=self.atendimento)
         else:
             self.ModalAtAtendido = tk.Toplevel()
             self.ModalAtAtendido.transient(self.main)
