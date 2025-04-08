@@ -1192,118 +1192,119 @@ class Zenix:
         self.modalNovoClientes.configure(background='#D3D3D3')
         self.modalNovoClientes.resizable(False,False)
 
-        txtNome = tk.Label(self.modalNovoClientes, text='*NOME:', font='bold')
-        txtNome.place(relx= 0.06, rely=0.2)
+        txtNome = tk.Label(self.modalNovoClientes, text='Nome:', font='bold')
+        txtNome.place(relx= 0.05, rely=0.1)
         txtNome.configure(background='#D3D3D3', fg='black')
 
         self.nomeCliente = tk.Entry(self.modalNovoClientes,width=25)
         self.nomeCliente.configure(background='white', fg='black')
-        self.nomeCliente.place(relx= 0.06, rely=0.245)
-                
-        txtCpf = tk.Label(self.modalNovoClientes, text='*CPF:', font='bold')
-        txtCpf.place(relx= 0.7, rely=0.2)
-        txtCpf.configure(background='#D3D3D3', fg='black')
+        self.nomeCliente.place(relx= 0.05, rely=0.154)
 
-        self.cpfCliente = tk.Entry(self.modalNovoClientes, width=15)
-        self.cpfCliente.place(relx= 0.7, rely=0.245)
-        self.cpfCliente.configure(background='white', fg='black')
-        self.cpfCliente.bind('<KeyRelease>', self.formatar_cpfCliente)
-        self.cpfCliente.bind('<BackSpace>', self.formatar_cpfCliente)
-
-        txtData = tk.Label(self.modalNovoClientes, text='*DATA DE NASCIMENTO:', font='bold')
-        txtData.place(relx= 0.06, rely=0.33)
+        txtData = tk.Label(self.modalNovoClientes, text='Dt.Nascimento:', font='bold')
+        txtData.place(relx= 0.05, rely=0.36)
         txtData.configure(background='#D3D3D3', fg='black')
 
         self.dataCliente = tk.Entry(self.modalNovoClientes, width=25)
         self.dataCliente.configure(background='white', fg='black')
-        self.dataCliente.place(relx= 0.06, rely=0.37)
+        self.dataCliente.place(relx= 0.05, rely=0.43)
         self.dataCliente.bind('<KeyRelease>', self.formatar_dataCliente)
-        
-        genero = tk.Label(self.modalNovoClientes, text='SEXO:', font='bold')
-        genero.place(relx= 0.45, rely=0.2)
-        genero.configure(background='#D3D3D3', fg='black')
-        
-        self.sexo = StringVar(self.modalNovoClientes)
-        self.sexo.set('F')
-        listUf = ['F', 'M']
-        
-        selectGenero = tk.OptionMenu(self.modalNovoClientes, self.sexo, *listUf)
-        selectGenero.configure(background='white', fg='black', activebackground='gray')
-        selectGenero.place(relx= 0.45, rely=0.245, relwidth=0.09, relheight=0.05)
 
-        txtTelefone = tk.Label(self.modalNovoClientes, text='TELEFONE:', font='bold')
-        txtTelefone.place(relx= 0.4, rely=0.33)
-        txtTelefone.configure(background='#D3D3D3', fg='black')
-
-        self.telefoneCliente = tk.Entry(self.modalNovoClientes, width=20)
-        self.telefoneCliente.configure(background='white', fg='black')
-        self.telefoneCliente.place(relx= 0.4, rely=0.37)
-        
-        self.telefoneCliente.bind('<KeyRelease>', self.formatar_telefoneCliente)
-
-        txtCelular = tk.Label(self.modalNovoClientes, text='*CELULAR:', font='bold')
-        txtCelular.place(relx= 0.7, rely=0.33)
-        txtCelular.configure(background='#D3D3D3', fg='black')
-
-        self.celularCliente = tk.Entry(self.modalNovoClientes, width=20)
-        self.celularCliente.configure(background='white', fg='black')
-        self.celularCliente.place(relx= 0.7, rely=0.37)
-        
-        self.celularCliente.bind('<KeyRelease>', self.formatar_celularCliente)
-
-        txtEmail = tk.Label(self.modalNovoClientes, text='*Email:', font='bold')
-        txtEmail.place(relx= 0.06, rely=0.45)
+        txtEmail = tk.Label(self.modalNovoClientes, text='Email:', font='bold')
+        txtEmail.place(relx= 0.05, rely=0.22)
         txtEmail.configure(background='#D3D3D3', fg='black')
 
         self.EmailCliente = tk.Entry(self.modalNovoClientes,width=50)
         self.EmailCliente.configure(background='white', fg='black')
-        self.EmailCliente.place(relx= 0.06, rely=0.495)
+        self.EmailCliente.place(relx= 0.05, rely=0.28)
+
+        txtTelefone = tk.Label(self.modalNovoClientes, text='Telefone:', font='bold')
+        txtTelefone.place(relx= 0.438, rely=0.09)
+        txtTelefone.configure(background='#D3D3D3', fg='black')
+
+        self.telefoneCliente = tk.Entry(self.modalNovoClientes, width=20)
+        self.telefoneCliente.configure(background='white', fg='black')
+        self.telefoneCliente.place(relx= 0.44, rely=0.153)
+        self.telefoneCliente.bind('<KeyRelease>', self.formatar_telefoneCliente)
+
+        genero = tk.Label(self.modalNovoClientes, text='Sexo:', font='bold')
+        genero.place(relx= 0.45, rely=0.36)
+        genero.configure(background='#D3D3D3', fg='black')
+        
+        self.sexo = StringVar(self.modalNovoClientes)
+        listUf = ['F', 'M']
+        
+        style = ttk.Style()
+        style.theme_use('alt')
+        style.configure("CustomCombobox.TCombobox", fieldbackground="white", foreground="black", background="gray")
+
+        selectGenero = ttk.Combobox(self.modalNovoClientes, textvariable=self.sexo, values=listUf, style="CustomCombobox.TCombobox")
+        selectGenero.place(relx= 0.45, rely=0.43, relwidth=0.1, relheight=0.06)
+        selectGenero.current(0)
+
+        txtCpf = tk.Label(self.modalNovoClientes, text='CPF:', font='bold')
+        txtCpf.place(relx= 0.75, rely=0.09)
+        txtCpf.configure(background='#D3D3D3', fg='black')
+
+        self.cpfCliente = tk.Entry(self.modalNovoClientes, width=15)
+        self.cpfCliente.place(relx= 0.75, rely=0.153)
+        self.cpfCliente.configure(background='white', fg='black')
+        self.cpfCliente.bind('<KeyRelease>', self.formatar_cpfCliente)
+        self.cpfCliente.bind('<BackSpace>', self.formatar_cpfCliente)
+
+        txtCelular = tk.Label(self.modalNovoClientes, text='Celular:', font='bold')
+        txtCelular.place(relx= 0.6, rely=0.36)
+        txtCelular.configure(background='#D3D3D3', fg='black')
+
+        self.celularCliente = tk.Entry(self.modalNovoClientes, width=20)
+        self.celularCliente.configure(background='white', fg='black')
+        self.celularCliente.place(relx= 0.6, rely=0.43)
+        
+        self.celularCliente.bind('<KeyRelease>', self.formatar_celularCliente)
     
-        txtRua = tk.Label(self.modalNovoClientes, text='*Rua:', font='bold')
-        txtRua.place(relx= 0.06, rely=0.55)
+        txtRua = tk.Label(self.modalNovoClientes, text='Rua:', font='bold')
+        txtRua.place(relx= 0.05, rely=0.5)
         txtRua.configure(background='#D3D3D3', fg='black')
 
-        self.RuaCliente = tk.Entry(self.modalNovoClientes,width=50)
+        self.RuaCliente = tk.Entry(self.modalNovoClientes,width=45)
         self.RuaCliente.configure(background='white', fg='black')
-        self.RuaCliente.place(relx= 0.06, rely=0.6)
+        self.RuaCliente.place(relx= 0.05, rely=0.57)
 
-        txtBairro = tk.Label(self.modalNovoClientes, text='*Bairro:', font='bold')
-        txtBairro.place(relx= 0.06, rely=0.65)
+        txtBairro = tk.Label(self.modalNovoClientes, text='Bairro:', font='bold')
+        txtBairro.place(relx= 0.05, rely=0.65)
         txtBairro.configure(background='#D3D3D3', fg='black')
 
         self.BairroCliente = tk.Entry(self.modalNovoClientes,width=25)
         self.BairroCliente.configure(background='white', fg='black')
-        self.BairroCliente.place(relx= 0.06, rely=0.7)
+        self.BairroCliente.place(relx= 0.05, rely=0.72)
 
-        txtEstado = tk.Label(self.modalNovoClientes, text='*Estado:', font='bold')
-        txtEstado.place(relx= 0.65, rely=0.55)
+        txtEstado = tk.Label(self.modalNovoClientes, text='Estado:', font='bold')
+        txtEstado.place(relx= 0.83, rely=0.5)
         txtEstado.configure(background='#D3D3D3', fg='black')
 
         self.ufCliente = StringVar(self.modalNovoClientes)
-        self.ufCliente.set('AC')
         listUf = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
                   'MT', 'MS', 'MG','PA', 'PB', 'PE', 'PI', 'RJ', 'RN', 'RS',
                   'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
         
-        self.EstadoCliente = tk.OptionMenu(self.modalNovoClientes, self.ufCliente, *listUf)
-        self.EstadoCliente.configure(background='white', fg='black', activebackground='gray')
-        self.EstadoCliente.place(relx= 0.65, rely=0.595, relwidth=0.09, relheight=0.05)
+        self.EstadoCliente = ttk.Combobox(self.modalNovoClientes, textvariable=self.ufCliente, values=listUf, style="CustomCombobox.TCombobox")
+        self.EstadoCliente.place(relx= 0.83, rely=0.57, relwidth=0.1, relheight=0.06)
+        self.EstadoCliente.current(0)
 
         txtNumero = tk.Label(self.modalNovoClientes, text='Nº:', font='bold')
-        txtNumero.place(relx= 0.79, rely=0.55)
+        txtNumero.place(relx= 0.73, rely=0.5)
         txtNumero.configure(background='#D3D3D3', fg='black')
 
         self.NumeroCliente = tk.Entry(self.modalNovoClientes,width=5)
         self.NumeroCliente.configure(background='white', fg='black')
-        self.NumeroCliente.place(relx= 0.79, rely=0.595)
+        self.NumeroCliente.place(relx= 0.73, rely=0.57)
 
         txtComplemento = tk.Label(self.modalNovoClientes, text='Complemento:', font='bold')
-        txtComplemento.place(relx= 0.4, rely=0.65)
+        txtComplemento.place(relx= 0.48, rely=0.65)
         txtComplemento.configure(background='#D3D3D3', fg='black')
 
         self.CompCliente = tk.Entry(self.modalNovoClientes,width=25)
         self.CompCliente.configure(background='white', fg='black')
-        self.CompCliente.place(relx= 0.4, rely=0.7)
+        self.CompCliente.place(relx= 0.48, rely=0.72)
 
         self.buttonCliente = tk.Button(self.modalNovoClientes, text='ADICIONAR' , command=self.insertCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         self.buttonCliente.place(relx= 0.7, rely=0.85)
@@ -1330,129 +1331,131 @@ class Zenix:
             self.modalAtualizaCliente.transient(self.clientes)
             self.modalAtualizaCliente.lift()
             self.modalAtualizaCliente.title('Cliente - [Editar]')
-            self.modalAtualizaCliente.geometry('750x550')
+            self.modalAtualizaCliente.geometry('550x350')
             self.modalAtualizaCliente.configure(background='#D3D3D3')
             self.modalAtualizaCliente.resizable(False,False)
             self.modalAtualizaCliente.colormapwindows(self.modalAtualizaCliente)
             
-            txtNome = tk.Label(self.modalAtualizaCliente, text='NOME:', font='bold')
-            txtNome.place(relx= 0.06, rely=0.2)
+            txtNome = tk.Label(self.modalAtualizaCliente, text='Nome:', font='bold')
+            txtNome.place(relx= 0.05, rely=0.1)
             txtNome.configure(background='#D3D3D3', fg='black')
 
             self.nomeAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=25)
             self.nomeAtualizaCliente.configure(background='white', fg='black')
-            self.nomeAtualizaCliente.place(relx= 0.06, rely=0.245)
+            self.nomeAtualizaCliente.place(relx= 0.05, rely=0.154)
             self.nomeAtualizaCliente.insert(0, self.nomeClienteSelect)
 
             txtCpf = tk.Label(self.modalAtualizaCliente, text='CPF:', font='bold')
-            txtCpf.place(relx= 0.7, rely=0.2)
+            txtCpf.place(relx= 0.75, rely=0.09)
             txtCpf.configure(background='#D3D3D3', fg='black')
 
             self.cpfAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=15)
-            self.cpfAtualizaCliente.place(relx= 0.7, rely=0.245)
+            self.cpfAtualizaCliente.place(relx= 0.75, rely=0.153)
             self.cpfAtualizaCliente.configure(background='white', fg='black')
             
             self.cpfAtualizaCliente.bind('<KeyRelease>', self.formatar_cpfAtualizaCliente)
             
-            txtData = tk.Label(self.modalAtualizaCliente, text='DATA DE NASCIMENTO:', font='bold')
-            txtData.place(relx= 0.06, rely=0.33)
+            txtData = tk.Label(self.modalAtualizaCliente, text='Dt.Nascimento:', font='bold')
+            txtData.place(relx= 0.05, rely=0.36)
             txtData.configure(background='#D3D3D3', fg='black')
 
-            self.dataAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=20)
+            self.dataAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=25)
             self.dataAtualizaCliente.configure(background='white', fg='black')
-            self.dataAtualizaCliente.place(relx= 0.06, rely=0.37)
+            self.dataAtualizaCliente.place(relx= 0.05, rely=0.43)
             
             self.dataAtualizaCliente.bind('<KeyRelease>', self.formatar_data_atualizarCliente)
             
-            genero = tk.Label(self.modalAtualizaCliente, text='SEXO:', font='bold')
-            genero.place(relx= 0.45, rely=0.2)
+            genero = tk.Label(self.modalAtualizaCliente, text='Sexo:', font='bold')
+            genero.place(relx= 0.45, rely=0.36)
             genero.configure(background='#D3D3D3', fg='black')
             
             self.sexoAtualizar = StringVar(self.modalAtualizaCliente)
-            self.sexoAtualizar.set(self.sexoClienteSelect)
             listUf = ['F', 'M']
             
-            selectGenero = tk.OptionMenu(self.modalAtualizaCliente, self.sexoAtualizar, *listUf)
-            selectGenero.configure(background='white', fg='black', activebackground='gray')
-            selectGenero.place(relx= 0.45, rely=0.245, relwidth=0.09, relheight=0.05)
+            style = ttk.Style()
+            style.theme_use('alt')
+            style.configure("CustomCombobox.TCombobox", fieldbackground="white", foreground="black", background="gray")
 
-            txtTelefone = tk.Label(self.modalAtualizaCliente, text='TELEFONE:', font='bold')
-            txtTelefone.place(relx= 0.4, rely=0.33)
+            selectGenero = ttk.Combobox(self.modalAtualizaCliente, textvariable=self.sexoAtualizar, values=listUf, style="CustomCombobox.TCombobox")
+            selectGenero.place(relx= 0.45, rely=0.43, relwidth=0.1, relheight=0.06)
+            selectGenero.current(0)
+
+            txtTelefone = tk.Label(self.modalAtualizaCliente, text='Telefone:', font='bold')
+            txtTelefone.place(relx= 0.438, rely=0.09)
             txtTelefone.configure(background='#D3D3D3', fg='black')
 
             self.telefoneAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=20)
             self.telefoneAtualizaCliente.configure(background='white', fg='black')
-            self.telefoneAtualizaCliente.place(relx= 0.4, rely=0.37)
+            self.telefoneAtualizaCliente.place(relx= 0.44, rely=0.153)
             
             self.telefoneAtualizaCliente.bind('<KeyRelease>', self.formatar_telefone_AtualizarCliente)
             
-            txtCelular = tk.Label(self.modalAtualizaCliente, text='CELULAR:', font='bold')
-            txtCelular.place(relx= 0.7, rely=0.33)
+            txtCelular = tk.Label(self.modalAtualizaCliente, text='Celular:', font='bold')
+            txtCelular.place(relx= 0.6, rely=0.36)
             txtCelular.configure(background='#D3D3D3', fg='black')
 
             self.celularAtualizaCliente = tk.Entry(self.modalAtualizaCliente, width=20)
             self.celularAtualizaCliente.configure(background='white', fg='black')
-            self.celularAtualizaCliente.place(relx= 0.7, rely=0.37)
+            self.celularAtualizaCliente.place(relx= 0.6, rely=0.43)
             
             self.celularAtualizaCliente.bind('<KeyRelease>', self.formatar_celular_AtualizarCliente)
 
             txtEmail = tk.Label(self.modalAtualizaCliente, text='Email:', font='bold')
-            txtEmail.place(relx= 0.06, rely=0.45)
+            txtEmail.place(relx= 0.05, rely=0.22)
             txtEmail.configure(background='#D3D3D3', fg='black')
 
             self.EmailAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=50)
             self.EmailAtualizaCliente.configure(background='white', fg='black')
-            self.EmailAtualizaCliente.place(relx= 0.06, rely=0.495)
+            self.EmailAtualizaCliente.place(relx= 0.05, rely=0.28)
             self.EmailAtualizaCliente.insert(0, self.emailClienteSelect)
             
             txtRua = tk.Label(self.modalAtualizaCliente, text='Rua:', font='bold')
-            txtRua.place(relx= 0.06, rely=0.55)
+            txtRua.place(relx= 0.05, rely=0.5)
             txtRua.configure(background='#D3D3D3', fg='black')
 
-            self.RuaAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=50)
+            self.RuaAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=45)
             self.RuaAtualizaCliente.configure(background='white', fg='black')
-            self.RuaAtualizaCliente.place(relx= 0.06, rely=0.6)
+            self.RuaAtualizaCliente.place(relx= 0.05, rely=0.57)
             self.RuaAtualizaCliente.insert(0, self.ruaClienteSelect)
             
             txtBairro = tk.Label(self.modalAtualizaCliente, text='Bairro:', font='bold')
-            txtBairro.place(relx= 0.06, rely=0.65)
+            txtBairro.place(relx= 0.05, rely=0.65)
             txtBairro.configure(background='#D3D3D3', fg='black')
 
             self.BairroAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=25)
             self.BairroAtualizaCliente.configure(background='white', fg='black')
-            self.BairroAtualizaCliente.place(relx= 0.06, rely=0.7)
+            self.BairroAtualizaCliente.place(relx= 0.05, rely=0.72)
             self.BairroAtualizaCliente.insert(0, self.bairroClienteSelect)
             
             txtEstado = tk.Label(self.modalAtualizaCliente, text='Estado:', font='bold')
-            txtEstado.place(relx= 0.65, rely=0.55)
+            txtEstado.place(relx= 0.83, rely=0.5)
             txtEstado.configure(background='#D3D3D3', fg='black')
 
             self.ufAtualizaCliente = StringVar(self.modalAtualizaCliente)
-            self.ufAtualizaCliente.set(self.estadoClienteSelect)
             listUf = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
                     'MT', 'MS', 'MG','PA', 'PB', 'PE', 'PI', 'RJ', 'RN', 'RS',
                     'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
             
-            self.EstadoAtualizaCliente = tk.OptionMenu(self.modalAtualizaCliente, self.ufAtualizaCliente, *listUf)
-            self.EstadoAtualizaCliente.configure(background='white', fg='black', activebackground='gray')
-            self.EstadoAtualizaCliente.place(relx= 0.65, rely=0.595, relwidth=0.09, relheight=0.05)
+            self.EstadoAtualizaCliente = ttk.Combobox(self.modalAtualizaCliente, textvariable=self.ufAtualizaCliente, values=listUf, style="CustomCombobox.TCombobox")
+            self.EstadoAtualizaCliente.place(relx= 0.83, rely=0.57, relwidth=0.1, relheight=0.06)
+            self.EstadoAtualizaCliente.current(0)
 
             txtNumero = tk.Label(self.modalAtualizaCliente, text='Nº:', font='bold')
-            txtNumero.place(relx= 0.79, rely=0.55)
+            txtNumero.place(relx= 0.73, rely=0.5)
             txtNumero.configure(background='#D3D3D3', fg='black')
 
             self.NumeroAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=5)
             self.NumeroAtualizaCliente.configure(background='white', fg='black')
-            self.NumeroAtualizaCliente.place(relx= 0.79, rely=0.595)
+            self.NumeroAtualizaCliente.place(relx= 0.73, rely=0.57)
             self.NumeroAtualizaCliente.insert(0, self.numeroRuaClienteSelect)
 
             txtComplemento = tk.Label(self.modalAtualizaCliente, text='Complemento:', font='bold')
-            txtComplemento.place(relx= 0.4, rely=0.65)
+            txtComplemento.place(relx= 0.48, rely=0.65)
             txtComplemento.configure(background='#D3D3D3', fg='black')
 
             self.CompAtualizaCliente = tk.Entry(self.modalAtualizaCliente,width=25)
             self.CompAtualizaCliente.configure(background='white', fg='black')
-            self.CompAtualizaCliente.place(relx= 0.4, rely=0.7)
+            self.CompAtualizaCliente.place(relx= 0.48, rely=0.72)
             self.CompAtualizaCliente.insert(0, self.complementoClienteSelect)
             
             self.cpfAtualizaCliente.insert(0, self.cpfClienteSelect)
@@ -3020,7 +3023,7 @@ class Zenix:
             self.abas.place(relx= 0.01, rely=0.01, relwidth=0.98, relheight=0.98)
             style = ttk.Style()
             style.configure(self.abas, background='#D3D3D3')
-# Aba Cliente
+        # Aba Cliente
             titleVlBruto = tk.Label(self.abaPagamento, text='VL.Total:', font='bold')
             titleVlBruto.configure(fg='black')
             titleVlBruto.place(relx= 0.03, rely=0.05)
@@ -3097,9 +3100,8 @@ class Zenix:
             button = tk.Button(self.abaPagamento, text='Finalizar', command=self.updateAtendimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
             button.place(relx= 0.032, rely=0.71)
 
-# Aba Cliente
 
-# Aba Funcionario
+        # Aba Funcionario
             titleModalNomeFuncionarioAtd = tk.Label(self.abaValores, text='Funcionário:', font='bold')
             titleModalNomeFuncionarioAtd.configure(fg='black')
             titleModalNomeFuncionarioAtd.place(relx= 0.03, rely=0.05)
@@ -3162,8 +3164,6 @@ class Zenix:
             self.ModalVlLojaAtd.configure(background='white', fg='black', width=7)
             self.ModalVlLojaAtd.place(relx= 0.2, rely=0.75)
             self.ModalVlLojaAtd.configure(state='disabled', disabledbackground='white', disabledforeground='#800080')
-# Aba Funcionario
-
    
             self.frameTvAtdAtendidos()
 
