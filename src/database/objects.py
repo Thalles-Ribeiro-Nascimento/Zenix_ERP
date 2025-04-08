@@ -555,6 +555,13 @@ class Dao:
             resultado = erroInsercao.split(":")[1]
             return resultado
 
+    def faturamento(self):              
+        sql = f"SELECT * FROM Vw_Faturamento"
+        self.cursor.execute(sql)
+        rows = self.cursor.fetchall()
+
+        return rows
+
     def lancamentos(self):              
         sql = f"SELECT * FROM Vw_Lancamento"
         self.cursor.execute(sql)

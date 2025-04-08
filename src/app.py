@@ -20,7 +20,6 @@ class Zenix:
         # self.item_idFormaPagamento = ""
         # self.formaPagamentoDsc = ""
         
-
         txt = tk.Label(self.root_login, text='USUÁRIO:', font='bold')
         txt.place(relx= 0.2, rely=0.35)
         txt.configure(background='#D3D3D3', fg='black')
@@ -136,6 +135,10 @@ class Zenix:
                 self.telaRoot()
             
     def telaRoot(self):
+        self.modalEspecialidade = None
+        self.modalProcedimentos = None
+        self.modalAtualizaEspecialidade = None
+
         with open("zenix.txt", "r") as arquivo:
             usuario = arquivo.read().split(":")[1]
             
@@ -4299,78 +4302,82 @@ class Zenix:
 # Especialidade --------------------------------
 
     def telaEspecialidade(self):
-        self.modalEspecialidade = tk.Toplevel()
-        self.modalEspecialidade.transient(self.main)
-        # self.modalEspecialidade.grab_set()
-        self.modalEspecialidade.lift()
-        self.modalEspecialidade.title('Especialidade')
-        self.modalEspecialidade.geometry('650x450')
-        self.modalEspecialidade.configure(background='#D3D3D3')
-        self.modalEspecialidade.resizable(False,False)
-        self.modalEspecialidade.colormapwindows(self.modalEspecialidade)
-        self.ItemSelecionadoEspecialidade = ""
-        
-        menu_bar = tk.Menu(self.modalEspecialidade, background='#808080')
-        
-        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Editar',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
-        menuAuxiliar.add_separator()
-        menuAuxiliar.add_command(label='Excluir',command=self.deleteEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
-        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-        self.modalEspecialidade.config(menu=menu_bar)
+        if self.modalEspecialidade is None or not self.modalEspecialidade.winfo_exists():
+            self.modalEspecialidade = tk.Toplevel()
+            self.modalEspecialidade.transient(self.main)
+            # self.modalEspecialidade.grab_set()
+            self.modalEspecialidade.lift()
+            self.modalEspecialidade.title('Especialidade')
+            self.modalEspecialidade.geometry('650x450')
+            self.modalEspecialidade.configure(background='#D3D3D3')
+            self.modalEspecialidade.resizable(False,False)
+            self.modalEspecialidade.colormapwindows(self.modalEspecialidade)
+            self.ItemSelecionadoEspecialidade = ""
+            
+            menu_bar = tk.Menu(self.modalEspecialidade, background='#808080')
+            
+            menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+            menuAuxiliar.add_command(label='Editar',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
+            menuAuxiliar.add_separator()
+            menuAuxiliar.add_command(label='Excluir',command=self.deleteEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
+            menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+            self.modalEspecialidade.config(menu=menu_bar)
 
-        buttonClear = tk.Button(self.modalEspecialidade, text='x', command=self.clearFieldEspecialidade, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonClear.place(relx=0.285, rely=0.1, relwidth=0.045, relheight=0.05)
-        
-        titleNomeEspecialidade = tk.Label(self.modalEspecialidade, text='NOME DA ESPECIALIDADE:', font='bold')
-        titleNomeEspecialidade.configure(background='#D3D3D3', fg='black')
-        titleNomeEspecialidade.place(relx= 0.03, rely=0.05)
+            buttonClear = tk.Button(self.modalEspecialidade, text='x', command=self.clearFieldEspecialidade, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+            buttonClear.place(relx=0.285, rely=0.1, relwidth=0.045, relheight=0.05)
+            
+            titleNomeEspecialidade = tk.Label(self.modalEspecialidade, text='NOME DA ESPECIALIDADE:', font='bold')
+            titleNomeEspecialidade.configure(background='#D3D3D3', fg='black')
+            titleNomeEspecialidade.place(relx= 0.03, rely=0.05)
 
-        self.nomeEspecialidade = tk.Entry(self.modalEspecialidade)
-        self.nomeEspecialidade.configure(background='white', fg='black', width=20)
-        self.nomeEspecialidade.place(relx= 0.032, rely=0.1)
+            self.nomeEspecialidade = tk.Entry(self.modalEspecialidade)
+            self.nomeEspecialidade.configure(background='white', fg='black', width=20)
+            self.nomeEspecialidade.place(relx= 0.032, rely=0.1)
 
-        button = tk.Button(self.modalEspecialidade, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        button.place(relx=0.15, rely=0.28)   
-        
-        self.treeviewEspecialidade = ttk.Treeview(self.modalEspecialidade, columns=("idEspecialidade", "Especialidade", "Status"), show='headings')
-        self.treeviewEspecialidade.heading("idEspecialidade", text="Cód.Especialidade")
-        self.treeviewEspecialidade.heading("Especialidade", text="Especialidade")
-        self.treeviewEspecialidade.heading("Status", text="Status")
+            button = tk.Button(self.modalEspecialidade, text='ADICIONAR', command=self.insertEspecialidadeNovo, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button.place(relx=0.15, rely=0.28)   
+            
+            self.treeviewEspecialidade = ttk.Treeview(self.modalEspecialidade, columns=("idEspecialidade", "Especialidade", "Status"), show='headings')
+            self.treeviewEspecialidade.heading("idEspecialidade", text="Cód.Especialidade")
+            self.treeviewEspecialidade.heading("Especialidade", text="Especialidade")
+            self.treeviewEspecialidade.heading("Status", text="Status")
 
-        self.menu_RightClick = tk.Menu(self.modalEspecialidade, tearoff=0, background='#808080')
-        self.menu_RightClick.add_command(label='Editar',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
-        self.menu_RightClick.add_separator()
-        self.menu_RightClick.add_command(label='Log de Modificação',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
-        
-        verticalBar = ttk.Scrollbar(self.modalEspecialidade, orient='vertical', command=self.treeviewEspecialidade.yview)
-        horizontalBar = ttk.Scrollbar(self.modalEspecialidade, orient='horizontal', command=self.treeviewEspecialidade.xview)
-        self.treeviewEspecialidade.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+            self.menu_RightClick = tk.Menu(self.modalEspecialidade, tearoff=0, background='#808080')
+            self.menu_RightClick.add_command(label='Editar',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
+            self.menu_RightClick.add_separator()
+            self.menu_RightClick.add_command(label='Log de Modificação',command=self.atualizarEspecialidadeModal, font=('Arial', 10, 'bold'), foreground='black')
+            
+            verticalBar = ttk.Scrollbar(self.modalEspecialidade, orient='vertical', command=self.treeviewEspecialidade.yview)
+            horizontalBar = ttk.Scrollbar(self.modalEspecialidade, orient='horizontal', command=self.treeviewEspecialidade.xview)
+            self.treeviewEspecialidade.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        style = ttk.Style(self.treeviewEspecialidade)
-        style.theme_use('clam')
-        style.configure("self.treeviewEspecialidade", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
-        
-        self.treeviewEspecialidade.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+            style = ttk.Style(self.treeviewEspecialidade)
+            style.theme_use('clam')
+            style.configure("self.treeviewEspecialidade", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+            
+            self.treeviewEspecialidade.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
 
-        verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
-        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
-        
-        resultado = self.dao.especialidadeView()
-        for row in resultado:
-            self.treeviewEspecialidade.insert("", END, values=row)
-        
-        buttonBuscar = tk.Button(self.modalEspecialidade, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
-        buttonBuscar.place(relx=0.02, rely=0.28)
-        
-        self.treeviewEspecialidade.bind('<<TreeviewSelect>>', self.selectItemTreeviewEspecialidade)
-        self.treeviewEspecialidade.bind("<Double-1>", self.double_clickEspecialidade)
-        self.treeviewEspecialidade.bind("<Button-3>", self.menuRightClick)
-        
-        self.modalEspecialidade.bind("<F5>", lambda event: buttonBuscar.invoke())
-        self.modalEspecialidade.bind('<Return>', lambda event: button.invoke())
+            verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
+            horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+            
+            resultado = self.dao.especialidadeView()
+            for row in resultado:
+                self.treeviewEspecialidade.insert("", END, values=row)
+            
+            buttonBuscar = tk.Button(self.modalEspecialidade, text='BUSCAR', command=self.buscarEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+            buttonBuscar.place(relx=0.02, rely=0.28)
+            
+            self.treeviewEspecialidade.bind('<<TreeviewSelect>>', self.selectItemTreeviewEspecialidade)
+            self.treeviewEspecialidade.bind("<Double-1>", self.double_clickEspecialidade)
+            self.treeviewEspecialidade.bind("<Button-3>", self.menuRightClick)
+            
+            self.modalEspecialidade.bind("<F5>", lambda event: buttonBuscar.invoke())
+            self.modalEspecialidade.bind('<Return>', lambda event: button.invoke())
 
-        self.modalEspecialidade.mainloop()
+            self.modalEspecialidade.mainloop()
+
+        else:
+            self.modalEspecialidade.lift()
 
     def clearFieldEspecialidade(self):
         self.nomeEspecialidade.delete(0, END)
@@ -4466,41 +4473,45 @@ class Zenix:
             messagebox.showinfo("Zenix", "Selecione uma especialidade!", parent=self.modalEspecialidade)
 
         else:
-            self.modalAtualizaEspecialidade = tk.Toplevel()
-            self.modalAtualizaEspecialidade.transient(self.modalEspecialidade)
-            self.modalAtualizaEspecialidade.lift()
-            self.modalAtualizaEspecialidade.title('Especialidade - [Editar]')
-            self.modalAtualizaEspecialidade.geometry('350x250')
-            self.modalAtualizaEspecialidade.configure(background='#D3D3D3')
-            self.modalAtualizaEspecialidade.resizable(False,False)
-            self.modalAtualizaEspecialidade.colormapwindows(self.modalAtualizaEspecialidade)
+            if self.modalAtualizaEspecialidade is None or not self.modalAtualizaEspecialidade.winfo_exists():
+                self.modalAtualizaEspecialidade = tk.Toplevel()
+                self.modalAtualizaEspecialidade.transient(self.modalEspecialidade)
+                self.modalAtualizaEspecialidade.lift()
+                self.modalAtualizaEspecialidade.title('Especialidade - [Editar]')
+                self.modalAtualizaEspecialidade.geometry('350x250')
+                self.modalAtualizaEspecialidade.configure(background='#D3D3D3')
+                self.modalAtualizaEspecialidade.resizable(False,False)
+                self.modalAtualizaEspecialidade.colormapwindows(self.modalAtualizaEspecialidade)
 
-            self.checkvar1 = IntVar()
-            self.checkvar1.set(self.statusEspecialidade)
-            
-            txtNome = tk.Label(self.modalAtualizaEspecialidade, text='ESPECIALIDADE:', font='bold')
-            txtNome.place(relx= 0.1, rely=0.2)
-            txtNome.configure(background='#D3D3D3', fg='black')
+                self.checkvar1 = IntVar()
+                self.checkvar1.set(self.statusEspecialidade)
+                
+                txtNome = tk.Label(self.modalAtualizaEspecialidade, text='ESPECIALIDADE:', font='bold')
+                txtNome.place(relx= 0.1, rely=0.2)
+                txtNome.configure(background='#D3D3D3', fg='black')
 
-            self.nomeAtualizaEspecialidade = tk.Entry(self.modalAtualizaEspecialidade, width=25)
-            self.nomeAtualizaEspecialidade.configure(background='white', fg='black')
-            self.nomeAtualizaEspecialidade.place(relx= 0.1, rely=0.3)
-            self.nomeAtualizaEspecialidade.insert(0, self.nomeEspecialidadeSelecionado)
+                self.nomeAtualizaEspecialidade = tk.Entry(self.modalAtualizaEspecialidade, width=25)
+                self.nomeAtualizaEspecialidade.configure(background='white', fg='black')
+                self.nomeAtualizaEspecialidade.place(relx= 0.1, rely=0.3)
+                self.nomeAtualizaEspecialidade.insert(0, self.nomeEspecialidadeSelecionado)
 
-            txtCheck = Label(self.modalAtualizaEspecialidade, text='Ativo?')
-            txtCheck.place(relx= 0.5, rely=0.4)
-            txtCheck.configure(background='#D3D3D3', fg='black')
+                txtCheck = Label(self.modalAtualizaEspecialidade, text='Ativo?')
+                txtCheck.place(relx= 0.5, rely=0.4)
+                txtCheck.configure(background='#D3D3D3', fg='black')
 
-            self.checkbutton1 = Checkbutton(self.modalAtualizaEspecialidade, text='', variable = self.checkvar1)
-            self.checkbutton1.place(relx= 0.5, rely=0.48)
-            self.checkbutton1.configure(background='#D3D3D3')
+                self.checkbutton1 = Checkbutton(self.modalAtualizaEspecialidade, text='', variable = self.checkvar1)
+                self.checkbutton1.place(relx= 0.5, rely=0.48)
+                self.checkbutton1.configure(background='#D3D3D3')
 
-            buttonEdit = tk.Button(self.modalAtualizaEspecialidade, text='EDITAR', command=self.updateEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-            buttonEdit.place(relx=0.1, rely=0.4)
+                buttonEdit = tk.Button(self.modalAtualizaEspecialidade, text='EDITAR', command=self.updateEspecialidade, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+                buttonEdit.place(relx=0.1, rely=0.4)
 
-            self.modalAtualizaEspecialidade.bind('<Return>', lambda event: buttonEdit.invoke())
+                self.modalAtualizaEspecialidade.bind('<Return>', lambda event: buttonEdit.invoke())
 
-            self.modalAtualizaEspecialidade.mainloop()
+                self.modalAtualizaEspecialidade.mainloop()
+
+            else:
+                self.modalAtualizaEspecialidade.lift()
 
     def updateEspecialidade(self):
         especialidade = self.nomeAtualizaEspecialidade.get()
@@ -4541,101 +4552,105 @@ class Zenix:
 
 # Procedimentos --------------------------------
     def telaProcedimento(self):
-        self.modalProcedimentos = tk.Toplevel()
-        self.modalProcedimentos.transient(self.main)
-        self.modalProcedimentos.lift()
-        self.modalProcedimentos.title('Procedimento')
-        self.modalProcedimentos.geometry('650x450')
-        self.modalProcedimentos.configure(background='#D3D3D3')
-        self.modalProcedimentos.resizable(False,False)
-        self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
-        self.ItemSelecionadoProcedimento = ""
-        menu_bar = tk.Menu(self.modalProcedimentos, background='#808080')
-        
-        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Editar',command=self.atualizarProcedimentoModal, font=('Arial', 10, 'bold'), foreground='black')
-        menuAuxiliar.add_separator()
-        menuAuxiliar.add_command(label='Excluir',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
-        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-        self.modalProcedimentos.config(menu=menu_bar)
-        
-        titleNomeProcedimento = tk.Label(self.modalProcedimentos, text='PROCEDIMENTO:', font='bold')
-        titleNomeProcedimento.configure(background='#D3D3D3', fg='black')
-        titleNomeProcedimento.place(relx= 0.03, rely=0.05)
+        if self.modalProcedimentos is None or not self.modalProcedimentos.winfo_exists():
+            self.modalProcedimentos = tk.Toplevel()
+            self.modalProcedimentos.transient(self.main)
+            self.modalProcedimentos.lift()
+            self.modalProcedimentos.title('Procedimento')
+            self.modalProcedimentos.geometry('650x450')
+            self.modalProcedimentos.configure(background='#D3D3D3')
+            self.modalProcedimentos.resizable(False,False)
+            self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
+            self.ItemSelecionadoProcedimento = ""
+            menu_bar = tk.Menu(self.modalProcedimentos, background='#808080')
+            
+            menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
+            menuAuxiliar.add_command(label='Editar',command=self.atualizarProcedimentoModal, font=('Arial', 10, 'bold'), foreground='black')
+            menuAuxiliar.add_separator()
+            menuAuxiliar.add_command(label='Excluir',command=self.deleteProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+            menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
+            self.modalProcedimentos.config(menu=menu_bar)
+            
+            titleNomeProcedimento = tk.Label(self.modalProcedimentos, text='PROCEDIMENTO:', font='bold')
+            titleNomeProcedimento.configure(background='#D3D3D3', fg='black')
+            titleNomeProcedimento.place(relx= 0.03, rely=0.05)
 
-        self.nomeProcedimento = tk.Entry(self.modalProcedimentos)
-        self.nomeProcedimento.configure(background='white', fg='black', width=20)
-        self.nomeProcedimento.place(relx= 0.032, rely=0.1)
+            self.nomeProcedimento = tk.Entry(self.modalProcedimentos)
+            self.nomeProcedimento.configure(background='white', fg='black', width=20)
+            self.nomeProcedimento.place(relx= 0.032, rely=0.1)
 
-        buttonClear = tk.Button(self.modalProcedimentos, text='x', command=self.clearFieldProcedimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
-        buttonClear.place(relx=0.282, rely=0.1, relwidth=0.05, relheight=0.05)
-        
-        titleEspecialidadeId = tk.Label(self.modalProcedimentos, text='ESPECIALIDADE:', font='bold')
-        titleEspecialidadeId.configure(background='#D3D3D3', fg='black')
-        titleEspecialidadeId.place(relx= 0.03, rely=0.16)
+            buttonClear = tk.Button(self.modalProcedimentos, text='x', command=self.clearFieldProcedimento, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+            buttonClear.place(relx=0.282, rely=0.1, relwidth=0.05, relheight=0.05)
+            
+            titleEspecialidadeId = tk.Label(self.modalProcedimentos, text='ESPECIALIDADE:', font='bold')
+            titleEspecialidadeId.configure(background='#D3D3D3', fg='black')
+            titleEspecialidadeId.place(relx= 0.03, rely=0.16)
 
-        self.rowsEspecialidade = self.dao.especialidadeView()
-        self.rowsEspecialidadeList = [item[1] for item in self.rowsEspecialidade]
-        self.rowEspecialidadeId = [item[0] for item in self.rowsEspecialidade]
-        self.especialidadeProcedimentoMap = dict(zip(self.rowsEspecialidadeList, self.rowEspecialidadeId))
-        
-        self.opcoesEspecialidadeProcedimento = StringVar(self.modalProcedimentos)
-        self.opcoesEspecialidadeProcedimento.set("Especialidade")
-        dropdown = tk.OptionMenu(self.modalProcedimentos, self.opcoesEspecialidadeProcedimento, *self.rowsEspecialidadeList)
-        dropdown.configure(background='white', fg='black', activebackground='gray')
-        dropdown.place(relx= 0.03, rely=0.22, relheight=0.08)
+            self.rowsEspecialidade = self.dao.especialidadeView()
+            self.rowsEspecialidadeList = [item[1] for item in self.rowsEspecialidade]
+            self.rowEspecialidadeId = [item[0] for item in self.rowsEspecialidade]
+            self.especialidadeProcedimentoMap = dict(zip(self.rowsEspecialidadeList, self.rowEspecialidadeId))
+            
+            self.opcoesEspecialidadeProcedimento = StringVar(self.modalProcedimentos)
+            self.opcoesEspecialidadeProcedimento.set("Especialidade")
+            dropdown = tk.OptionMenu(self.modalProcedimentos, self.opcoesEspecialidadeProcedimento, *self.rowsEspecialidadeList)
+            dropdown.configure(background='white', fg='black', activebackground='gray')
+            dropdown.place(relx= 0.03, rely=0.22, relheight=0.08)
 
-        self.opcoesEspecialidadeProcedimento.trace_add('write', self.setIdEspecialidadeProcedimentos)
-        
-        titleValores = tk.Label(self.modalProcedimentos, text='VALOR:', font='bold')
-        titleValores.configure(background='#D3D3D3', fg='black')
-        titleValores.place(relx= 0.55, rely=0.05)
-        
-        titleReal = tk.Label(self.modalProcedimentos, text='R$', font='bold')
-        titleReal.configure(background='#D3D3D3', fg='black')
-        titleReal.place(relx= 0.5, rely=0.1)
-        
-        self.valorProcedimento = tk.Entry(self.modalProcedimentos)
-        self.valorProcedimento.configure(background='white', fg='black', width=10)
-        self.valorProcedimento.place(relx= 0.553, rely=0.1)
+            self.opcoesEspecialidadeProcedimento.trace_add('write', self.setIdEspecialidadeProcedimentos)
+            
+            titleValores = tk.Label(self.modalProcedimentos, text='VALOR:', font='bold')
+            titleValores.configure(background='#D3D3D3', fg='black')
+            titleValores.place(relx= 0.55, rely=0.05)
+            
+            titleReal = tk.Label(self.modalProcedimentos, text='R$', font='bold')
+            titleReal.configure(background='#D3D3D3', fg='black')
+            titleReal.place(relx= 0.5, rely=0.1)
+            
+            self.valorProcedimento = tk.Entry(self.modalProcedimentos)
+            self.valorProcedimento.configure(background='white', fg='black', width=10)
+            self.valorProcedimento.place(relx= 0.553, rely=0.1)
 
-        button = tk.Button(self.modalProcedimentos, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
-        button.place(relx=0.635, rely=0.28)
+            button = tk.Button(self.modalProcedimentos, text='ADICIONAR', command=self.insertProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'))
+            button.place(relx=0.635, rely=0.28)
 
-        self.modalProcedimentos.bind('<Return>', lambda event : button.invoke())
-        
-        self.treeviewProcedimentos = ttk.Treeview(self.modalProcedimentos, columns=("cod_procedimento","Procedimento", "Especialidade", "Valor"), show='headings')
-        self.treeviewProcedimentos.heading("cod_procedimento", text="Cód.Procedimento")
-        self.treeviewProcedimentos.heading("Procedimento", text="Procedimento")
-        self.treeviewProcedimentos.heading("Especialidade", text="Especialidade")
-        self.treeviewProcedimentos.heading("Valor", text="Valor Procedimento")
-        
-        verticalBar = ttk.Scrollbar(self.modalProcedimentos, orient='vertical', command=self.treeviewProcedimentos.yview)
-        horizontalBar = ttk.Scrollbar(self.modalProcedimentos, orient='horizontal', command=self.treeviewProcedimentos.xview)
-        self.treeviewProcedimentos.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+            self.modalProcedimentos.bind('<Return>', lambda event : button.invoke())
+            
+            self.treeviewProcedimentos = ttk.Treeview(self.modalProcedimentos, columns=("cod_procedimento","Procedimento", "Especialidade", "Valor"), show='headings')
+            self.treeviewProcedimentos.heading("cod_procedimento", text="Cód.Procedimento")
+            self.treeviewProcedimentos.heading("Procedimento", text="Procedimento")
+            self.treeviewProcedimentos.heading("Especialidade", text="Especialidade")
+            self.treeviewProcedimentos.heading("Valor", text="Valor Procedimento")
+            
+            verticalBar = ttk.Scrollbar(self.modalProcedimentos, orient='vertical', command=self.treeviewProcedimentos.yview)
+            horizontalBar = ttk.Scrollbar(self.modalProcedimentos, orient='horizontal', command=self.treeviewProcedimentos.xview)
+            self.treeviewProcedimentos.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        style = ttk.Style(self.treeviewProcedimentos)
-        style.theme_use('clam')
-        style.configure("self.treeviewProcedimentos", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
-        
-        self.treeviewProcedimentos.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
+            style = ttk.Style(self.treeviewProcedimentos)
+            style.theme_use('clam')
+            style.configure("self.treeviewProcedimentos", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+            
+            self.treeviewProcedimentos.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
 
-        verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
-        horizontalBar.place(rely=0.968, relx=0, relwidth=1)
-        
-        self.treeviewProcedimentos.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
-        self.treeviewProcedimentos.bind("<Double-1>", self.double_clickProcedimento)
-        
-        resultado = self.dao.procedimentosAtivos()
-        for row in resultado:
-            self.treeviewProcedimentos.insert("", END, values=row)
-        
-        buttonBuscar = tk.Button(self.modalProcedimentos, text='BUSCAR', command=self.buscarProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
-        buttonBuscar.place(relx=0.8, rely=0.28)
+            verticalBar.place(relx=0.98 , rely=0.35, relheight=0.62)
+            horizontalBar.place(rely=0.968, relx=0, relwidth=1)
+            
+            self.treeviewProcedimentos.bind('<<TreeviewSelect>>', self.selectItemTreeviewProcedimento)
+            self.treeviewProcedimentos.bind("<Double-1>", self.double_clickProcedimento)
+            
+            resultado = self.dao.procedimentosAtivos()
+            for row in resultado:
+                self.treeviewProcedimentos.insert("", END, values=row)
+            
+            buttonBuscar = tk.Button(self.modalProcedimentos, text='BUSCAR', command=self.buscarProcedimento, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 10, 'bold'), width=8)
+            buttonBuscar.place(relx=0.8, rely=0.28)
 
-        self.modalProcedimentos.bind("<F5>", lambda event: buttonBuscar.invoke())
-        
-        self.modalProcedimentos.mainloop()
+            self.modalProcedimentos.bind("<F5>", lambda event: buttonBuscar.invoke())
+            
+            self.modalProcedimentos.mainloop()
+
+        else:
+            self.modalProcedimentos.lift()
 
     def clearFieldProcedimento(self):
         self.nomeProcedimento.delete(0, END)
