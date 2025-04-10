@@ -10,7 +10,7 @@ class Conexao:
                 database=database
                 )
             
-            print("Usuário:", login.upper())
+            print("Conexão Estabelecida!")
             
             return self.conn
         

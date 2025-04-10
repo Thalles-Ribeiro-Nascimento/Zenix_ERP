@@ -2730,8 +2730,12 @@ class Zenix:
 # Atendimento
 
     def frameBotoesAtendimento(self):
-        self.frameAtendimento = tk.Frame(self.atendimento, background='#A9A9A9')
-        self.frameAtendimento.place(relx=0.02, rely=0.02, relheight=0.25, relwidth=0.96)
+        self.frameAtendimento = tk.Frame(self.atendimento, background='black')
+        self.frameAtendimento.place(relx=0.02, rely=0.02, relheight=0.25, relwidth=0.6)
+
+    def frameRelatorioAtendimento(self):
+        self.fmRelAtd = tk.Frame(self.atendimento, background='white')
+        self.fmRelAtd.place(relx=0.7, rely=0.02, relheight=0.25, relwidth=0.6)
 
     def frameTvAtendimentos(self):
         self.frameTvAtd = tk.Frame(self.atendimento, background='black')
@@ -2789,31 +2793,35 @@ class Zenix:
         self.entryBuscarNomeAtendimento.place(relx=0.02 , rely=0.2, width=170)
         self.entryBuscarNomeAtendimento.bind('<Return>', self.buscarNomeAtd)      
         
-        buttonPesquisar = tk.Button(self.frameAtendimento, text='Buscar', command=self.buscarDataAtd, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        buttonPesquisar = tk.Button(self.frameAtendimento, text='Pesquisar', command=self.buscarDataAtd, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
         buttonPesquisar.place(relx=0.02, rely=0.4)
         
         titleDataInicio = tk.Label(self.frameAtendimento, text='De:', background='#A9A9A9', fg='black', font='bold')
-        titleDataInicio.place(relx=0.2 , rely=0.07)
+        titleDataInicio.place(relx=0.3, rely=0.07)
         
         self.entryDataAtendimento = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
-        self.entryDataAtendimento.place(relx=0.2 , rely=0.2, width=120)
+        self.entryDataAtendimento.place(relx=0.3, rely=0.2, width=120)
         self.entryDataAtendimento.insert(0, "01/03/2025")
         
         self.buttonCalendarAtendimento = tk.Button(self.frameAtendimento, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioIniAgenda)
-        self.buttonCalendarAtendimento.place(relx=0.302, rely=0.212, relwidth=0.02, relheight=0.13)
+        self.buttonCalendarAtendimento.place(relx=0.402, rely=0.212, relwidth=0.02, relheight=0.13)
         
         titleDataFinal = tk.Label(self.frameAtendimento, text='Até:', background='#A9A9A9', fg='black', font='bold')
-        titleDataFinal.place(relx=0.35, rely=0.07)
+        titleDataFinal.place(relx=0.5, rely=0.07)
 
         self.entryDataAtendimentoFinal = tk.Entry(self.frameAtendimento, background='white', fg='black', font=('Arial', 13))
-        self.entryDataAtendimentoFinal.place(relx=0.35, rely=0.2, width=120)
+        self.entryDataAtendimentoFinal.place(relx=0.5, rely=0.2, width=120)
         dataAtual = datetime.now().date()
         dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
         self.entryDataAtendimentoFinal.insert(0, dataAtualFormatada)
                 
         self.buttonCalendarAtendimentoFinal = tk.Button(self.frameAtendimento, text="+", background='#4169E1', fg='white', font=('Arial', 12, 'bold'), command=self.calendarioFimAgenda)
-        self.buttonCalendarAtendimentoFinal.place(relx=0.452, rely=0.212, relwidth=0.02, relheight=0.13)
-        
+        self.buttonCalendarAtendimentoFinal.place(relx=0.652, rely=0.212, relwidth=0.02, relheight=0.13)
+
+
+        self.frameRelatorioAtendimento()
+
+
         self.frameTvAtendimentos()
         
         self.treeviewAtendimento = ttk.Treeview(self.frameTvAtd, columns=(
