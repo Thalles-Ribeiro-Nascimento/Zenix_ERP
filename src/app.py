@@ -324,7 +324,6 @@ class Zenix:
         self.treeviewFunc.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         style = ttk.Style(self.treeviewFunc)
-        style.theme_use('clam')
         style.configure("self.treeviewFunc", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
         self.treeviewFunc.place(relx=0, rely=0, relheight=1, relwidth=1)
@@ -1164,7 +1163,6 @@ class Zenix:
         self.treeviewClientes.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         style = ttk.Style(self.treeviewClientes)
-        style.theme_use('clam')
         style.configure("self.treeviewClientes", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
         self.treeviewClientes.place(relx=0, rely=0, relheight=1, relwidth=1)
@@ -1930,7 +1928,7 @@ class Zenix:
         #     self.treeviewAgendaCliente.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         #     style = ttk.Style(self.treeviewAgendaCliente)
-        #     style.theme_use('clam')
+        # 
         #     style.configure("self.treeviewAgendaCliente", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
         #     self.treeviewAgendaCliente.place(relx=0, rely=0.5, relheight=0.5, relwidth=0.98)
@@ -2095,7 +2093,6 @@ class Zenix:
         self.treeviewLancamento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         style = ttk.Style(self.treeviewLancamento)
-        style.theme_use('clam')
         style.configure("self.treeviewLancamento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
         rows = self.dao.lancamentos()
@@ -2242,7 +2239,6 @@ class Zenix:
         self.treeviewFinanceiro.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         style = ttk.Style(self.treeviewFinanceiro)
-        style.theme_use('clam')
         style.configure("self.treeviewFinanceiro", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
         rows = self.dao.financeiro()
@@ -2479,7 +2475,7 @@ class Zenix:
         # self.treeviewFormaPagamento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         # style = ttk.Style(self.treeviewFormaPagamento)
-        # style.theme_use('clam')
+
         # style.configure("self.treeviewFormaPagamento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
         
         # self.treeviewFormaPagamento.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
@@ -2620,7 +2616,7 @@ class Zenix:
         #     self.treeviewParcelas.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         #     style = ttk.Style(self.treeviewParcelas)
-        #     style.theme_use('clam')
+        # 
         #     style.configure("self.treeviewParcelas", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
         #     self.treeviewParcelas.place(relx=0, rely=0.5, relheight=0.62, relwidth=1)
@@ -2731,14 +2727,14 @@ class Zenix:
     def telaFaturamento(self):
         pass
 
-# Atendimento -----------------------------------
+# Atendimento
 
     def frameBotoesAtendimento(self):
         self.frameAtendimento = tk.Frame(self.atendimento, background='#A9A9A9')
         self.frameAtendimento.place(relx=0.02, rely=0.02, relheight=0.25, relwidth=0.96)
 
     def frameTvAtendimentos(self):
-        self.frameTvAtd = tk.Frame(self.atendimento, background='#A9A9A9')
+        self.frameTvAtd = tk.Frame(self.atendimento, background='black')
         self.frameTvAtd.place(relx=0.0, rely=0.21, relheight=0.85, relwidth=1)
 
     def telaAtendimento(self):
@@ -2851,14 +2847,13 @@ class Zenix:
         horizontalBar = ttk.Scrollbar(self.frameTvAtd, orient='horizontal', command=self.treeviewAtendimento.xview)
         self.treeviewAtendimento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        style = ttk.Style()
-        style.theme_use('clam')
+        style = ttk.Style(self.treeviewAtendimento)
         style.configure("self.treeviewAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
         
-        self.treeviewAtendimento.place(relx=0, rely=0, relheight=0.85, relwidth=1)
+        self.treeviewAtendimento.place(relx=0, rely=0, relheight=0.93, relwidth=1)
         
-        verticalBar.place(relx=0.992, rely=0, relheight=0.849)
-        horizontalBar.place(rely=0.85, relx=0, relwidth=1)
+        verticalBar.place(relx=0.986, rely=0, relheight=0.914)
+        horizontalBar.place(rely=0.91, relx=0, relwidth=1)
         
         dataAtual = datetime.now().date()
         dataAtualFormatada = dataAtual.strftime("%d/%m/%Y")
@@ -3197,7 +3192,6 @@ class Zenix:
             self.treeviewModalAtdAtendido.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
             style = ttk.Style(self.treeviewModalAtdAtendido)
-            style.theme_use('clam')
             style.configure("self.treeviewModalAtdAtendido", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
             self.treeviewModalAtdAtendido.place(relx=0, rely=0, relheight=0.6, relwidth=1)
@@ -3596,8 +3590,7 @@ class Zenix:
         horizontalBar = ttk.Scrollbar(self.frameAgenda2, orient='horizontal', command=self.treeviewAgenda.xview)
         self.treeviewAgenda.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
-        style = ttk.Style()
-        style.theme_use('clam')
+        style = ttk.Style(self.treeviewAgenda)
         style.configure("self.treeviewAgenda", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black" )
         
         self.treeviewAgenda.place(relx=0, rely=0, relheight=0.85, relwidth=1)
@@ -4215,7 +4208,7 @@ class Zenix:
         #     self.treeviewParcelasAtendimento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
         #     style = ttk.Style(self.treeviewParcelasAtendimento)
-        #     style.theme_use('clam')
+        # 
         #     style.configure("self.treeviewParcelasAtendimento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
         #     self.treeviewParcelasAtendimento.place(relx=0, rely=0.4, relheight=0.6, relwidth=1)
@@ -4352,7 +4345,6 @@ class Zenix:
             self.treeviewEspecialidade.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
             style = ttk.Style(self.treeviewEspecialidade)
-            style.theme_use('clam')
             style.configure("self.treeviewEspecialidade", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
             self.treeviewEspecialidade.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
@@ -4627,7 +4619,6 @@ class Zenix:
             self.treeviewProcedimentos.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
 
             style = ttk.Style(self.treeviewProcedimentos)
-            style.theme_use('clam')
             style.configure("self.treeviewProcedimentos", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
             
             self.treeviewProcedimentos.place(relx=0, rely=0.35, relheight=0.62, relwidth=1)
