@@ -416,6 +416,27 @@ class Dao:
 
         return rows
 
+    def rel_qtdAtd(self, dataIni, dataFim):              
+        sql = f"SELECT COUNT(`Cod.Atendimento`) AS `Qtd.Atendimento` FROM Vw_Atendimentos WHERE `Data` BETWEEN '{dataIni}' AND '{dataFim}'"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row                                                
+
+    def rel_atendidos(self, dataIni, dataFim):              
+        sql = f"SELECT COUNT(`Cod.Atendimento`) AS `Atendidos` FROM Vw_Atendimentos WHERE `Data` BETWEEN '{dataIni}' AND '{dataFim}' AND Status = 1"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row                                                
+
+    def rel_valor(self, dataIni, dataFim):              
+        sql = f"SELECT SUM(Valor) AS Valor FROM Vw_Atendimentos WHERE Status = 1 AND `Data` BETWEEN '{dataIni}' AND '{dataFim}'"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row 
+
     def AgendaNome(self, nome):           
         sql = f"SELECT * FROM Vw_Agendamentos_Geral WHERE `Nome do Cliente` LIKE '{nome}%'"
         self.cursor.execute(sql)

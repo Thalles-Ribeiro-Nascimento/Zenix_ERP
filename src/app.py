@@ -2730,15 +2730,15 @@ class Zenix:
 # Atendimento
 
     def frameBotoesAtendimento(self):
-        self.frameAtendimento = tk.Frame(self.atendimento, background='black')
+        self.frameAtendimento = tk.Frame(self.atendimento, background='#A9A9A9')
         self.frameAtendimento.place(relx=0.02, rely=0.02, relheight=0.25, relwidth=0.6)
 
     def frameRelatorioAtendimento(self):
-        self.fmRelAtd = tk.Frame(self.atendimento, background='white')
-        self.fmRelAtd.place(relx=0.7, rely=0.02, relheight=0.25, relwidth=0.6)
+        self.fmRelAtd = tk.Frame(self.atendimento, background='#A9A9A9')
+        self.fmRelAtd.place(relx=0.65, rely=0.02, relheight=0.25, relwidth=0.4)
 
     def frameTvAtendimentos(self):
-        self.frameTvAtd = tk.Frame(self.atendimento, background='black')
+        self.frameTvAtd = tk.Frame(self.atendimento, background='#A9A9A9')
         self.frameTvAtd.place(relx=0.0, rely=0.21, relheight=0.85, relwidth=1)
 
     def telaAtendimento(self):
@@ -2750,13 +2750,6 @@ class Zenix:
         self.atendimento.geometry('1024x720')
         self.atendimento.resizable(False,False)
         self.item_idAtendimento = ""
-
-        self.atendimento.grid_columnconfigure(0, weight=0)
-        self.atendimento.grid_columnconfigure(1, weight=0)
-
-        self.atendimento.grid_rowconfigure(0, weight=0)
-        self.atendimento.grid_rowconfigure(1, weight=0)
-        self.atendimento.grid_rowconfigure(2, weight=0)
     
         menu_bar = tk.Menu(self.atendimento, background='#808080')
         menu = tk.Menu(menu_bar, tearoff=0, background='#808080')
@@ -2820,7 +2813,66 @@ class Zenix:
 
 
         self.frameRelatorioAtendimento()
+        self.fmRelAtd.grid_columnconfigure(0, weight=0)
+        self.fmRelAtd.grid_columnconfigure(1, weight=0)
+        self.fmRelAtd.grid_rowconfigure(0, weight=0)
+        self.fmRelAtd.grid_rowconfigure(1, weight=0)
+        self.fmRelAtd.grid_rowconfigure(2, weight=0)
+        self.fmRelAtd.grid_rowconfigure(3, weight=0)
 
+
+        txtQtdAtendimento = Label(self.fmRelAtd, text='Qtd.Atendimento:', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        txtQtdAtendimento.grid(column=0, row=0, pady=(5,0))
+
+        self.entryQtd = Entry(self.fmRelAtd, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
+        self.entryQtd.grid(column=0, row=1, padx=10, pady=0)
+        qtdAtd = self.dao.rel_qtdAtd(dataIni=self.entryDataAtendimentoFinal.get(), dataFim=self.entryDataAtendimentoFinal.get())
+
+        for count in qtdAtd:
+            if count[0] == None:
+                self.entryQtd.configure(state='normal')
+                self.entryQtd.insert(0, 0)
+                self.entryQtd.configure(state='disabled')
+            else:
+                self.entryQtd.configure(state='normal')
+                countFormatada = "{:.0f}".format(count[0])
+                self.entryQtd.insert(0, countFormatada)
+                self.entryQtd.configure(state='disabled')
+            
+        txtAtendido = Label(self.fmRelAtd, text='Atendido:', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        txtAtendido.grid(column=0, row=2, pady=(5,0))
+
+        self.entryAtendido = Entry(self.fmRelAtd, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
+        self.entryAtendido.grid(column=0, row=3, padx=10, pady=0)
+        realizado = self.dao.rel_atendidos(dataIni=self.entryDataAtendimentoFinal.get(), dataFim=self.entryDataAtendimentoFinal.get())
+
+        for atd in realizado:
+            if atd[0] == None:
+                self.entryAtendido.configure(state='normal')
+                self.entryAtendido.insert(0, 0)
+                self.entryAtendido.configure(state='disabled')
+            else:
+                self.entryAtendido.configure(state='normal')
+                pagamentoFormatado = "{:.2f}".format(atd[0])
+                self.entryAtendido.insert(0, pagamentoFormatado)
+                self.entryAtendido.configure(state='disabled')
+
+        txtPrice = Label(self.fmRelAtd, text='Valor:', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        txtPrice.grid(column=2, row=0, pady=(5,0))
+
+        self.entryPrice = Entry(self.fmRelAtd, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
+        self.entryPrice.grid(column=2, row=1, padx=10, pady=0)
+        valor = self.dao.rel_valor(dataIni=self.entryDataAtendimentoFinal.get(), dataFim=self.entryDataAtendimentoFinal.get())
+
+        for qtd in valor:
+            if qtd[0] == None:
+                self.entryPrice.configure(state='normal')
+                self.entryPrice.insert(0, 0)
+                self.entryPrice.configure(state='disabled')
+            else:
+                self.entryPrice.configure(state='normal')
+                self.entryPrice.insert(0, qtd[0])
+                self.entryPrice.configure(state='disabled')
 
         self.frameTvAtendimentos()
         
@@ -2875,6 +2927,51 @@ class Zenix:
         # self.treeviewAtendimento.bind("<Double-1>", self.double_clickAgenda)
         
         self.atendimento.mainloop()
+
+    def updateRel(self, dataIni, dataFim):
+        self.entryQtd.configure(state='normal')
+        self.entryAtendido.configure(state='normal')
+        self.entryPrice.configure(state='normal')
+
+        self.entryQtd.delete(0, END)
+        self.entryAtendido.delete(0, END)
+        self.entryPrice.delete(0, END)
+
+        qtdAtd = self.dao.rel_qtdAtd(dataIni, dataFim)
+
+        for count in qtdAtd:
+            if count[0] == None:
+                self.entryQtd.insert(0, 0)
+                
+            else:
+                countFormatada = "{:.0f}".format(count[0])
+                self.entryQtd.insert(0, countFormatada)
+                
+
+        realizado = self.dao.rel_atendidos(dataIni, dataFim)
+
+        for atd in realizado:
+            if atd[0] == None:
+                self.entryAtendido.insert(0, 0)
+                
+            else:
+                pagamentoFormatado = "{:.2f}".format(atd[0])
+                self.entryAtendido.insert(0, pagamentoFormatado)
+                
+
+        valor = self.dao.rel_valor(dataIni, dataFim)
+
+        for qtd in valor:
+            if qtd[0] == None:
+                self.entryPrice.insert(0, 0)
+                
+            else:
+                self.entryPrice.insert(0, qtd[0])
+                
+
+        self.entryQtd.configure(state='disabled')
+        self.entryAtendido.configure(state='disabled')
+        self.entryPrice.configure(state='disabled')
 
     def selectAtendimento(self, event):
         try:
@@ -2942,21 +3039,25 @@ class Zenix:
             rows = self.dao.atdData(dataIni, dataFim)
             for row in rows:
                 self.treeviewAtendimento.insert("", END, values=row)
+            self.updateRel(dataIni, dataFim)
         
         elif dataIni == "" and dataFim != "":
             self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
             rows = self.dao.atdDataFim(dataFim)
             for row in rows:
-                self.treeviewAtendimento.insert("", END, values=row) 
+                self.treeviewAtendimento.insert("", END, values=row)
+            self.updateRel(dataIni, dataFim) 
 
         elif dataIni != "" and nomeCliente != "":
             self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
             rows = self.dao.atdDataNome(dataIni, nomeCliente)
             for row in rows:
-                self.treeviewAtendimento.insert("", END, values=row)            
+                self.treeviewAtendimento.insert("", END, values=row)  
+            self.updateRel(dataIni, dataFim)          
 
     def buscarNomeAtd(self, event):
         dataIni = self.entryDataAtendimento.get()
+        dataFim = ""
 
         # Buscar pelo Codigo do Atendimento:
         if self.entryBuscarNomeAtendimento.get().isnumeric():
@@ -2965,15 +3066,18 @@ class Zenix:
             codAtdInt = int(codAtd)
             rows = self.dao.atdAtendimento(codAtdInt)
 
+
             for row in rows:
                 self.treeviewAtendimento.insert("", END, values=row)
+            self.updateRel(dataIni, dataFim) 
         
         # Buscar pela Data e Nome
         elif dataIni != "" and self.entryBuscarNomeAtendimento.get() != "":
             self.treeviewAtendimento.delete(*self.treeviewAtendimento.get_children())
             rows = self.dao.atdDataNome(dataIni, self.entryBuscarNomeAtendimento.get())
             for row in rows:
-                self.treeviewAtendimento.insert("", END, values=row)             
+                self.treeviewAtendimento.insert("", END, values=row)  
+            self.updateRel(dataIni, dataFim)            
 
         # Buscar pelo Nome:
         else:
@@ -2983,6 +3087,7 @@ class Zenix:
 
             for row in rows:
                 self.treeviewAtendimento.insert("", END, values=row)
+            self.updateRel(dataIni, dataFim) 
 
     def setAtendimentoAtendido(self):
         if len(self.treeviewAtendimento.selection()) > 1:
