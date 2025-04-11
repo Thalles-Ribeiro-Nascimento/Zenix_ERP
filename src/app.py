@@ -2942,7 +2942,6 @@ class Zenix:
             for row in rows:
                 self.treeviewAtendimento.insert("", END, values=row)  
                       
-
     def buscarNomeAtd(self, event):
         dataIni = self.entryDataAtendimento.get()
         dataFim = ""
@@ -2975,8 +2974,7 @@ class Zenix:
 
             for row in rows:
                 self.treeviewAtendimento.insert("", END, values=row)
-             
-
+            
     def setAtendimentoAtendido(self):
         if len(self.treeviewAtendimento.selection()) > 1:
             listVlBruto = []
