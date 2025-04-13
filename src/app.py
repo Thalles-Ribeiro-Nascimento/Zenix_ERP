@@ -2530,8 +2530,148 @@ class Zenix:
 
 # Fim Parte de Financeiro -------------------------------------
 
+# Faturamento
+    def frameFaturamento(self):
+        self.frameFatura = tk.Frame(self.faturamento, background='#A9A9A9')
+        self.frameFatura.place(relx=0.02, rely=0.1, relheight=0.20, relwidth=0.96)
+
+    def frameTvFaturamento(self):
+        self.frameviewFaturamento = tk.Frame(self.faturamento, background='#A9A9A9')
+        self.frameviewFaturamento.place(relx=0.02, rely=0.25, relheight=0.6, relwidth=0.96)
+
+    def frameButtonsFaturamento(self):
+        self.btnFaturamento = tk.Frame(self.faturamento, background='gray')
+        self.btnFaturamento.place(relx=0.0, rely=0.0, relheight=0.07, relwidth=1)
+
+    def frameRelFaturamento(self):
+        self.relatorioFaturamento = tk.Frame(self.faturamento, background='#A9A9A9')
+        self.relatorioFaturamento.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.45)
+
     def telaFaturamento(self):
-        pass
+        self.faturamento = tk.Toplevel()
+        self.faturamento.transient(self.main)
+        self.faturamento.lift()
+        self.faturamento.title('Faturamento')
+        self.faturamento.configure(background='#A9A9A9')
+        self.faturamento.geometry('890x720')
+        self.faturamento.resizable(False, False)
+        
+        self.frameButtonsFaturamento()
+
+        self.faturamento.grid_columnconfigure(0, weight=0)
+        self.faturamento.grid_columnconfigure(1, weight=0)
+        self.faturamento.grid_columnconfigure(2, weight=0)
+        self.faturamento.grid_columnconfigure(3, weight=0)
+        self.faturamento.grid_rowconfigure(0,weight=0)
+
+        pesquisar = tk.Button(self.btnFaturamento, text='Pesquisar' , command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        pesquisar.grid(row=0, column=0, padx=10, pady=5)
+
+        self.frameFaturamento()
+        texto_nome = tk.Label(self.frameFatura, text='Pesquisar', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        texto_nome.place(relx=0.02, rely=0.15)
+
+        self.entryPesquisar = tk.Entry(self.frameFatura, width=25, bg='white', fg='black')
+        self.entryPesquisar.place(relx=0.02, rely=0.3)
+
+        self.frameTvFaturamento()
+        self.treeViewFatura = ttk.Treeview(self.frameviewFaturamento, columns=(
+            'Cód.Fatura', 'Data', 'Cód.Atendimento', 'Procedimento', 'Valor', 'Percentual', 'Vl.Liquido', 'Status'), show='headings')
+
+        self.treeViewFatura.heading('Cód.Fatura', text='Cód.Fatura')
+        self.treeViewFatura.heading('Data', text='Data')
+        self.treeViewFatura.heading('Cód.Atendimento', text='Cód.Atendimento')
+        self.treeViewFatura.heading('Procedimento', text='Procedimento')
+        self.treeViewFatura.heading('Valor', text='Valor')
+        self.treeViewFatura.heading('Percentual', text='Percentual')
+        self.treeViewFatura.heading('Vl.Liquido', text='Vl.Liquido')
+        self.treeViewFatura.heading('Status', text='Status')
+        
+        self.treeViewFatura.column('Cód.Fatura', stretch=False, width=90)
+        self.treeViewFatura.column('Data', stretch=False, width=95)
+        self.treeViewFatura.column('Cód.Atendimento', stretch=False, width=90)
+        self.treeViewFatura.column('Procedimento', stretch=False, width=250)
+        self.treeViewFatura.column('Valor', stretch=False, width=90)
+        self.treeViewFatura.column('Status', stretch=False, width=90)
+        self.treeViewFatura.column('Percentual', stretch=False, width=90)
+        self.treeViewFatura.column('Vl.Liquido', stretch=False, width=90)
+                   
+        verticalBar = ttk.Scrollbar(self.frameviewFaturamento, orient='vertical', command=self.treeViewFatura.yview)
+        horizontalBar = ttk.Scrollbar(self.frameviewFaturamento, orient='horizontal', command=self.treeViewFatura.xview)
+        self.treeViewFatura.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeViewFatura)
+        style.configure("self.treeViewFatura", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+        
+        rows = self.dao.faturamento()
+
+        for row in rows:
+            self.treeViewFatura.insert("", tk.END, values=row)
+
+        self.treeViewFatura.place(relx=0, rely=0, relheight=1, relwidth=0.85)
+
+        verticalBar.place(relx=0.84 , rely=0, relheight=0.972)
+        horizontalBar.place(rely=0.972, relx=0, relwidth=0.851)
+
+        self.frameRelFaturamento()
+        self.relatorioFaturamento.grid_columnconfigure(0, weight=1)
+        self.relatorioFaturamento.grid_columnconfigure(1, weight=1)
+        self.relatorioFaturamento.grid_columnconfigure(2, weight=1)
+        self.relatorioFaturamento.grid_rowconfigure(0, weight=0)
+        self.relatorioFaturamento.grid_rowconfigure(1, weight=0)
+
+        txtPrevisto = Label(self.relatorioFaturamento, text='Previsto', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        txtPrevisto.grid(column=0, row=0, pady=(5,0))
+
+        entryPrevisto = Entry(self.relatorioFaturamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
+        entryPrevisto.grid(column=0, row=1, padx=10, pady=0)
+
+        previsto = self.dao.rel_previsto_Fatura()
+
+        for soma in previsto:
+            if soma[0] == None:
+                entryPrevisto.configure(state='normal')
+                entryPrevisto.insert(0, 0)
+                entryPrevisto.configure(state='disabled')
+            else:
+                entryPrevisto.configure(state='normal')
+                somaFormatada = "{:.2f}".format(soma[0])
+                entryPrevisto.insert(0, somaFormatada)
+                entryPrevisto.configure(state='disabled')
+            
+        txtRealizado = Label(self.relatorioFaturamento, text='Recebido', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        txtRealizado.grid(column=1, row=0, pady=(5,0))
+
+        entryRecebido = Entry(self.relatorioFaturamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
+        entryRecebido.grid(column=1, row=1, padx=10, pady=0)
+
+        realizado = self.dao.rel_realizado_Fatura()
+
+        for pago in realizado:
+            if pago[0] == None:
+                entryRecebido.configure(state='normal')
+                entryRecebido.insert(0, 0)
+                entryRecebido.configure(state='disabled')
+            else:
+                entryRecebido.configure(state='normal')
+                pagamentoFormatado = "{:.2f}".format(pago[0])
+                entryRecebido.insert(0, pagamentoFormatado)
+                entryRecebido.configure(state='disabled')
+
+        txtAtendimento = Label(self.relatorioFaturamento, text='Qtd.Atendimento', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
+        txtAtendimento.grid(column=2, row=0, pady=(5,0))
+
+        entryAtendimento = Entry(self.relatorioFaturamento, state='disabled', disabledbackground='#D3D3D3', disabledforeground='black', width=10)
+        entryAtendimento.grid(column=2, row=1, padx=10, pady=0)
+
+        atendimentos = self.dao.rel_qtdAtendimento_Fatura()
+
+        for qtd in atendimentos:
+            entryAtendimento.configure(state='normal')
+            entryAtendimento.insert(0, qtd[0])
+            entryAtendimento.configure(state='disabled')
+                
+        self.faturamento.mainloop()
 
 # Atendimento
 

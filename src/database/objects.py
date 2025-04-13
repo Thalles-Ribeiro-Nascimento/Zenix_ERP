@@ -632,3 +632,24 @@ class Dao:
 
         return row 
 
+
+    def rel_qtdAtendimento_Fatura(self):              
+        sql = f"select count(`Cód.Atendimento`) from Vw_Faturamento"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row                                                
+
+    def rel_previsto_Fatura(self):              
+        sql = f"select sum(`Vl.Liquido`) from Vw_Faturamento where Status = 0"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row                                                
+
+    def rel_realizado_Fatura(self):              
+        sql = f"select sum(`Vl.Liquido`) from Vw_Faturamento where Status = 1"
+        self.cursor.execute(sql)
+        row = self.cursor.fetchall()
+
+        return row 
