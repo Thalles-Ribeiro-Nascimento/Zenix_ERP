@@ -152,23 +152,23 @@ class Zenix:
     
         # self.main.minsize(width=1920, height=1450)
         menu_bar = tk.Menu(self.main, background='#808080')
-        menuFunCli = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuFunCli.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Agendamento',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_separator()
-        menuFunCli.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_separator()
-        menuFunCli.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Lançamentos',command=self.telaLancamento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_separator()
-        menuFunCli.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
-        menuFunCli.add_separator()
-        menuFunCli.add_command(label='Sair', command=self.main.destroy, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial = tk.Menu(menu_bar, tearoff=0, background='#808080')
+        menuGerencial.add_command(label='Atendimento',command=self.telaAtendimento, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_command(label='Agendamento',command=self.telaAgenda, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_separator()
+        menuGerencial.add_command(label='Clientes',command=self.telaClientes, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_command(label='Funcionarios',command=self.telaFuncionario, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_separator()
+        menuGerencial.add_command(label='Faturamento',command=self.telaFaturamento, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_command(label='Financeiro',command=self.telaFinanceiro, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_command(label='Lançamentos',command=self.telaLancamento, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_separator()
+        menuGerencial.add_command(label='Especialidade',command=self.telaEspecialidade, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_command(label='Procedimento',command=self.telaProcedimento, font=('Arial', 10, 'bold'), foreground='black')
+        menuGerencial.add_separator()
+        menuGerencial.add_command(label='Sair', command=self.main.destroy, font=('Arial', 10, 'bold'), foreground='black')
         
-        menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
+        menu_bar.add_cascade(label='Gerencial', menu=menuGerencial, font=('Arial', 12, 'bold'))
         
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
         menuAuxiliar.add_command(label='Trocar Senha',command=self.trocaSenha, font=('Arial', 10, 'bold'), foreground='black')
@@ -1089,7 +1089,7 @@ class Zenix:
 
 # Fim Funcionario ----------------------------------------
  
-# Cliente ------------------------------------------------
+# Cliente
     def telaClientes(self):
         self.clientes = tk.Toplevel()
         self.clientes.transient(self.main)
@@ -1117,8 +1117,6 @@ class Zenix:
         menu_bar.add_cascade(label='Gerencial', menu=menuFunCli, font=('Arial', 12, 'bold'))
 
         menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        menuAuxiliar.add_command(label='Agendar',command=self.adicionarAgendamentoCliente, font=('Arial', 10, 'bold'), foreground='black')
-        menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Editar',command=self.atualizarClientesModal, font=('Arial', 10, 'bold'), foreground='black')
         menuAuxiliar.add_separator()
         menuAuxiliar.add_command(label='Novo',command=self.modalNovoCliente, font=('Arial', 10, 'bold'), foreground='black')
@@ -1801,7 +1799,7 @@ class Zenix:
 # Lançamento ------------------------------
     def frameLancamento(self):
         self.frameLancamentos = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
-        self.frameLancamentos.place(relx=0.02, rely=0.08, relheight=0.20, relwidth=0.96)
+        self.frameLancamentos.place(relx=0.02, rely=0.03, relheight=0.20, relwidth=0.96)
 
     def frameTvLancamento(self):
         self.frameviewLancamento = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
@@ -1810,10 +1808,6 @@ class Zenix:
     def frameRelLancamento(self):
         self.relatorioLancamento = tk.Frame(self.lancamentoRoot, background='#A9A9A9')
         self.relatorioLancamento.place(relx=0.02, rely=0.87, relheight=0.12, relwidth=0.45)
-
-    def frameButtonsTelaLancamento(self):
-        self.buttonsLancamento = tk.Frame(self.lancamentoRoot, background='gray')
-        self.buttonsLancamento.place(relx=0.0, rely=0.0, relheight=0.07, relwidth=1)
 
     def telaLancamento(self):
         self.lancamentoRoot = tk.Toplevel()
@@ -1825,38 +1819,31 @@ class Zenix:
         self.lancamentoRoot.resizable(False, False)
         
         # Menu superior
-        self.frameButtonsTelaLancamento()
-        self.lancamentoRoot.grid_columnconfigure(0, weight=0)
-        self.lancamentoRoot.grid_columnconfigure(1, weight=0)
-        self.lancamentoRoot.grid_columnconfigure(2, weight=0)
-        self.lancamentoRoot.grid_columnconfigure(3, weight=0)
+        menu_bar = tk.Menu(self.lancamentoRoot, background='#808080')
+        
+        menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
 
-        self.lancamentoRoot.grid_rowconfigure(0, weight=0)
+        menuAuxiliar.add_command(label='Forma de Pagamento',command=self.modal_forma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Lançar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
+        menuAuxiliar.add_separator()
+        menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
 
-        self.buscarFunc = tk.Button(self.buttonsLancamento, text='Buscar', command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', 
-                                    fg='white', font=('Arial', 12, 'bold'))
-        self.buscarFunc.grid(column=2, row=0, padx=10, pady=5)
+        menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
 
-        buttonAddFormaPagamento = Button(self.buttonsLancamento, text='Forma de Pagamento', command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', 
-                                         fg='white', font=('Arial', 12, 'bold'))
-        buttonAddFormaPagamento.grid(column=3, row=0, padx=10, pady=5)
-
-        # menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
-        # menuAuxiliar.add_command(label='Forma de Pagamento',command=self.telaForma_pagamento, font=('Arial', 10, 'bold'), foreground='black')
-        # menuAuxiliar.add_separator()
-        # menuAuxiliar.add_command(label='Editar',command=self.atualizarModal, font=('Arial', 10, 'bold'), foreground='black')
-        # menuAuxiliar.add_separator()
-        # # menuAuxiliar.add_command(label='Novo',command=self.modalNovoLancamento, font=('Arial', 10, 'bold'), foreground='black')
-        # # menuAuxiliar.add_separator()
-        # menuAuxiliar.add_command(label='Excluir',command=self.confirmarExclusao, font=('Arial', 10, 'bold'), foreground='black')
-        # menu_bar.add_cascade(label='Auxiliar', menu=menuAuxiliar, font=('Arial', 12, 'bold'))
-
+        self.lancamentoRoot.config(menu=menu_bar)
+        
         self.frameLancamento()
         texto_nome = tk.Label(self.frameLancamentos, text='NOME', background='#A9A9A9', fg='black', font=('Arial', 12, 'bold'))
-        texto_nome.place(relx=0.02, rely=0.15)
+        texto_nome.place(relx=0.02, rely=0.05)
 
         self.campo_nome = tk.Entry(self.frameLancamentos, width=25, bg='white', fg='black')
-        self.campo_nome.place(relx=0.02, rely=0.35)
+        self.campo_nome.place(relx=0.02, rely=0.2)
+
+        self.buscarFunc = tk.Button(self.frameLancamentos, text='Pesquisar', command=self.buscarFuncionarioNome, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.buscarFunc.place(relx=0.02, rely=0.4)
 
         self.frameTvLancamento()
         self.treeviewLancamento = ttk.Treeview(self.frameviewLancamento, columns=(
@@ -1968,6 +1955,66 @@ class Zenix:
 
                 
         self.lancamentoRoot.mainloop()
+
+    def modal_forma_pagamento(self):
+
+        self.modalNovoPagamento = tk.Toplevel()
+        self.modalNovoPagamento.transient(self.lancamentoRoot)
+        self.modalNovoPagamento.lift()
+        self.modalNovoPagamento.title('Forma de pagamento - [Inserir]')
+        self.modalNovoPagamento.geometry('550x350')
+        self.modalNovoPagamento.configure(background='#D3D3D3')
+        self.modalNovoPagamento.resizable(False,False)
+        self.modalNovoPagamento.colormapwindows(self.modalNovoPagamento)
+        
+        txtNome = tk.Label(self.modalNovoPagamento, text='Nome:', font='bold')
+        txtNome.place(relx= 0.05, rely=0.1)
+        txtNome.configure(background='#D3D3D3', fg='black')
+
+        self.nomeAtualizaCliente = tk.Entry(self.modalNovoPagamento,width=25)
+        self.nomeAtualizaCliente.configure(background='white', fg='black')
+        self.nomeAtualizaCliente.place(relx= 0.05, rely=0.154)
+        # self.nomeAtualizaCliente.insert(0, self.nomeClienteSelect)
+
+        txtCpf = tk.Label(self.modalNovoPagamento, text='CPF:', font='bold')
+        txtCpf.place(relx= 0.75, rely=0.09)
+        txtCpf.configure(background='#D3D3D3', fg='black')
+
+        self.cpfAtualizaCliente = tk.Entry(self.modalNovoPagamento, width=15)
+        self.cpfAtualizaCliente.place(relx= 0.75, rely=0.153)
+        self.cpfAtualizaCliente.configure(background='white', fg='black')
+        
+        txtTelefone = tk.Label(self.modalNovoPagamento, text='Telefone:', font='bold')
+        txtTelefone.place(relx= 0.438, rely=0.09)
+        txtTelefone.configure(background='#D3D3D3', fg='black')
+
+        self.telefoneAtualizaCliente = tk.Entry(self.modalNovoPagamento, width=20)
+        self.telefoneAtualizaCliente.configure(background='white', fg='black')
+        self.telefoneAtualizaCliente.place(relx= 0.44, rely=0.153)
+
+        self.treeViewPagamento = ttk.Treeview(self.modalNovoPagamento, columns=('Forma de Pagamento', 'Tipo', 'Taxa'), show='headings')
+
+        self.treeViewPagamento.heading('Forma de Pagamento', text='Pagamento')
+        self.treeViewPagamento.heading('Tipo', text='Tipo')
+        self.treeViewPagamento.heading('Taxa', text='Taxa')
+        
+        self.treeViewPagamento.column('Forma de Pagamento', stretch=False, width=100)
+        self.treeViewPagamento.column('Tipo', stretch=False, width=100)
+        self.treeViewPagamento.column('Taxa', stretch=False, width=90)
+                   
+        verticalBar = ttk.Scrollbar(self.modalNovoPagamento, orient='vertical', command=self.treeViewPagamento.yview)
+        horizontalBar = ttk.Scrollbar(self.modalNovoPagamento, orient='horizontal', command=self.treeViewPagamento.xview)
+        self.treeViewPagamento.configure(yscrollcommand=verticalBar.set, xscrollcommand=horizontalBar.set)
+
+        style = ttk.Style(self.treeViewPagamento)
+        style.configure("self.treeViewPagamento", rowheight=30, background="white", foreground="black", fieldbackground="lightgray", bordercolor="black")
+
+        
+
+        self.buttonAtualizaCliente = tk.Button(self.modalNovoPagamento, text='Inserir' , command=self.alteraCliente, relief='groove', bd=2, background='#4169E1', fg='white', font=('Arial', 12, 'bold'))
+        self.buttonAtualizaCliente.place(relx= 0.7, rely=0.85)
+        
+        self.modalNovoPagamento.mainloop()
 
 # Lançamento ------------------------------
 
@@ -4498,6 +4545,7 @@ class Zenix:
             self.modalProcedimentos.resizable(False,False)
             self.modalProcedimentos.colormapwindows(self.modalProcedimentos)
             self.ItemSelecionadoProcedimento = ""
+
             menu_bar = tk.Menu(self.modalProcedimentos, background='#808080')
             
             menuAuxiliar = tk.Menu(menu_bar, tearoff=0, background='#808080')
